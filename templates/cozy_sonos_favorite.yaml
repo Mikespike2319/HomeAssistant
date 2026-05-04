@@ -1,0 +1,88 @@
+# ═══════════════════════════════════════════════════════════════════
+#   cozy_sonos_favorite — quick-play music shortcut pill
+# ═══════════════════════════════════════════════════════════════════
+#
+# Triggers a script that plays a Sonos favorite (or station, or
+# Spotify playlist, etc.). Use HA scripts to encapsulate the actual
+# media_player.play_media call — that keeps content_id ugliness out
+# of the dashboard.
+#
+# EXAMPLE SCRIPT (paste in your scripts.yaml):
+#   play_morning_jazz:
+#     alias: Play morning jazz
+#     sequence:
+#       - service: media_player.play_media
+#         target:
+#           entity_id: media_player.kitchen_sonos
+#         data:
+#           media_content_type: favorite_item_id
+#           media_content_id: "FV:2/4"   # ← from Sonos favorites
+#
+# USAGE:
+#   - type: custom:button-card
+#     template: cozy_sonos_favorite
+#     variables:
+#       script_entity: script.play_morning_jazz
+#       label: "Morning jazz"
+#       emoji: "☕"
+#       accent: warm
+# ═══════════════════════════════════════════════════════════════════
+
+button_card_templates:
+  cozy_sonos_favorite:
+    variables:
+      script_entity: script.unknown
+      label: 'Favorite'
+      emoji: '🎵'
+      accent: warm   # warm | cool | neutral | rose | sage
+
+    show_name: false
+    show_icon: false
+    tap_action:
+      action: call-service
+      service: script.turn_on
+      target:
+        entity_id: '[[[ return variables.script_entity; ]]]'
+    hold_action:
+      action: more-info
+      entity: '[[[ return variables.script_entity; ]]]'
+
+    custom_fields:
+      body: |
+        [[[
+          const accents = {
+            warm:    { bg: 'rgba(255, 210, 165, 0.14)', border: 'rgba(255, 200, 150, 0.35)' },
+            cool:    { bg: 'rgba(180, 215, 240, 0.12)', border: 'rgba(190, 220, 245, 0.30)' },
+            neutral: { bg: 'rgba(245, 235, 220, 0.10)', border: 'rgba(245, 230, 210, 0.25)' },
+            rose:    { bg: 'rgba(255, 195, 200, 0.13)', border: 'rgba(255, 190, 195, 0.32)' },
+            sage:    { bg: 'rgba(190, 215, 195, 0.12)', border: 'rgba(195, 220, 200, 0.30)' },
+          };
+          const a = accents[variables.accent] || accents.warm;
+          return `
+            <div style="
+              display: inline-flex; align-items: center; gap: 8px;
+              padding: 10px 16px;
+              border-radius: 999px;
+              background: ${a.bg};
+              border: 1px solid ${a.border};
+              backdrop-filter: blur(14px) saturate(150%);
+              box-shadow: 0 2px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06);
+              font-family: 'Inter', sans-serif;
+              font-weight: 400;
+              font-size: 14px;
+              letter-spacing: 0.02em;
+              color: rgba(255, 240, 225, 0.92);
+              white-space: nowrap;
+            ">
+              <span style="font-size: 18px; line-height: 1;">${variables.emoji || '🎵'}</span>
+              <span>${variables.label || 'Favorite'}</span>
+            </div>`;
+        ]]]
+
+    styles:
+      card:
+        - background: none
+        - border: none
+        - padding: 0
+        - width: auto
+        - cursor: pointer

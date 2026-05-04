@@ -1,0 +1,39 @@
+# ═══════════════════════════════════════════════════════════════════
+#   tesla_tap_zone — invisible tap target over the car/HUD area
+#   Tapping it navigates to the Tesla detail view.
+# ═══════════════════════════════════════════════════════════════════
+#
+# Add ONE of these to each dashboard view that has the cozy backdrop.
+# It sits over the bottom car/HUD region; tap = navigate to /tesla.
+#
+# USAGE:
+#   - type: custom:button-card
+#     template: tesla_tap_zone
+#     variables:
+#       nav_path: /lovelace-cozy/tesla    # ← your tesla view path
+# ═══════════════════════════════════════════════════════════════════
+
+button_card_templates:
+  tesla_tap_zone:
+    variables:
+      nav_path: /lovelace/tesla
+
+    show_name: false
+    show_icon: false
+    tap_action:
+      action: navigate
+      navigation_path: '[[[ return variables.nav_path; ]]]'
+
+    styles:
+      card:
+        - position: fixed
+        - bottom: 0
+        - left: 25vw
+        - width: 50vw
+        - height: 22vh
+        - background: transparent
+        - border: none
+        - padding: 0
+        - z-index: 4
+        - cursor: pointer
+        - pointer-events: auto

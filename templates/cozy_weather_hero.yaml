@@ -1,0 +1,227 @@
+# ═══════════════════════════════════════════════════════════════════
+#   cozy_weather_hero — current weather as a cozy hero card
+# ═══════════════════════════════════════════════════════════════════
+#
+# Works with ANY HA weather.* entity (Met.no, OpenWeatherMap, AccuWeather,
+# Pirate Weather, Tomorrow.io, NWS, etc.)
+#
+# USAGE:
+#   - type: custom:button-card
+#     template: cozy_weather_hero
+#     variables:
+#       weather_entity: weather.forecast_home   # required
+#       cute_name: ''                            # optional override
+#
+# DISPLAY:
+#   • Big condition emoji + current temp
+#   • Friendly summary sentence ("Crisp morning, 52° and sunny")
+#   • Activity hint ("Perfect for the patio" / "Snuggle weather")
+#   • Pills: feels like, humidity, wind, sunrise/sunset
+#
+# INTERACTION:
+#   • Tap → opens HA more-info (full forecast popup)
+# ═══════════════════════════════════════════════════════════════════
+
+button_card_templates:
+  cozy_weather_hero:
+    variables:
+      weather_entity: weather.forecast_home
+      cute_name: ''
+
+    show_name: false
+    show_icon: false
+    tap_action:
+      action: more-info
+      entity: '[[[ return variables.weather_entity; ]]]'
+
+    custom_fields:
+      body: |
+        [[[
+          const w = states[variables.weather_entity];
+          if (!w) {
+            return `<div style="color:#888;font-size:13px;padding:18px;">
+              ${variables.weather_entity} not found
+            </div>`;
+          }
+
+          const condition = w.state;
+          const temp = w.attributes.temperature;
+          const apparent = w.attributes.apparent_temperature ?? w.attributes.feels_like;
+          const humidity = w.attributes.humidity;
+          const wind = w.attributes.wind_speed;
+          const windDir = w.attributes.wind_bearing;
+          const pressure = w.attributes.pressure;
+          const tempUnit = w.attributes.temperature_unit || '°';
+          const speedUnit = w.attributes.wind_speed_unit || 'mph';
+
+          // Sun entity for sunrise/sunset
+          const sun = states['sun.sun'];
+          const isDay = sun && sun.state === 'above_horizon';
+          const fmtTime = (iso) => {
+            if (!iso) return '–';
+            const d = new Date(iso);
+            const hh = d.getHours() % 12 || 12;
+            const mm = String(d.getMinutes()).padStart(2, '0');
+            const ampm = d.getHours() >= 12 ? 'PM' : 'AM';
+            return `${hh}:${mm} ${ampm}`;
+          };
+          const sunriseStr = sun ? fmtTime(sun.attributes.next_rising) : '–';
+          const sunsetStr  = sun ? fmtTime(sun.attributes.next_setting) : '–';
+
+          // ── Condition mapping ──
+          const condMap = {
+            'clear-night':     { emoji: '🌙',  mood: 'Quiet starry night',     warm: 'Peaceful evening',          cold: 'Crisp clear night',         glow: 'rgba(180,200,240,0.18)' },
+            'sunny':           { emoji: '☀️',  mood: 'Sunshine everywhere',     warm: 'Beautiful sunny day',       cold: 'Bright and brisk',          glow: 'rgba(255,210,140,0.30)' },
+            'partlycloudy':    { emoji: '⛅',  mood: 'A few wandering clouds',   warm: 'Mostly sunny',              cold: 'Patchy clouds, cool out',   glow: 'rgba(220,220,235,0.22)' },
+            'cloudy':          { emoji: '☁️',  mood: 'Soft gray skies',          warm: 'Mild and overcast',          cold: 'Gray and chilly',           glow: 'rgba(190,200,215,0.22)' },
+            'rainy':           { emoji: '🌧',  mood: 'A gentle rain falling',    warm: 'Cozy rainy weather',         cold: 'Damp and cool',             glow: 'rgba(150,180,220,0.28)' },
+            'pouring':         { emoji: '🌧',  mood: 'Heavy rain coming down',  warm: 'Stay dry — it\'s pouring',   cold: 'Cold rain, bundle up',      glow: 'rgba(120,160,210,0.32)' },
+            'snowy':           { emoji: '🌨',  mood: 'Snowflakes drifting down',warm: 'Light snow falling',         cold: 'Snowy and cold',            glow: 'rgba(220,235,250,0.30)' },
+            'snowy-rainy':     { emoji: '🌨',  mood: 'Wintry mix outside',       warm: 'Sleet falling',              cold: 'Sleet and slush',           glow: 'rgba(190,210,230,0.28)' },
+            'lightning':       { emoji: '⛈',  mood: 'Thunder rumbling',         warm: 'Storms rolling through',     cold: 'Stormy and cold',           glow: 'rgba(180,170,220,0.32)' },
+            'lightning-rainy': { emoji: '⛈',  mood: 'Thunder and heavy rain',   warm: 'Wild weather outside',       cold: 'Cold thunderstorms',        glow: 'rgba(180,170,220,0.32)' },
+            'fog':             { emoji: '🌫',  mood: 'Soft foggy haze',          warm: 'Misty morning',              cold: 'Foggy and cold',            glow: 'rgba(220,220,225,0.22)' },
+            'windy':           { emoji: '💨',  mood: 'Breeze blowing through',  warm: 'Windy but warm',             cold: 'Cold winds blowing',        glow: 'rgba(200,220,235,0.22)' },
+            'windy-variant':   { emoji: '💨',  mood: 'Gusty out there',         warm: 'Breezy and warm',            cold: 'Cold gusty wind',           glow: 'rgba(200,220,235,0.22)' },
+            'hail':            { emoji: '🧊',  mood: 'Hail falling',             warm: 'Hailstorm — stay inside',    cold: 'Icy hail outside',          glow: 'rgba(200,220,240,0.32)' },
+            'exceptional':     { emoji: '⚠️',  mood: 'Unusual weather',          warm: 'Watch the skies',            cold: 'Unusual weather, careful',  glow: 'rgba(255,180,150,0.32)' },
+          };
+          const c = condMap[condition] || { emoji: '🌤', mood: condition, warm: condition, cold: condition, glow: 'rgba(220,220,220,0.20)' };
+
+          // ── Activity hint ── (warm/cold cutoff at 65°F or 18°C)
+          const isWarm = temp !== undefined && temp >= (tempUnit.includes('C') ? 18 : 65);
+          const isCold = temp !== undefined && temp < (tempUnit.includes('C') ? 4 : 40);
+          let copy = isWarm ? c.warm : c.cold;
+
+          let hint = '';
+          if (condition === 'sunny' && isWarm)            hint = 'Perfect for the patio 🌷';
+          else if (condition === 'sunny' && isCold)        hint = 'Bundle up if you go out';
+          else if (condition === 'partlycloudy' && isWarm) hint = 'Lovely walk weather';
+          else if (condition === 'rainy' || condition === 'pouring')          hint = 'Snuggle weather 📖';
+          else if (condition === 'snowy' || condition === 'snowy-rainy')      hint = 'Hot cocoa weather ☕';
+          else if (condition === 'lightning' || condition === 'lightning-rainy') hint = 'Stay inside, light a candle 🕯';
+          else if (condition === 'fog')                    hint = 'Drive carefully out there';
+          else if (condition === 'clear-night')            hint = 'Great night for stargazing ✨';
+          else if (isCold)                                  hint = 'Stay warm';
+
+          // ── Layout ──
+          return `
+            <div style="
+              position: relative;
+              width: 100%; height: 100%;
+              padding: 22px 26px;
+              border-radius: 22px;
+              background: linear-gradient(160deg, ${c.glow} 0%, rgba(28,22,30,0.6) 50%, rgba(15,12,20,0.78) 100%);
+              border: 1px solid rgba(255, 235, 215, 0.12);
+              backdrop-filter: blur(16px) saturate(150%);
+              box-shadow: 0 8px 32px rgba(0,0,0,0.35),
+                          inset 0 1px 0 rgba(255,255,255,0.06);
+              transition: all 0.8s ease-out;
+              overflow: hidden;
+            ">
+              <!-- top row: emoji + temp -->
+              <div style="display:flex; align-items:flex-start; gap:18px;">
+                <div style="
+                  font-size: 64px;
+                  line-height: 1;
+                  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+                  ${(condition === 'sunny' || condition === 'clear-night') ? 'animation: gentleBreathe 5s ease-in-out infinite;' : ''}
+                ">${c.emoji}</div>
+
+                <div style="flex:1; min-width:0;">
+                  <div style="display:flex; align-items:baseline; gap:6px;">
+                    <div style="
+                      font-family: 'Inter', sans-serif;
+                      font-size: 56px;
+                      font-weight: 200;
+                      color: rgba(255, 245, 230, 0.97);
+                      line-height: 1;
+                      letter-spacing: -0.02em;
+                    ">${temp !== undefined ? Math.round(temp) : '–'}<span style="font-size:28px; opacity:0.7;">°</span></div>
+                    ${apparent !== undefined && Math.abs(apparent - temp) >= 2 ? `
+                      <div style="
+                        font-family: 'Inter', sans-serif;
+                        font-size: 13px;
+                        color: rgba(255, 235, 215, 0.6);
+                        margin-left: 4px;
+                      ">feels ${Math.round(apparent)}°</div>
+                    ` : ''}
+                  </div>
+
+                  <div style="
+                    margin-top: 4px;
+                    font-family: 'Caveat', 'Georgia', cursive;
+                    font-style: italic;
+                    font-size: 22px;
+                    font-weight: 500;
+                    color: rgba(255, 230, 210, 0.92);
+                    text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+                    line-height: 1.1;
+                  ">${copy}</div>
+
+                  ${hint ? `
+                    <div style="
+                      margin-top: 4px;
+                      font-family: 'Caveat', 'Georgia', cursive;
+                      font-style: italic;
+                      font-size: 16px;
+                      color: rgba(255, 220, 200, 0.7);
+                    ">${hint}</div>` : ''}
+                </div>
+              </div>
+
+              <!-- bottom pill row -->
+              <div style="
+                margin-top: 18px;
+                display: flex; flex-wrap: wrap; gap: 6px;
+                font-family: 'Inter', sans-serif;
+                font-size: 11px;
+                color: rgba(255, 235, 215, 0.78);
+              ">
+                ${humidity !== undefined ? `<span style="
+                  display:inline-flex; align-items:center; gap:4px;
+                  padding: 4px 10px; border-radius: 999px;
+                  background: rgba(40,28,32,0.5);
+                  border: 1px solid rgba(255,220,195,0.15);
+                ">💧 ${humidity}%</span>` : ''}
+                ${wind !== undefined ? `<span style="
+                  display:inline-flex; align-items:center; gap:4px;
+                  padding: 4px 10px; border-radius: 999px;
+                  background: rgba(40,28,32,0.5);
+                  border: 1px solid rgba(255,220,195,0.15);
+                ">💨 ${Math.round(wind)} ${speedUnit}</span>` : ''}
+                <span style="
+                  display:inline-flex; align-items:center; gap:4px;
+                  padding: 4px 10px; border-radius: 999px;
+                  background: rgba(40,28,32,0.5);
+                  border: 1px solid rgba(255,220,195,0.15);
+                ">${isDay ? '🌅 sets' : '🌄 rises'} ${isDay ? sunsetStr : sunriseStr}</span>
+                ${pressure !== undefined ? `<span style="
+                  display:inline-flex; align-items:center; gap:4px;
+                  padding: 4px 10px; border-radius: 999px;
+                  background: rgba(40,28,32,0.5);
+                  border: 1px solid rgba(255,220,195,0.15);
+                ">🧭 ${Math.round(pressure)}</span>` : ''}
+              </div>
+
+              <!-- corner halo accent -->
+              <div style="
+                position:absolute; inset:0; border-radius:22px; pointer-events:none;
+                background: radial-gradient(circle at 85% 20%, ${c.glow} 0%, transparent 55%);
+                opacity: 0.7;
+              "></div>
+            </div>`;
+        ]]]
+
+    styles:
+      card:
+        - background: none
+        - border: none
+        - padding: 0
+        - width: 100%
+        - height: 200px
+        - cursor: pointer
+      custom_fields:
+        body:
+          - width: 100%
+          - height: 100%

@@ -1,0 +1,154 @@
+# ═══════════════════════════════════════════════════════════════════
+#   cozy_light_tile — one Hue room/group as a cozy tappable tile
+# ═══════════════════════════════════════════════════════════════════
+#
+# USAGE: paste this entire block under `button_card_templates:` in
+# raw config (alongside sky_system_tesla).
+#
+# Use it on a card by referencing the template + setting variables:
+#
+#   - type: custom:button-card
+#     template: cozy_light_tile
+#     variables:
+#       light_entity: light.living_room       # required
+#       cute_name: "The cozy nook"            # optional override
+#       icon_emoji: "🛋"                      # optional emoji
+#
+# INTERACTIONS:
+#   • Tap     → toggle on/off
+#   • Hold    → opens HA's native more-info dialog (brightness slider,
+#               color picker, color temp, effects)
+#   • Double  → 'My favorite scene' if you set scene_entity below
+#
+# VISUAL:
+#   • OFF: dim gray-ish tile
+#   • ON:  warm halo glow matching the light's actual color/temp,
+#          brightness % shown big, gentle breathing animation
+# ═══════════════════════════════════════════════════════════════════
+
+button_card_templates:
+  cozy_light_tile:
+    variables:
+      light_entity: light.unknown
+      cute_name: ''                  # blank = use HA friendly_name
+      icon_emoji: '💡'
+      scene_entity: ''               # optional double-tap shortcut
+
+    show_name: false
+    show_icon: false
+
+    tap_action:
+      action: toggle
+    hold_action:
+      action: more-info
+    double_tap_action:
+      action: |
+        [[[ return variables.scene_entity ? 'call-service' : 'none'; ]]]
+      service: scene.turn_on
+      service_data:
+        entity_id: '[[[ return variables.scene_entity; ]]]'
+
+    custom_fields:
+      body: |
+        [[[
+          const e = states[variables.light_entity];
+          if (!e) {
+            return `<div style="color:#888;font-size:12px;padding:14px;">
+              ${variables.light_entity} not found
+            </div>`;
+          }
+          const on = e.state === 'on';
+          const bri = e.attributes.brightness ? Math.round((e.attributes.brightness / 255) * 100) : 0;
+          const rgb = e.attributes.rgb_color;
+          const tempK = e.attributes.color_temp_kelvin;
+          const friendly = (variables.cute_name || e.attributes.friendly_name || '').trim();
+          const emoji = variables.icon_emoji || '💡';
+
+          // ── Compute halo color for active state ──
+          let halo = 'rgba(255, 200, 140, 0.35)';   // default warm
+          let bgGlow = 'rgba(255, 210, 165, 0.10)';
+          if (on && rgb) {
+            halo = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.45)`;
+            bgGlow = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.14)`;
+          } else if (on && tempK) {
+            // map kelvin (2200=warm → 6500=cool) into RGB
+            const t = Math.min(Math.max((tempK - 2200) / (6500 - 2200), 0), 1);
+            const r = Math.round(255 - t * 30);
+            const g = Math.round(200 + t * 40);
+            const b = Math.round(140 + t * 110);
+            halo = `rgba(${r}, ${g}, ${b}, 0.42)`;
+            bgGlow = `rgba(${r}, ${g}, ${b}, 0.12)`;
+          }
+
+          const display = on
+            ? `<div style="font-size:32px; font-weight:200; color:rgba(255,245,230,0.96); line-height:1;">${bri}<span style="font-size:16px; opacity:0.7;">%</span></div>`
+            : `<div style="font-size:18px; font-weight:300; color:rgba(255,235,215,0.55); line-height:1;">off</div>`;
+
+          return `
+            <div style="
+              position:relative;
+              width:100%; height:100%;
+              padding:14px 14px 12px;
+              border-radius:18px;
+              background: ${on
+                ? `linear-gradient(160deg, ${bgGlow} 0%, rgba(30,22,28,0.55) 60%, rgba(20,15,22,0.65) 100%)`
+                : `linear-gradient(160deg, rgba(35,30,38,0.55) 0%, rgba(20,17,24,0.7) 100%)`};
+              border: 1px solid ${on ? halo.replace(/[\d.]+\)$/, '0.35)') : 'rgba(255,235,215,0.08)'};
+              backdrop-filter: blur(14px) saturate(140%);
+              box-shadow: ${on ? `0 0 28px ${halo}, inset 0 1px 0 rgba(255,255,255,0.06)` : 'inset 0 1px 0 rgba(255,255,255,0.04)'};
+              transition: all 0.6s ease-out;
+              overflow: hidden;
+              animation: ${on ? 'gentleBreathe 5s ease-in-out infinite' : 'none'};
+            ">
+
+              <!-- emoji + name row -->
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                <div style="
+                  font-size:22px;
+                  filter: ${on ? 'none' : 'grayscale(0.6) opacity(0.55)'};
+                  transition: filter 0.6s;
+                ">${emoji}</div>
+                <div style="
+                  font-family: 'Inter', sans-serif;
+                  font-weight: 400;
+                  font-size: 13px;
+                  letter-spacing: 0.02em;
+                  color: ${on ? 'rgba(255,235,215,0.92)' : 'rgba(255,235,215,0.55)'};
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                ">${friendly}</div>
+              </div>
+
+              ${display}
+
+              <!-- bottom subtle status -->
+              <div style="
+                margin-top: 8px;
+                font-family: 'Caveat', 'Georgia', cursive;
+                font-style: italic;
+                font-size: 13px;
+                color: ${on ? 'rgba(255,225,205,0.7)' : 'rgba(255,235,215,0.35)'};
+              ">${on ? 'glowing' : 'resting'}</div>
+
+              <!-- inner halo accent when on -->
+              ${on ? `<div style="
+                position:absolute; inset:0; border-radius:18px; pointer-events:none;
+                background: radial-gradient(circle at 80% 20%, ${halo} 0%, transparent 55%);
+                opacity: 0.7;
+              "></div>` : ''}
+            </div>`;
+        ]]]
+
+    styles:
+      card:
+        - background: none
+        - border: none
+        - padding: 0
+        - width: 100%
+        - height: 110px
+        - cursor: pointer
+      custom_fields:
+        body:
+          - width: 100%
+          - height: 100%

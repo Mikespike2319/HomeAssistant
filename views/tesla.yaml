@@ -1,0 +1,351 @@
+# Personalized — uses your real El Rocco entities (52 entities)
+title: El Rocco
+path: tesla
+icon: mdi:car-electric
+type: sections
+max_columns: 2
+
+cards:
+
+  - type: custom:button-card
+    template: sky_system_tesla
+
+  - type: custom:mod-card
+    style: |
+      ha-card {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        margin-top: 14vh;
+      }
+    card:
+      type: markdown
+      content: |
+        <div style="
+          font-family: 'Caveat', 'Dancing Script', Georgia, cursive;
+          font-style: italic;
+          font-size: 36px;
+          font-weight: 500;
+          color: rgba(255, 230, 210, 0.92);
+          text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+          text-align: center;
+          letter-spacing: 0.02em;
+        ">
+          El Rocco 🚗
+        </div>
+
+  # ═══════════════════════════════════════════════════════════
+  #  CHARGING — battery, range, limit, ETA
+  # ═══════════════════════════════════════════════════════════
+  - type: custom:mod-card
+    style: |
+      ha-card {
+        background: rgba(20, 17, 24, 0.55) !important;
+        backdrop-filter: blur(14px) saturate(140%);
+        border: 1px solid rgba(255, 235, 215, 0.10) !important;
+        border-radius: 18px !important;
+        padding: 18px !important;
+      }
+    card:
+      type: vertical-stack
+      cards:
+        - type: markdown
+          content: |
+            <div style="font-family:'Caveat',cursive; font-style:italic; font-size:22px; color:rgba(255,225,205,0.9);">
+              Charging ⚡
+            </div>
+        - type: entities
+          entities:
+            - entity: sensor.el_rocco_battery_level
+              name: Battery
+              icon: mdi:battery
+            - entity: sensor.el_rocco_battery_range
+              name: Range
+              icon: mdi:map-marker-distance
+            - entity: sensor.el_rocco_charging
+              name: Charging state
+            - entity: sensor.el_rocco_charge_rate
+              name: Charge rate
+            - entity: sensor.el_rocco_charger_power
+              name: Power
+            - entity: sensor.el_rocco_charger_voltage
+              name: Voltage
+            - entity: sensor.el_rocco_charger_current
+              name: Current
+            - entity: sensor.el_rocco_charge_energy_added
+              name: Energy added
+            - entity: sensor.el_rocco_time_to_full_charge
+              name: Time to full
+            - entity: number.el_rocco_charge_limit
+              name: Charge limit
+            - entity: number.el_rocco_charge_current
+              name: Charging current
+            - entity: switch.el_rocco_charge
+              name: Charging on/off
+              toggle: true
+          state_color: true
+
+  # ═══════════════════════════════════════════════════════════
+  #  CABIN CLIMATE
+  # ═══════════════════════════════════════════════════════════
+  - type: custom:mod-card
+    style: |
+      ha-card {
+        background: rgba(20, 17, 24, 0.55) !important;
+        backdrop-filter: blur(14px) saturate(140%);
+        border: 1px solid rgba(255, 235, 215, 0.10) !important;
+        border-radius: 18px !important;
+        padding: 8px !important;
+      }
+    card:
+      type: thermostat
+      entity: climate.el_rocco_climate
+      name: Cabin climate
+
+  - type: custom:mod-card
+    style: |
+      ha-card {
+        background: rgba(20, 17, 24, 0.55) !important;
+        backdrop-filter: blur(14px) saturate(140%);
+        border: 1px solid rgba(255, 235, 215, 0.10) !important;
+        border-radius: 18px !important;
+        padding: 18px !important;
+      }
+    card:
+      type: entities
+      title: Cabin temps + heated seats
+      entities:
+        - entity: sensor.el_rocco_inside_temperature
+          name: Inside
+          icon: mdi:thermometer
+        - entity: sensor.el_rocco_outside_temperature
+          name: Outside
+          icon: mdi:thermometer-low
+        - entity: switch.el_rocco_defrost
+          name: Defrost
+        - entity: select.el_rocco_seat_heater_front_left
+          name: Driver seat heater
+        - entity: select.el_rocco_seat_heater_front_right
+          name: Passenger seat heater
+        - entity: select.el_rocco_steering_wheel_heater
+          name: Steering wheel heater
+        - entity: switch.el_rocco_auto_seat_climate_left
+          name: Auto seat climate (driver)
+        - entity: switch.el_rocco_auto_seat_climate_right
+          name: Auto seat climate (passenger)
+        - entity: switch.el_rocco_auto_steering_wheel_heater
+          name: Auto steering wheel heater
+      state_color: true
+
+  # ═══════════════════════════════════════════════════════════
+  #  LOCKS / SECURITY / DOORS / WINDOWS
+  # ═══════════════════════════════════════════════════════════
+  - type: custom:mod-card
+    style: |
+      ha-card {
+        background: rgba(20, 17, 24, 0.55) !important;
+        backdrop-filter: blur(14px) saturate(140%);
+        border: 1px solid rgba(255, 235, 215, 0.10) !important;
+        border-radius: 18px !important;
+        padding: 18px !important;
+      }
+    card:
+      type: entities
+      title: Security
+      entities:
+        - entity: lock.el_rocco_lock
+          name: Doors
+        - entity: lock.el_rocco_charge_cable_lock
+          name: Charge cable lock
+        - entity: switch.el_rocco_sentry_mode
+          name: Sentry mode
+        - entity: cover.el_rocco_charge_port_door
+          name: Charge port
+        - entity: cover.el_rocco_frunk
+          name: Frunk
+        - entity: cover.el_rocco_trunk
+          name: Trunk
+        - entity: cover.el_rocco_windows
+          name: Windows
+        - entity: binary_sensor.el_rocco_user_present
+          name: User present
+        - entity: binary_sensor.el_rocco_status
+          name: Online
+      state_color: true
+
+  - type: custom:mod-card
+    style: |
+      ha-card {
+        background: rgba(20, 17, 24, 0.55) !important;
+        backdrop-filter: blur(14px) saturate(140%);
+        border: 1px solid rgba(255, 235, 215, 0.10) !important;
+        border-radius: 18px !important;
+        padding: 18px !important;
+      }
+    card:
+      type: entities
+      title: Doors & windows
+      entities:
+        - entity: binary_sensor.el_rocco_front_driver_door
+          name: Front driver door
+        - entity: binary_sensor.el_rocco_front_passenger_door
+          name: Front passenger door
+        - entity: binary_sensor.el_rocco_rear_driver_door
+          name: Rear driver door
+        - entity: binary_sensor.el_rocco_rear_passenger_door
+          name: Rear passenger door
+        - entity: binary_sensor.el_rocco_front_driver_window
+          name: Front driver window
+        - entity: binary_sensor.el_rocco_front_passenger_window
+          name: Front passenger window
+        - entity: binary_sensor.el_rocco_rear_driver_window
+          name: Rear driver window
+        - entity: binary_sensor.el_rocco_rear_passenger_window
+          name: Rear passenger window
+      state_color: true
+
+  # ═══════════════════════════════════════════════════════════
+  #  QUICK ACTIONS — friendly one-tap shortcuts
+  # ═══════════════════════════════════════════════════════════
+  - type: horizontal-stack
+    cards:
+      - type: custom:button-card
+        template: cozy_scene_pill
+        variables:
+          label: Pre-heat cabin
+          emoji: 🔥
+          accent: warm
+        tap_action:
+          action: call-service
+          service: climate.set_temperature
+          target:
+            entity_id: climate.el_rocco_climate
+          data:
+            temperature: 72
+      - type: custom:button-card
+        template: cozy_scene_pill
+        variables:
+          label: Pre-cool cabin
+          emoji: ❄️
+          accent: cool
+        tap_action:
+          action: call-service
+          service: climate.set_temperature
+          target:
+            entity_id: climate.el_rocco_climate
+          data:
+            temperature: 68
+      - type: custom:button-card
+        template: cozy_scene_pill
+        variables:
+          label: Honk hello
+          emoji: 📢
+          accent: rose
+        tap_action:
+          action: call-service
+          service: button.press
+          target:
+            entity_id: button.el_rocco_honk_horn
+
+  - type: horizontal-stack
+    cards:
+      - type: custom:button-card
+        template: cozy_scene_pill
+        variables:
+          label: Flash lights
+          emoji: ✨
+          accent: neutral
+        tap_action:
+          action: call-service
+          service: button.press
+          target:
+            entity_id: button.el_rocco_flash_lights
+      - type: custom:button-card
+        template: cozy_scene_pill
+        variables:
+          label: Wake car
+          emoji: ☀️
+          accent: warm
+        tap_action:
+          action: call-service
+          service: button.press
+          target:
+            entity_id: button.el_rocco_wake
+      - type: custom:button-card
+        template: cozy_scene_pill
+        variables:
+          label: Open frunk
+          emoji: 📦
+          accent: sage
+        tap_action:
+          action: call-service
+          service: cover.open_cover
+          target:
+            entity_id: cover.el_rocco_frunk
+
+  - type: horizontal-stack
+    cards:
+      - type: custom:button-card
+        template: cozy_scene_pill
+        variables:
+          label: Open trunk
+          emoji: 🛍
+          accent: sage
+        tap_action:
+          action: call-service
+          service: cover.open_cover
+          target:
+            entity_id: cover.el_rocco_trunk
+      - type: custom:button-card
+        template: cozy_scene_pill
+        variables:
+          label: Vent windows
+          emoji: 💨
+          accent: cool
+        tap_action:
+          action: call-service
+          service: cover.open_cover
+          target:
+            entity_id: cover.el_rocco_windows
+      - type: custom:button-card
+        template: cozy_scene_pill
+        variables:
+          label: Play fart
+          emoji: 💨
+          accent: rose
+        tap_action:
+          action: call-service
+          service: button.press
+          target:
+            entity_id: button.el_rocco_play_fart
+
+  # ═══════════════════════════════════════════════════════════
+  #  LOCATION + ROUTE
+  # ═══════════════════════════════════════════════════════════
+  - type: map
+    entities:
+      - device_tracker.el_rocco_location
+    default_zoom: 14
+    aspect_ratio: 16:9
+
+  - type: custom:mod-card
+    style: |
+      ha-card {
+        background: rgba(20, 17, 24, 0.55) !important;
+        backdrop-filter: blur(14px) saturate(140%);
+        border: 1px solid rgba(255, 235, 215, 0.10) !important;
+        border-radius: 18px !important;
+        padding: 18px !important;
+      }
+    card:
+      type: entities
+      title: Trip + updates
+      entities:
+        - entity: sensor.el_rocco_distance_to_arrival
+          name: Distance to arrival
+        - entity: sensor.el_rocco_time_to_arrival
+          name: Time to arrival
+        - entity: device_tracker.el_rocco_route
+          name: Current route
+        - entity: update.el_rocco_update
+          name: Software update

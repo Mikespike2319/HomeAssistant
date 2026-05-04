@@ -1,0 +1,222 @@
+# ═══════════════════════════════════════════════════════════════════
+#   cozy_thermostat_tile — climate.* entity as a cozy tile
+# ═══════════════════════════════════════════════════════════════════
+#
+# Works with ANY HA climate.* entity:
+#   • Native integrations: Ecobee, Honeywell, Nest, Sensi, Wyze, etc.
+#   • Alexa-bridged thermostats (via HACS Amazon Devices integration)
+#
+# USAGE:
+#   - type: custom:button-card
+#     template: cozy_thermostat_tile
+#     variables:
+#       climate_entity: climate.living_room       # required
+#       cute_name: "Cozy temp"                    # optional
+#       emoji: "🌡"
+#
+# INTERACTIONS:
+#   • Tap     → opens HA more-info (full slider + mode + schedule)
+#   • Hold    → toggle on/off
+#
+# DISPLAY:
+#   • Current temp (large), target temp (small)
+#   • Mode pill (heating / cooling / auto / off / fan)
+#   • Friendly status sentence ("Warming up to 72°", "Just right ✨")
+#   • Soft warm halo when heating, cool halo when cooling
+# ═══════════════════════════════════════════════════════════════════
+
+button_card_templates:
+  cozy_thermostat_tile:
+    variables:
+      climate_entity: climate.unknown
+      cute_name: ''
+      emoji: '🌡'
+
+    show_name: false
+    show_icon: false
+    tap_action:
+      action: more-info
+      entity: '[[[ return variables.climate_entity; ]]]'
+    hold_action:
+      action: call-service
+      service: climate.toggle
+      target:
+        entity_id: '[[[ return variables.climate_entity; ]]]'
+
+    custom_fields:
+      body: |
+        [[[
+          const e = states[variables.climate_entity];
+          if (!e) {
+            return `<div style="color:#888;font-size:12px;padding:14px;">
+              ${variables.climate_entity} not found
+            </div>`;
+          }
+
+          const mode = e.state;  // heat | cool | heat_cool | auto | off | fan_only | dry
+          const action = e.attributes.hvac_action;  // heating | cooling | idle | fan | off
+          const current = e.attributes.current_temperature;
+          const target = e.attributes.temperature
+                       ?? e.attributes.target_temp_high
+                       ?? null;
+          const targetLow  = e.attributes.target_temp_low;
+          const targetHigh = e.attributes.target_temp_high;
+          const fan = e.attributes.fan_mode;
+          const presets = e.attributes.preset_mode;
+          const unit = e.attributes.unit_of_measurement
+                    ?? states['weather.forecast_home']?.attributes?.temperature_unit
+                    ?? '°';
+          const friendly = (variables.cute_name || e.attributes.friendly_name || 'Climate').trim();
+          const emoji = variables.emoji || '🌡';
+
+          // ── Friendly status sentence ──
+          let status, accentColor, glow;
+          if (mode === 'off') {
+            status = 'Resting';
+            accentColor = 'rgba(255, 235, 215, 0.55)';
+            glow = 'rgba(255, 235, 215, 0.10)';
+          } else if (action === 'heating') {
+            status = `Warming up to ${Math.round(target)}°`;
+            accentColor = '#ff9a7c';
+            glow = 'rgba(255, 154, 124, 0.32)';
+          } else if (action === 'cooling') {
+            status = `Cooling to ${Math.round(target)}°`;
+            accentColor = '#9cc8e8';
+            glow = 'rgba(156, 200, 232, 0.32)';
+          } else if (action === 'fan') {
+            status = 'Just air circulating';
+            accentColor = '#c8d8e8';
+            glow = 'rgba(200, 216, 232, 0.25)';
+          } else if (action === 'idle' && current && target && Math.abs(current - target) < 1) {
+            status = 'Just right ✨';
+            accentColor = '#bce0c8';
+            glow = 'rgba(188, 224, 200, 0.28)';
+          } else if (mode === 'heat_cool' || mode === 'auto') {
+            status = `Auto · feeling ${Math.round(current)}°`;
+            accentColor = '#d8c8e8';
+            glow = 'rgba(216, 200, 232, 0.25)';
+          } else {
+            status = `Cozy at ${Math.round(current)}°`;
+            accentColor = '#e8d8a8';
+            glow = 'rgba(232, 216, 168, 0.25)';
+          }
+
+          // ── Mode pill ──
+          const modeMap = {
+            heat:      { icon: '🔥', label: 'Heating' },
+            cool:      { icon: '❄️', label: 'Cooling' },
+            heat_cool: { icon: '🌀', label: 'Auto' },
+            auto:      { icon: '🌀', label: 'Auto' },
+            fan_only:  { icon: '💨', label: 'Fan' },
+            dry:       { icon: '💧', label: 'Dry' },
+            off:       { icon: '○',  label: 'Off' },
+          };
+          const m = modeMap[mode] || { icon: '○', label: mode };
+
+          // ── Target temp display ──
+          let targetDisplay = '';
+          if (mode !== 'off' && targetLow !== undefined && targetHigh !== undefined) {
+            targetDisplay = `${Math.round(targetLow)}° – ${Math.round(targetHigh)}°`;
+          } else if (mode !== 'off' && target) {
+            targetDisplay = `→ ${Math.round(target)}°`;
+          }
+
+          return `
+            <div style="
+              position: relative;
+              width: 100%; height: 100%;
+              padding: 16px 18px;
+              border-radius: 18px;
+              background: linear-gradient(160deg, ${glow} 0%, rgba(30,22,28,0.6) 60%, rgba(20,15,22,0.7) 100%);
+              border: 1px solid ${accentColor}33;
+              backdrop-filter: blur(14px) saturate(140%);
+              box-shadow: 0 0 28px ${glow}, inset 0 1px 0 rgba(255,255,255,0.06);
+              transition: all 0.6s ease-out;
+              ${(action === 'heating' || action === 'cooling') ? 'animation: gentleBreathe 5s ease-in-out infinite;' : ''}
+            ">
+              <!-- top row: emoji + name + mode pill -->
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:22px;">${emoji}</span>
+                  <span style="
+                    font-family: 'Inter', sans-serif;
+                    font-size: 13px;
+                    font-weight: 400;
+                    color: rgba(255, 235, 215, 0.92);
+                    letter-spacing: 0.02em;
+                  ">${friendly}</span>
+                </div>
+                <span style="
+                  display:inline-flex; align-items:center; gap:5px;
+                  padding: 3px 10px;
+                  border-radius: 999px;
+                  background: ${accentColor}22;
+                  border: 1px solid ${accentColor}55;
+                  font-family: 'Inter', sans-serif;
+                  font-size: 11px;
+                  color: ${accentColor};
+                ">
+                  <span>${m.icon}</span>${m.label}
+                </span>
+              </div>
+
+              <!-- big current temp -->
+              <div style="display:flex; align-items:baseline; gap:8px;">
+                <div style="
+                  font-family: 'Inter', sans-serif;
+                  font-size: 42px;
+                  font-weight: 200;
+                  color: rgba(255, 245, 230, 0.97);
+                  line-height: 1;
+                  letter-spacing: -0.02em;
+                ">${current !== undefined ? Math.round(current) : '–'}<span style="font-size:22px; opacity:0.7;">°</span></div>
+                ${targetDisplay ? `<div style="
+                  font-family: 'Inter', sans-serif;
+                  font-size: 14px;
+                  font-weight: 300;
+                  color: rgba(255, 235, 215, 0.65);
+                ">${targetDisplay}</div>` : ''}
+              </div>
+
+              <!-- status sentence -->
+              <div style="
+                margin-top: 8px;
+                font-family: 'Caveat', 'Georgia', cursive;
+                font-style: italic;
+                font-size: 16px;
+                color: rgba(255, 230, 210, 0.85);
+              ">${status}</div>
+
+              <!-- fan + preset extras -->
+              ${(fan && fan !== 'auto') || presets ? `
+                <div style="
+                  margin-top: 6px;
+                  font-family: 'Inter', sans-serif;
+                  font-size: 11px;
+                  color: rgba(255, 235, 215, 0.55);
+                ">
+                  ${fan && fan !== 'auto' ? `💨 ${fan}` : ''}
+                  ${presets && presets !== 'none' ? `${fan && fan !== 'auto' ? ' · ' : ''}${presets}` : ''}
+                </div>` : ''}
+
+              <!-- inner halo accent -->
+              <div style="
+                position:absolute; inset:0; border-radius:18px; pointer-events:none;
+                background: radial-gradient(circle at 80% 25%, ${glow} 0%, transparent 55%);
+                opacity: ${(action === 'heating' || action === 'cooling') ? 0.85 : 0.5};
+              "></div>
+            </div>`;
+        ]]]
+
+    styles:
+      card:
+        - background: none
+        - border: none
+        - padding: 0
+        - width: 100%
+        - height: 150px
+        - cursor: pointer
+      custom_fields:
+        body:
+          - width: 100%
+          - height: 100%

@@ -1,0 +1,966 @@
+# ═══════════════════════════════════════════════════════════════════
+#   sky_system_tesla — Tesla Model Y 2026, cozy edition
+#   Adapted from sky_system (https://pastebin.com/ZtzsKzHD)
+#   Design brief: "homey + cute, so my wife actually wants to use it"
+# ═══════════════════════════════════════════════════════════════════
+#
+# HOW TO USE:
+#   1. Paste this entire block under `button_card_templates:` in your
+#      raw config, alongside (or replacing) the existing `sky_system:`.
+#   2. On each dashboard page, add an invisible button-card:
+#         type: custom:button-card
+#         template: sky_system_tesla
+#   3. Drop your AI-generated Model Y renders into:
+#         /config/www/tesla/car/*.png
+#   4. Set your variables below: tesla_prefix + (optional) wife_name.
+#
+# DESIGN CHOICES MADE FOR THE COZY VIBE:
+#   • Background: warm midnight (deep navy w/ peach undertones), not
+#     pitch black. Tesla minimalism gets cold; this stays warm.
+#   • Kept the original lamp on the left side — its warm glow at
+#     night is already the coziest thing on your dashboard. The car
+#     sits center; lamp anchors a sense of "home."
+#   • Trees: warmed back up, not pure desaturated.
+#   • HUD: time-aware greeting + conversational status sentence
+#     ("Charging gently · Full by 6 AM") instead of raw telemetry.
+#   • Battery bar: peach→coral gradient instead of green/orange/red —
+#     warmer, friendlier, no "alarm color" feel.
+#   • Floating-heart particles bubble up on happy milestones
+#     (charge complete, climate pre-conditioned, you've come home).
+#   • Italic serif accents on the greeting for handwritten warmth.
+# ═══════════════════════════════════════════════════════════════════
+
+button_card_templates:
+  sky_system_tesla:
+    variables:
+      # Personalized for Michael & Kiara
+      tesla_prefix: el_rocco
+      wife_name: 'Kiara'
+      car_name: 'El Rocco'
+      wife_tracker: 'device_tracker.kiaras_iphone'
+
+    show_name: false
+    show_icon: false
+
+    # ─────────────────────────────────────────────────────────────
+    #  CSS — sky animations (unchanged) + new cozy bits
+    # ─────────────────────────────────────────────────────────────
+    extra_styles: |
+      [[[
+        const isEditing = window.location.search.includes('edit=1') || window.location.pathname.includes('config');
+        if (isEditing) {
+          return `
+            #card { position: relative !important; height: 100px !important; background: rgba(0,0,0,0.4) !important; border-radius: 12px; }
+            * { display: none !important; }
+          `;
+        }
+        return `
+          #card {
+            position: fixed !important;
+            top: 0; left: 0;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: -9;
+            pointer-events: none;
+          }
+
+          /* ── original sky animations ── */
+          @keyframes cloudFlow {
+            0%   { transform: translate(-20%, -2%); }
+            50%  { transform: translate(0%, 0%); }
+            100% { transform: translate(-20%, -2%); }
+          }
+          @keyframes starTwinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
+          @keyframes snowFall {
+            0%   { transform: translateY(-10vh) translateX(0px); }
+            100% { transform: translateY(110vh) translateX(20px); }
+          }
+          @keyframes rainFall {
+            0%   { transform: translateY(-20vh); }
+            100% { transform: translateY(110vh); }
+          }
+          @keyframes lightningFlash {
+            0%, 90%, 100% { background: transparent; }
+            92% { background: rgba(255,255,255,0.4); }
+            94% { background: transparent; }
+            96% { background: rgba(255,255,255,0.7); }
+          }
+
+          /* ── new cozy animations ── */
+          @keyframes chargingPulse {
+            0%, 100% { opacity: 0.55; transform: scale(1.0); }
+            50%      { opacity: 1.0;  transform: scale(1.08); }
+          }
+          @keyframes gentleBreathe {
+            0%, 100% { opacity: 0.85; }
+            50%      { opacity: 1.0; }
+          }
+          @keyframes hudFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+          }
+          @keyframes floatHeart {
+            0%   { transform: translateY(0) translateX(0) rotate(-5deg); opacity: 0; }
+            15%  { opacity: 0.9; }
+            85%  { opacity: 0.9; }
+            100% { transform: translateY(-60vh) translateX(30px) rotate(15deg); opacity: 0; }
+          }
+
+          /* ── particle helpers ── */
+          .snowflakes i, .rain-drops i {
+            position: fixed; background: white; top: -10px; pointer-events: none;
+          }
+          .snowflakes i { border-radius: 50%; animation: snowFall linear infinite; }
+          .rain-drops i { width: 1px; height: 15px; opacity: 0.4; animation: rainFall linear infinite; }
+          .lightning-bolt {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            animation: lightningFlash 5s infinite; z-index: -2;
+          }
+          .hearts span {
+            position: fixed;
+            font-size: 22px;
+            color: rgba(255, 180, 190, 0.9);
+            text-shadow: 0 0 8px rgba(255, 200, 210, 0.6);
+            animation: floatHeart 8s ease-in infinite;
+            pointer-events: none;
+            user-select: none;
+          }
+
+          /* ── cozy HUD chrome ── */
+          .cozy-hud {
+            font-family: 'Inter', 'SF Pro Display', -apple-system, sans-serif;
+            font-weight: 300;
+            color: rgba(255, 245, 235, 0.94);
+            letter-spacing: 0.015em;
+            animation: hudFadeIn 0.7s ease-out;
+          }
+          .cozy-hud .greeting {
+            font-family: 'Caveat', 'Dancing Script', 'Georgia', cursive;
+            font-style: italic;
+            font-weight: 400;
+            font-size: 22px;
+            color: rgba(255, 222, 200, 0.95);
+            text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+            letter-spacing: 0.02em;
+            margin-bottom: 6px;
+            animation: gentleBreathe 6s ease-in-out infinite;
+          }
+          .cozy-hud .soc-row {
+            display: flex; align-items: center; justify-content: center;
+            gap: 12px;
+          }
+          .cozy-hud .soc-num {
+            font-size: 32px; font-weight: 200;
+            color: rgba(255, 240, 225, 0.96);
+            text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+          }
+          .cozy-hud .battery-shell {
+            position: relative;
+            width: 110px; height: 20px;
+            border: 1.5px solid rgba(255, 220, 195, 0.65);
+            border-radius: 6px;
+            background: rgba(20, 18, 25, 0.45);
+          }
+          .cozy-hud .battery-shell::after {
+            content: ''; position: absolute;
+            top: 5px; right: -5px; width: 3px; height: 10px;
+            background: rgba(255, 220, 195, 0.65); border-radius: 0 2px 2px 0;
+          }
+          .cozy-hud .battery-fill {
+            position: absolute; top: 2px; left: 2px; bottom: 2px;
+            background: linear-gradient(90deg, #ffd6a8 0%, #ff9e7a 100%);
+            border-radius: 4px;
+            transition: width 1.4s ease-out;
+            box-shadow: 0 0 8px rgba(255, 180, 140, 0.4);
+          }
+          .cozy-hud .battery-fill.low    { background: linear-gradient(90deg, #ffb8a3, #ff8a6a); }
+          .cozy-hud .battery-fill.crit   { background: linear-gradient(90deg, #ff9a8a, #f06b5a); }
+          .cozy-hud .battery-fill.charge {
+            background: linear-gradient(90deg, #ffe0b8, #ffba9c, #ffd9c4);
+            background-size: 200% 100%;
+            animation: chargingPulse 2s ease-in-out infinite;
+          }
+          .cozy-hud .status-line {
+            font-family: 'Caveat', 'Dancing Script', 'Georgia', cursive;
+            font-style: italic;
+            font-size: 17px;
+            color: rgba(255, 230, 215, 0.85);
+            margin-top: 8px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.35);
+          }
+          .cozy-hud .pill-row {
+            display: flex; flex-wrap: wrap; gap: 6px;
+            justify-content: center;
+            margin-top: 10px;
+          }
+          .cozy-hud .pill {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 5px 11px;
+            background: rgba(40, 28, 32, 0.5);
+            border: 1px solid rgba(255, 220, 195, 0.18);
+            border-radius: 999px;
+            backdrop-filter: blur(14px) saturate(150%);
+            font-size: 12px;
+            font-weight: 300;
+            color: rgba(255, 235, 220, 0.88);
+          }
+          .cozy-hud .pill .icon { font-size: 13px; opacity: 0.9; }
+
+          @media (orientation: landscape) {
+            #tree_layer, #sky_atmosphere, #weather_overlay,
+            #car_layer, #sky_layer, #lamp_layer, #driveway_layer,
+            #wet_driveway, #celestial_body, #greeting_layer,
+            #heart_particles { display: none !important; }
+            #sky_atmosphere { display: block !important; }
+            #tesla_hud { display: block !important; }
+          }
+        `;
+      ]]]
+
+    # ─────────────────────────────────────────────────────────────
+    #  Layers — back to front
+    # ─────────────────────────────────────────────────────────────
+    custom_fields:
+
+      # ── -10: warm midnight background (not pure black) ──
+      background_base: |
+        [[[
+          const isDay = states['sun.sun'].state === 'above_horizon';
+          const grad = isDay
+            ? `radial-gradient(ellipse at 50% 100%,
+                rgba(255, 220, 195, 0.06) 0%,
+                rgba(40, 30, 35, 0.5) 60%,
+                rgba(20, 18, 25, 0.92) 100%), #0e0c12`
+            : `radial-gradient(ellipse at 50% 90%,
+                rgba(255, 195, 160, 0.08) 0%,
+                rgba(50, 30, 45, 0.55) 50%,
+                rgba(15, 12, 22, 0.96) 100%), #08070d`;
+          return `<div style="width:100%; height:100%; background:${grad};"></div>`;
+        ]]]
+
+      sky_atmosphere: '[[[ return `<div></div>`; ]]]'
+      blur_overlay: ' '
+
+      # ── -6: clouds (day) / stars (night) — UNCHANGED ──
+      sky_layer: |
+        [[[
+          const sun = states['sun.sun'];
+          const ele = sun.attributes.elevation;
+          const isDay = sun.state == 'above_horizon';
+          const weather = states['weather.forecast_home'].state.toLowerCase();
+
+          if (isDay && (weather.includes('sunny') || weather.includes('clear'))) {
+            return `<div></div>`;
+          }
+          if (isDay) {
+            let brightPct = 0.5 + (Math.min(ele / 35, 1) * 0.3);
+            let sepia = (1 - Math.min(ele / 15, 1)) * 0.3;
+            return `<img src="/local/sky/clouds-real.png?v=2"
+              style="width:150vw; object-fit:contain; opacity:0.7;
+                     filter: brightness(${brightPct}) saturate(0.75) sepia(${sepia});
+                     animation: cloudFlow 90s infinite linear;
+                     transition: filter 5s ease-in-out;">`;
+          }
+          let starBright = 0.5 + (Math.min(Math.abs(ele) / 35, 1) * 0.5);
+          return `<img src="/local/sky/stars_v2.png?v=1"
+            style="width:100vw; opacity:0.9;
+                   filter: brightness(${starBright}) sepia(1) saturate(5) hue-rotate(10deg);
+                   animation: starTwinkle 15s infinite ease-in-out;
+                   transition: filter 15s ease-in-out;">`;
+        ]]]
+
+      # ── -5: sun/moon arc — UNCHANGED ──
+      celestial_body: |
+        [[[
+          const isDay = states['sun.sun'].attributes.elevation > -1.0;
+          if (isDay) {
+            return `
+              <div style="position:relative; width:220px; height:220px;">
+                <div style="
+                  position:absolute; top:50%; left:50%;
+                  width:70px; height:70px;
+                  transform: translate(-50%, -50%);
+                  border-radius: 50%;
+                  background: radial-gradient(circle,
+                    rgba(255,248,214,1) 0%,
+                    rgba(255,224,138,0.95) 35%,
+                    rgba(255,201,77,0.75) 60%,
+                    rgba(255,179,0,0.55) 75%,
+                    rgba(255,160,0,0.35) 85%,
+                    rgba(20,40,70,0.8) 95%,
+                    rgba(20,40,70,0) 100%);
+                  box-shadow:
+                    0 0 20px 10px rgba(255,200,80,0.35),
+                    0 0 45px 25px rgba(255,180,60,0.22),
+                    0 0 80px 45px rgba(255,150,40,0.12);
+                "></div>
+              </div>`;
+          }
+          return `
+            <div style="position:relative; width:220px; height:220px; overflow:visible;
+              background: radial-gradient(circle,
+                rgba(255,230,150,0.20) 0%,
+                rgba(255,220,140,0.14) 20%,
+                rgba(255,200,120,0.09) 25%,
+                rgba(255,180,100,0.02) 38%,
+                transparent 40%);
+              -webkit-mask-image: radial-gradient(circle at 75% 35%, transparent 40%, black 41%);
+              mask-image: radial-gradient(circle at 76% 40%, transparent 20%, black 32%);">
+              <div style="
+                position:absolute; top:50%; left:50%;
+                width:70px; height:70px; overflow:visible;
+                filter: blur(5px);
+                transform: translate(-50%, -50%);
+                border-radius: 50%;
+                background: radial-gradient(circle,
+                  rgba(255,240,170,0.95) 0%,
+                  rgba(250,225,150,0.8) 35%,
+                  rgba(235,210,130,0.6) 65%,
+                  rgba(210,190,110,0.4) 85%,
+                  rgba(12,18,35,0.15) 95%,
+                  rgba(12,18,35,0) 100%);
+                -webkit-mask-image: radial-gradient(circle at 85% 45%, transparent 45%, black 46%);
+                mask-image: radial-gradient(circle at 85% 35%, transparent 45%, black 46%);
+              "></div>
+            </div>`;
+        ]]]
+
+      # ── -4: trees (UNCHANGED logic, gentler filter) ──
+      tree_layer: |
+        [[[
+          const now = new Date();
+          const month = now.getMonth() + 1;
+          const day = now.getDate();
+          let image = "/local/bottom_overlays/New/trees/trees.png";
+          if ((month === 9 && day >= 1) || (month === 10)) image = "/local/bottom_overlays/New/trees/trees-autumn.png";
+          else if (month === 11) image = "/local/bottom_overlays/New/trees/trees-snow1.png";
+          else if (month === 12) image = "/local/bottom_overlays/New/trees/trees-christmas.png";
+          else if ((month === 1) || (month === 2) || (month === 3 && day <= 1)) image = "/local/bottom_overlays/New/trees/trees-snow2.png";
+          let filter = "brightness(1.05) sepia(0.18) saturate(1.6)";
+          if (states['sun.sun'].state != 'above_horizon') filter = "brightness(0.9) sepia(0.25) saturate(1.3) contrast(0.95)";
+          return `<img src="${image}" style="width:100%; height:100%; object-fit:cover; filter:${filter}; transition: filter 5s ease-in-out;">`;
+        ]]]
+
+      # ── -3: weather particles — UNCHANGED ──
+      weather_overlay: |
+        [[[
+          const state = states['weather.forecast_home'].state.toLowerCase();
+          let content = '';
+          if (['snow','sleet','hail','snowy','ice'].some(t => state.includes(t))) {
+            content += '<div class="snowflakes">';
+            const count = state.includes('heavy') ? 40 : 20;
+            for (let i=0;i<count;i++) {
+              content += `<i style="left:${Math.random()*100}%; width:${Math.random()*3+2}px; height:${Math.random()*3+2}px; animation-duration:${Math.random()*5+5}s; animation-delay:-${Math.random()*10}s; opacity:${Math.random()*0.6+0.2};"></i>`;
+            }
+            content += '</div>';
+          }
+          if (['rain','pouring','drizzle','thunderstorm','lightning'].some(t => state.includes(t))) {
+            content += '<div class="rain-drops">';
+            const count = (state.includes('heavy')||state.includes('pouring')||state.includes('thunderstorm')) ? 60 : 30;
+            for (let i=0;i<count;i++) {
+              content += `<i style="left:${Math.random()*100}%; animation-duration:${Math.random()*0.5+0.5}s; animation-delay:-${Math.random()*2}s;"></i>`;
+            }
+            content += '</div>';
+          }
+          if (state.includes('lightning') || state.includes('thunderstorm')) {
+            content += '<div class="lightning-bolt"></div>';
+          }
+          if (['fog','mist','smoke','haze','dust'].some(t => state.includes(t))) {
+            content += `<div style="position:fixed; width:100vw; height:100vh; background: rgba(200,200,220,0.2); backdrop-filter: blur(1px); z-index:-3;"></div>`;
+          }
+          if (['cloudy','overcast','partlycloudy'].some(t => state.includes(t))
+              && states['sun.sun'].state !== 'above_horizon') {
+            content += `<img src="/local/sky/clouds-real.png?v=2"
+              style="position:fixed; top:0; left:0; width:130vw; height:80vh; object-fit:cover;
+                     opacity:0.35; filter: brightness(0.6) contrast(0.85) saturate(0.6) hue-rotate(-5deg);
+                     animation: cloudFlow 90s infinite linear; z-index:-5;">`;
+          }
+          return content;
+        ]]]
+
+      # ─────────────────────────────────────────────────────────
+      # ── -2: greeting layer — sweet time-aware welcome line ──
+      # ─────────────────────────────────────────────────────────
+      greeting_layer: |
+        [[[
+          const name = (variables.wife_name || '').trim();
+          const tracker = (variables.wife_tracker || '').trim();
+          const hr = new Date().getHours();
+
+          // ── Phase 5: geo-aware welcome ──
+          // If her tracker just arrived home (within 10 min), override
+          // the time-of-day greeting with a warm welcome.
+          let justArrived = false;
+          if (tracker && states[tracker]) {
+            const t = states[tracker];
+            if (t.state === 'home') {
+              const sinceChange = Date.now() - new Date(t.last_changed).getTime();
+              if (sinceChange < 10 * 60 * 1000) justArrived = true;
+            }
+          }
+
+          let greeting, emoji;
+          if (justArrived) {
+            greeting = 'Welcome home';
+            emoji = '🏡';
+          } else if (hr >= 5  && hr < 9)  { greeting = 'Good morning';     emoji = '☕'; }
+          else if (hr >= 9  && hr < 12)   { greeting = 'Hi there';          emoji = '✨'; }
+          else if (hr >= 12 && hr < 17)   { greeting = 'Good afternoon';    emoji = '🌷'; }
+          else if (hr >= 17 && hr < 20)   { greeting = 'Welcome home';      emoji = '🏡'; }
+          else if (hr >= 20 && hr < 23)   { greeting = 'Cozy evening';      emoji = '🌙'; }
+          else                            { greeting = 'Sweet dreams';      emoji = '💫'; }
+
+          const line = name ? `${greeting}, ${name}  ${emoji}` : `${greeting}  ${emoji}`;
+          return `
+            <div style="
+              font-family: 'Caveat', 'Dancing Script', 'Georgia', cursive;
+              font-style: italic;
+              font-size: 28px;
+              font-weight: 500;
+              color: rgba(255, 225, 200, 0.92);
+              text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+              letter-spacing: 0.03em;
+              animation: gentleBreathe 7s ease-in-out infinite;
+              text-align: center;
+            ">${line}</div>`;
+        ]]]
+
+      # ─────────────────────────────────────────────────────────
+      # ── 0: ★ TESLA MODEL Y CAR LAYER ★ ──
+      # ─────────────────────────────────────────────────────────
+      car_layer: |
+        [[[
+          const prefix = variables.tesla_prefix;
+          const isDay = states['sun.sun'].state === 'above_horizon';
+          const get = (eid) => states[eid] ? states[eid].state : null;
+          // Probes BOTH tesla_custom variants (older _charger, newer _charge_cable)
+          const tryGet = (...eids) => { for (const e of eids) { const v = get(e); if (v !== null) return v; } return null; };
+
+          const isCharging = tryGet(`binary_sensor.${prefix}_charger`, `binary_sensor.${prefix}_charge_cable`) === 'on'
+                           || get(`sensor.${prefix}_charging`) === 'Charging';
+          const weather = states['weather.forecast_home'].state.toLowerCase();
+          const isWet = ['rain','pouring','drizzle','thunderstorm'].some(t => weather.includes(t));
+          const isSnowy = ['snow','sleet','snowy'].some(t => weather.includes(t));
+
+          // Priority: weather > charging > day/night
+          let img;
+          if (isSnowy)         img = "/local/tesla/car/model_y_snow.png";
+          else if (isWet)      img = "/local/tesla/car/model_y_wet.png";
+          else if (isCharging) img = isDay
+                                ? "/local/tesla/car/model_y_charging_day.png"
+                                : "/local/tesla/car/model_y_charging_night.png";
+          else                 img = isDay
+                                ? "/local/tesla/car/model_y_day.png"
+                                : "/local/tesla/car/model_y_night.png";
+
+          // Charge port glow — soft warm gold instead of green for cozy feel
+          const chargeGlow = isCharging ? `
+            <div style="
+              position:absolute; bottom:18%; right:32%;
+              width:60px; height:60px;
+              border-radius:50%;
+              background: radial-gradient(circle,
+                rgba(255, 200, 140, 0.5) 0%,
+                rgba(255, 170, 110, 0.28) 40%,
+                transparent 75%);
+              filter: blur(6px);
+              animation: chargingPulse 1.8s ease-in-out infinite;
+              pointer-events: none;
+            "></div>` : '';
+
+          // Night ambient glow — warm peach instead of cool blue
+          const underGlow = !isDay ? `
+            <div style="
+              position:absolute; bottom:6%; left:15%; right:15%; height:42px;
+              background: radial-gradient(ellipse at center,
+                rgba(255, 200, 160, 0.22) 0%,
+                rgba(255, 170, 130, 0.10) 50%,
+                transparent 80%);
+              filter: blur(8px);
+              pointer-events: none;
+            "></div>` : '';
+
+          return `
+            <div style="position:relative; width:100%; height:100%;">
+              ${underGlow}
+              ${chargeGlow}
+              <img src="${img}" style="
+                width:100%; height:100%; object-fit:contain;
+                opacity:0.98;
+                filter: ${isDay
+                  ? "brightness(1.02) saturate(1.05) contrast(1.03)"
+                  : "brightness(0.88) saturate(1.08) contrast(1.08)"};
+                transition: all 2s ease-in-out;
+              ">
+            </div>`;
+        ]]]
+
+      # ── 0: cozy lamp on the LEFT (kept from original; warm anchor) ──
+      lamp_layer: |
+        [[[
+          const isDay = states['sun.sun'].state === 'above_horizon';
+          const now = new Date();
+          const month = now.getMonth() + 1;
+          const day = now.getDate();
+          let img;
+          if (month === 10 && day >= 15) {
+            img = isDay ? "/local/bottom_overlays/New/lamp/lamp-halloween_off.png"
+                        : "/local/bottom_overlays/New/lamp/lamp-halloween_on.png";
+          } else if ((month === 11) || (month === 12) || (month === 1) || (month === 2) || (month === 3 && day <= 1)) {
+            img = isDay ? "/local/bottom_overlays/New/lamp/lamp-snow_off.png"
+                        : "/local/bottom_overlays/New/lamp/lamp-snow_on.png";
+          } else {
+            img = isDay ? "/local/bottom_overlays/New/lamp/lamp_off.png"
+                        : "/local/bottom_overlays/New/lamp/lamp_on.png";
+          }
+          return `
+            <div style="position:relative; width:100%; height:100%;">
+              ${!isDay ? `
+                <div style="
+                  position:absolute; top:20%; left:50%;
+                  width:160px; height:160px;
+                  filter: blur(10px) brightness(1.15);
+                  transform: translate(-50%, -50%);
+                  border-radius: 50%;
+                  pointer-events: none;
+                  background: radial-gradient(circle,
+                    rgba(255, 215, 130, 0.42) 0%,
+                    rgba(255, 200, 105, 0.25) 30%,
+                    rgba(255, 180, 85, 0.12) 55%,
+                    rgba(255, 160, 65, 0.06) 75%,
+                    transparent 90%);
+                "></div>` : ''}
+              <img src="${img}" style="
+                width:100%; height:100%; object-fit:contain;
+                opacity:0.95;
+                filter: ${isDay ? "brightness(0.92) saturate(0.6)" : "brightness(0.98) saturate(1.05)"};
+                transition: all 2s ease-in-out;
+              ">
+            </div>`;
+        ]]]
+
+      # ─────────────────────────────────────────────────────────
+      # ── 0.5: wet driveway sheen + reflection (Phase 5) ──
+      #   Soft mirrored glow under the car when raining.
+      # ─────────────────────────────────────────────────────────
+      wet_driveway: |
+        [[[
+          const weather = states['weather.forecast_home'].state.toLowerCase();
+          const isWet = ['rain','pouring','drizzle','thunderstorm'].some(t => weather.includes(t));
+          if (!isWet) return '';
+          const isHeavy = weather.includes('pouring') || weather.includes('thunderstorm');
+          return `
+            <div style="
+              position: relative; width: 100%; height: 100%;
+              overflow: hidden;
+            ">
+              <!-- wet sheen base -->
+              <div style="
+                position: absolute; inset: 0;
+                background: linear-gradient(180deg,
+                  transparent 0%,
+                  rgba(180, 200, 220, 0.06) 30%,
+                  rgba(140, 170, 200, 0.18) 70%,
+                  rgba(100, 140, 180, 0.28) 100%);
+                opacity: ${isHeavy ? 0.95 : 0.7};
+              "></div>
+              <!-- streaky horizontal reflection lines -->
+              <div style="
+                position: absolute; inset: 0;
+                background: repeating-linear-gradient(180deg,
+                  transparent 0px, transparent 3px,
+                  rgba(255,255,255,0.04) 3px, rgba(255,255,255,0.04) 4px);
+                opacity: ${isHeavy ? 0.6 : 0.35};
+                mix-blend-mode: overlay;
+              "></div>
+              <!-- subtle puddle highlight under car center -->
+              <div style="
+                position: absolute; bottom: 0; left: 35%; right: 35%; height: 80%;
+                background: radial-gradient(ellipse at center bottom,
+                  rgba(255, 255, 255, 0.18) 0%,
+                  rgba(220, 230, 245, 0.08) 30%,
+                  transparent 70%);
+                filter: blur(6px);
+              "></div>
+            </div>`;
+        ]]]
+
+      # ── 1: driveway base ──
+      driveway_layer: |
+        [[[
+          return `<div style="
+            width:100%; height:100%;
+            background-image: url('/local/tesla/driveway_base.png');
+            background-size: cover;
+            background-position: bottom;
+            filter: brightness(0.85) saturate(0.95) contrast(0.95);
+          "></div>`;
+        ]]]
+
+      # ─────────────────────────────────────────────────────────
+      # ── 2: heart particles on happy moments (charge done,
+      #       pre-conditioned, you've come home, etc.) ──
+      # ─────────────────────────────────────────────────────────
+      heart_particles: |
+        [[[
+          const prefix = variables.tesla_prefix;
+          const tracker = (variables.wife_tracker || '').trim();
+          const get = (eid) => states[eid] ? states[eid].state : null;
+          const since = (eid) => states[eid] ? Date.now() - new Date(states[eid].last_changed).getTime() : Infinity;
+
+          // ── Phase 5: timing-aware happy moments ──
+          // Hearts only emit for a window AFTER the moment, then fade.
+          const FIVE_MIN = 5 * 60 * 1000;
+          const TEN_MIN = 10 * 60 * 1000;
+
+          // 1. Charge JUST completed (last 5 min)
+          const chargingState = get(`sensor.${prefix}_charging`);
+          const chargeJustDone = (chargingState === 'Complete' || chargingState === 'Charging Complete')
+                                && since(`sensor.${prefix}_charging`) < FIVE_MIN;
+
+          // 2. Climate just turned on (last 5 min) — pre-conditioned cabin
+          const climateOn = get(`binary_sensor.${prefix}_climate`) === 'on'
+                          || ['heat','cool','heat_cool','auto'].includes(get(`climate.${prefix}_climate`));
+          const climateRefEntity = states[`binary_sensor.${prefix}_climate`] ? `binary_sensor.${prefix}_climate` : `climate.${prefix}_climate`;
+          const climateJustOn = climateOn && since(climateRefEntity) < FIVE_MIN;
+
+          // 3. Wife just arrived home (last 10 min)
+          const justArrived = tracker && states[tracker]
+                            && states[tracker].state === 'home'
+                            && since(tracker) < TEN_MIN;
+
+          if (!chargeJustDone && !climateJustOn && !justArrived) return '';
+
+          // Bigger burst for charge-done celebration, gentle for the others
+          const count = chargeJustDone ? 8 : justArrived ? 10 : 3;
+          let hearts = '<div class="hearts">';
+          for (let i = 0; i < count; i++) {
+            const left = 30 + Math.random() * 40;
+            const delay = Math.random() * (chargeJustDone || justArrived ? 3 : 6);
+            const dur = (chargeJustDone || justArrived ? 5 : 7) + Math.random() * 4;
+            const size = 18 + Math.random() * 14;
+            hearts += `<span style="
+              left:${left}%; bottom: 18vh;
+              font-size:${size}px;
+              animation-delay:-${delay}s;
+              animation-duration:${dur}s;">❤</span>`;
+          }
+          hearts += '</div>';
+          return hearts;
+        ]]]
+
+      # ─────────────────────────────────────────────────────────
+      # ── 3: ★ COZY TESLA HUD ★ — greeting + battery + status
+      # ─────────────────────────────────────────────────────────
+      tesla_hud: |
+        [[[
+          const prefix = variables.tesla_prefix;
+          const carName = variables.car_name || 'the car';
+          const get = (eid) => states[eid] ? states[eid].state : null;
+          const num = (eid) => {
+            const v = get(eid); const n = parseFloat(v);
+            return isNaN(n) ? null : n;
+          };
+          // Probes multiple variants — handles both old + new tesla_custom naming
+          const tryGet = (...eids) => { for (const e of eids) { const v = get(e); if (v !== null) return v; } return null; };
+          const tryNum = (...eids) => { for (const e of eids) { const n = num(e); if (n !== null) return n; } return null; };
+          const attr = (eid, a) => states[eid] && states[eid].attributes ? states[eid].attributes[a] : null;
+
+          // ── State probes (with naming-variant fallbacks) ──
+          const soc       = Math.round(tryNum(`sensor.${prefix}_battery`, `sensor.${prefix}_battery_level`) ?? 0);
+          const range     = Math.round(tryNum(`sensor.${prefix}_battery_range`) ?? 0);
+          const inside    = tryNum(`sensor.${prefix}_inside_temp`, `sensor.${prefix}_inside_temperature`);
+          const outside   = tryNum(`sensor.${prefix}_outside_temp`, `sensor.${prefix}_outside_temperature`);
+          const isLocked  = tryGet(`lock.${prefix}_doors`, `lock.${prefix}_lock`) === 'locked';
+          // Aggregate door-open state from any of the 4 individual door binary_sensors
+          const doorOpen  = ['front_driver','front_passenger','rear_driver','rear_passenger']
+                              .some(d => get(`binary_sensor.${prefix}_${d}_door`) === 'on')
+                          || get(`binary_sensor.${prefix}_doors`) === 'on';
+          const isCharging= tryGet(`binary_sensor.${prefix}_charger`, `binary_sensor.${prefix}_charge_cable`) === 'on';
+          const chState   = get(`sensor.${prefix}_charging`);
+          const ttFull    = num(`sensor.${prefix}_time_to_full_charge`);
+          const climateOn = get(`binary_sensor.${prefix}_climate`) === 'on'
+                          || ['heat','cool','heat_cool','auto'].includes(get(`climate.${prefix}_climate`));
+          const sentry    = get(`switch.${prefix}_sentry_mode`) === 'on';
+          const online    = tryGet(`binary_sensor.${prefix}_online`, `binary_sensor.${prefix}_status`) !== 'off';
+
+          // ── Friendly status sentence ── conversational, never technical
+          let status;
+          if (!online) {
+            status = `${carName} is napping`;
+          } else if (doorOpen) {
+            status = 'A door is open — peek out?';
+          } else if (isCharging && ttFull && ttFull > 0) {
+            const done = new Date(Date.now() + ttFull * 3600 * 1000);
+            const hh = done.getHours() % 12 || 12;
+            const mm = String(done.getMinutes()).padStart(2, '0');
+            const ampm = done.getHours() >= 12 ? 'PM' : 'AM';
+            status = `Charging gently · full by ${hh}:${mm} ${ampm}`;
+          } else if (isCharging) {
+            status = 'Sipping electrons ⚡';
+          } else if (chState === 'Complete' || chState === 'Charging Complete') {
+            status = 'All charged up and ready 💫';
+          } else if (climateOn) {
+            status = 'Toasty inside, ready when you are';
+          } else if (soc >= 70) {
+            status = 'Plenty of juice for tomorrow';
+          } else if (soc >= 40) {
+            status = `Holding steady at ${soc}%`;
+          } else if (soc >= 20) {
+            status = 'Could use a charge soon ☕';
+          } else {
+            status = `Running low — let's plug ${carName} in`;
+          }
+
+          // ── Battery bar fill class ──
+          const fillClass = isCharging ? 'charge' : (soc < 15 ? 'crit' : soc < 30 ? 'low' : '');
+
+          // ── Pills: kept short, friendly, emoji-led ──
+          const pills = [];
+          if (inside !== null) pills.push({ icon: '🌡', text: `${Math.round(inside)}° inside` });
+          if (outside !== null && Math.abs(outside - (inside || outside)) > 5)
+            pills.push({ icon: '🍃', text: `${Math.round(outside)}° out` });
+          pills.push({ icon: isLocked ? '🔒' : '🔓', text: isLocked ? 'All buttoned up' : 'Unlocked' });
+          if (sentry) pills.push({ icon: '👁', text: 'Keeping watch' });
+          if (range)  pills.push({ icon: '🛣', text: `${range} mi` });
+
+          const pillHtml = pills.map(p =>
+            `<span class="pill"><span class="icon">${p.icon}</span>${p.text}</span>`
+          ).join('');
+
+          return `
+            <div class="cozy-hud" style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+              <div class="soc-row">
+                <div class="battery-shell" title="State of charge">
+                  <div class="battery-fill ${fillClass}" style="width:${soc}%;"></div>
+                </div>
+                <div class="soc-num">${soc}%</div>
+              </div>
+              <div class="status-line">${status}</div>
+              <div class="pill-row">${pillHtml}</div>
+            </div>`;
+        ]]]
+
+    # ─────────────────────────────────────────────────────────────
+    #  Layer positioning — z-index stack
+    # ─────────────────────────────────────────────────────────────
+    styles:
+      card:
+        - background: none
+        - border: none
+        - overflow: hidden
+        - width: 100%
+        - height: 100%
+        - padding: 0
+
+      custom_fields:
+        background_base:
+          - position: fixed
+          - top: 0
+          - left: 0
+          - width: 100vw
+          - height: 100vh
+          - z-index: -10
+          - pointer-events: none
+          - display: |
+              [[[ return window.location.pathname.includes('config') ? 'none' : 'block' ]]]
+
+        sky_atmosphere:
+          - position: fixed
+          - top: 0
+          - left: 0
+          - width: 100vw
+          - height: 100vh
+          - z-index: -8
+          - transition: background 5s ease-in-out
+          - background: |
+              [[[
+                const sun = states['sun.sun'];
+                const ele = sun.attributes.elevation;
+                const isDay = sun.state === 'above_horizon';
+                const lerp = (a,b,t) => a + (b-a)*t;
+                const blend = (c1,c2,t) =>
+                  `rgba(${lerp(c1[0],c2[0],t)}, ${lerp(c1[1],c2[1],t)}, ${lerp(c1[2],c2[2],t)}, ${lerp(c1[3],c2[3],t)})`;
+                if (isDay) {
+                  let progress = Math.min(Math.max(ele/45, 0), 1);
+                  const pct = Math.pow(progress, 0.6);
+                  let top = blend([10,20,125,0.65], [5,10,80,0.6], pct);
+                  let mid = blend([60,120,150,0.55], [110,165,190,0.5], pct);
+                  let bot;
+                  if (ele < 18) {
+                    let warmPct = Math.max(0, (10-ele)/10);
+                    let glow = Math.pow(warmPct, 0.8);
+                    bot = blend([202,110,70,0.85], [200,65,10,0.55], glow);
+                  } else {
+                    bot = blend([75,140,145,0.6], [80,110,150,0.8], pct);
+                  }
+                  return `linear-gradient(180deg, ${top} 0%, ${mid} 50%, ${bot} 95%)`;
+                }
+                const absEle = Math.abs(ele);
+                if (ele < -20) return `linear-gradient(180deg, rgba(8,12,25,0.85) 0%, rgba(12,18,35,0.75) 100%)`;
+                let pct = Math.min(absEle/20, 1);
+                let top = blend([8,12,25,0.85], [20,30,50,0.7], pct);
+                let bot = blend([12,18,35,0.75], [40,60,80,0.6], pct);
+                return `linear-gradient(180deg, ${top} 0%, ${bot} 100%)`;
+              ]]]
+
+        blur_overlay:
+          - position: absolute
+          - top: 0
+          - left: 0
+          - width: 100%
+          - height: 100%
+          - z-index: -7
+          - pointer-events: none
+          - backdrop-filter: brightness(0.78) contrast(0.88) saturate(0.95)
+          - background: rgba(40, 25, 30, 0.10)
+
+        sky_layer:
+          - position: contain
+          - top: 10%
+          - height: 100vh
+          - left: 0
+          - width: 100vw
+          - filter: brightness(0.85) saturate(0.65) blur(0.5px) opacity(0.3)
+          - z-index: -6
+
+        celestial_body:
+          - position: fixed
+          - overflow: visible
+          - transition: all 2s ease-in-out
+          - z-index: -5
+          - width: |
+              [[[ return states['sun.sun'].state == 'above_horizon' ? '110px' : '100px'; ]]]
+          - height: |
+              [[[ return states['sun.sun'].state == 'above_horizon' ? '90px' : '80px'; ]]]
+          - filter: |
+              [[[
+                const isDay = states['sun.sun'].state == 'above_horizon';
+                const brightness = isDay
+                  ? "brightness(0.85) sepia(0.15) saturate(0.95) contrast(0.85) opacity(0.85)"
+                  : "brightness(0.85) saturate(0.75) opacity(0.9)";
+                const shadow = isDay
+                  ? "drop-shadow(0px 0px 18px rgba(255,200,90,0.85))"
+                  : "drop-shadow(0px 0px 6px rgba(255,235,210,0.3))";
+                return `${brightness} ${shadow}`;
+              ]]]
+          - bottom: |
+              [[[
+                const ele = states['sun.sun'].attributes.elevation;
+                const isDay = states['sun.sun'].state === 'above_horizon';
+                let pct = isDay
+                  ? Math.max(0, Math.min(ele/60, 1))
+                  : Math.max(0, Math.min(Math.abs(ele)/35, 1));
+                return (19 + (pct * 30)) + '%';
+              ]]]
+          - left: |
+              [[[
+                const now = Date.now();
+                const nextSunrise = new Date(states['sun.sun'].attributes.next_rising).getTime();
+                const nextSunset  = new Date(states['sun.sun'].attributes.next_setting).getTime();
+                let progress;
+                if (states['sun.sun'].state === 'above_horizon') {
+                  const todaySunrise = nextSunrise - 24*60*60*1000;
+                  progress = (now - todaySunrise) / (nextSunset - todaySunrise);
+                } else {
+                  const todaySunset = nextSunset - 24*60*60*1000;
+                  progress = (now - todaySunset) / (nextSunrise - todaySunset);
+                }
+                progress = Math.min(Math.max(progress, 0), 1);
+                const percent = 15 + (progress * 75);
+                return `calc(${percent}% - 110px)`;
+              ]]]
+
+        tree_layer:
+          - position: fixed
+          - bottom: 0px
+          - left: 0
+          - overflow: visible
+          - width: 100vw
+          - height: 26vh
+          - z-index: |
+              [[[
+                const state = states['weather.forecast_home'].state.toLowerCase();
+                const isFoggy = ['fog','mist','smoke','haze','dust','cloudy','partlycloudy'].some(t => state.includes(t));
+                return isFoggy ? -1 : -4;
+              ]]]
+          - pointer-events: none
+          - background: none
+          - filter: brightness(0.7) saturate(0.6) contrast(0.92) opacity(0.85)
+
+        weather_overlay:
+          - position: fixed
+          - top: 0
+          - left: 0
+          - width: 100vw
+          - height: 100vh
+          - z-index: -3
+          - pointer-events: none
+
+        greeting_layer:
+          - position: fixed
+          - top: '4vh'
+          - left: 50%
+          - transform: translateX(-50%)
+          - width: auto
+          - z-index: -2
+          - pointer-events: none
+
+        car_layer:
+          - position: fixed
+          - bottom: '6vh'
+          - left: 50%
+          - transform: translateX(-50%)
+          - overflow: visible
+          - width: 60vw
+          - max-width: 900px
+          - height: 38vh
+          - z-index: 0
+          - pointer-events: none
+
+        lamp_layer:
+          - position: fixed
+          - bottom: '-40px'
+          - overflow: visible
+          - left: 8%             # was 20% — pushed left so it doesn't overlap the centered car
+          - width: 110px
+          - height: 30vh
+          - z-index: 0
+          - pointer-events: none
+
+        wet_driveway:
+          - position: fixed
+          - bottom: 0
+          - left: 0
+          - width: 100vw
+          - height: 16vh
+          - z-index: 1   # sits above driveway, below car
+          - pointer-events: none
+
+        driveway_layer:
+          - position: fixed
+          - bottom: 0
+          - left: 0
+          - width: 100vw
+          - height: 14vh
+          - z-index: 1
+          - pointer-events: none
+
+        heart_particles:
+          - position: fixed
+          - top: 0
+          - left: 0
+          - width: 100vw
+          - height: 100vh
+          - z-index: 2
+          - pointer-events: none
+
+        tesla_hud:
+          - position: fixed
+          - bottom: '2vh'
+          - left: 50%
+          - transform: translateX(-50%)
+          - width: auto
+          - max-width: 92vw
+          - z-index: 3
+          - pointer-events: auto

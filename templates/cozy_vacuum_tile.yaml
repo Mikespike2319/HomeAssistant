@@ -1,0 +1,194 @@
+# ═══════════════════════════════════════════════════════════════════
+#   cozy_vacuum_tile — iRobot Roomba (or any vacuum.* entity) tile
+# ═══════════════════════════════════════════════════════════════════
+#
+# Works with HA's Roomba/iRobot integration (also supports Roborock,
+# Neato, Eufy, Mi, etc. — any HA vacuum.* entity).
+#
+# USAGE:
+#   - type: custom:button-card
+#     template: cozy_vacuum_tile
+#     variables:
+#       vacuum_entity: vacuum.roomba             # required
+#       cute_name: "Rosie"                       # optional (Jetsons reference 😊)
+#       emoji: "🤖"
+#
+# INTERACTIONS:
+#   • Tap     → start cleaning (if docked) / pause (if cleaning) / resume (if paused)
+#   • Hold    → return to dock
+#   • More controls → use cozy_vacuum_action pills below
+# ═══════════════════════════════════════════════════════════════════
+
+button_card_templates:
+  cozy_vacuum_tile:
+    variables:
+      vacuum_entity: vacuum.unknown
+      cute_name: ''
+      emoji: '🤖'
+
+    show_name: false
+    show_icon: false
+
+    tap_action:
+      action: |
+        [[[
+          const e = states[variables.vacuum_entity];
+          if (!e) return 'none';
+          const s = e.state;
+          if (s === 'docked' || s === 'idle') return 'call-service';
+          if (s === 'cleaning') return 'call-service';
+          if (s === 'paused') return 'call-service';
+          return 'more-info';
+        ]]]
+      service: |
+        [[[
+          const e = states[variables.vacuum_entity];
+          if (!e) return '';
+          const s = e.state;
+          if (s === 'docked' || s === 'idle') return 'vacuum.start';
+          if (s === 'cleaning') return 'vacuum.pause';
+          if (s === 'paused') return 'vacuum.start';
+          return '';
+        ]]]
+      target:
+        entity_id: '[[[ return variables.vacuum_entity; ]]]'
+
+    hold_action:
+      action: call-service
+      service: vacuum.return_to_base
+      target:
+        entity_id: '[[[ return variables.vacuum_entity; ]]]'
+
+    custom_fields:
+      body: |
+        [[[
+          const e = states[variables.vacuum_entity];
+          if (!e) {
+            return `<div style="color:#888;font-size:12px;padding:14px;">
+              ${variables.vacuum_entity} not found
+            </div>`;
+          }
+
+          const state = e.state;
+          const battery = e.attributes.battery_level
+                       ?? e.attributes.battery
+                       ?? null;
+          const fanSpeed = e.attributes.fan_speed;
+          const friendly = (variables.cute_name || e.attributes.friendly_name || 'Vacuum').trim();
+          const emoji = variables.emoji || '🤖';
+
+          // ── Friendly state mapping ──
+          const stateMap = {
+            docked:    { label: 'Resting at home',     accent: '#bce0c8', glow: 'rgba(188,224,200,0.25)', anim: '' },
+            idle:      { label: 'Ready when you are',  accent: '#e8d8a8', glow: 'rgba(232,216,168,0.22)', anim: '' },
+            cleaning:  { label: 'Tidying up the place',accent: '#9cc8e8', glow: 'rgba(156,200,232,0.32)', anim: 'animation: gentleBreathe 2.5s ease-in-out infinite;' },
+            returning: { label: 'Heading home to dock',accent: '#d8b9e8', glow: 'rgba(216,185,232,0.30)', anim: 'animation: gentleBreathe 3s ease-in-out infinite;' },
+            paused:    { label: 'Taking a little break',accent: '#e8c8a8', glow: 'rgba(232,200,168,0.28)', anim: '' },
+            error:     { label: 'Got stuck — needs a hand', accent: '#ff8a6a', glow: 'rgba(255,138,106,0.40)', anim: 'animation: chargingPulse 1.6s ease-in-out infinite;' },
+            unavailable: { label: 'Off the grid',      accent: '#888',     glow: 'rgba(128,128,128,0.15)', anim: '' },
+          };
+          const s = stateMap[state] || { label: state, accent: '#aaa', glow: 'rgba(255,255,255,0.15)', anim: '' };
+
+          // ── Battery bar component ──
+          let batteryHtml = '';
+          if (battery !== null) {
+            const batBar = battery < 20 ? '#ff8a6a' : battery < 50 ? '#ffd6a8' : '#bce0c8';
+            const charging = state === 'docked' && battery < 100;
+            batteryHtml = `
+              <div style="display:flex; align-items:center; gap:6px; margin-top: 6px;">
+                <div style="
+                  position:relative; width:60px; height:10px;
+                  border:1px solid rgba(255,235,215,0.5);
+                  border-radius:3px;
+                  background: rgba(0,0,0,0.3);
+                ">
+                  <div style="
+                    position:absolute; top:1px; left:1px; bottom:1px;
+                    width:${battery}%;
+                    background: ${batBar};
+                    border-radius:2px;
+                    ${charging ? 'animation: chargingPulse 1.8s ease-in-out infinite;' : ''}
+                    transition: width 1s ease-out;
+                  "></div>
+                </div>
+                <span style="font-family:'Inter',sans-serif; font-size:11px; color:rgba(255,235,215,0.7);">
+                  ${charging ? '⚡ ' : ''}${battery}%
+                </span>
+              </div>`;
+          }
+
+          return `
+            <div style="
+              position: relative;
+              width: 100%; height: 100%;
+              padding: 16px 18px;
+              border-radius: 18px;
+              background: linear-gradient(160deg, ${s.glow} 0%, rgba(30,22,28,0.6) 60%, rgba(20,15,22,0.7) 100%);
+              border: 1px solid ${s.accent}40;
+              backdrop-filter: blur(14px) saturate(140%);
+              box-shadow: 0 0 24px ${s.glow}, inset 0 1px 0 rgba(255,255,255,0.06);
+              transition: all 0.6s ease-out;
+              ${s.anim}
+            ">
+              <!-- top: emoji + name -->
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                <span style="font-size:24px; ${state === 'cleaning' ? 'animation: gentleBreathe 1s ease-in-out infinite;' : ''}">${emoji}</span>
+                <span style="
+                  font-family: 'Inter', sans-serif;
+                  font-size: 13px;
+                  font-weight: 400;
+                  color: rgba(255, 235, 215, 0.92);
+                  letter-spacing: 0.02em;
+                ">${friendly}</span>
+              </div>
+
+              <!-- main status -->
+              <div style="
+                font-family: 'Caveat', 'Georgia', cursive;
+                font-style: italic;
+                font-size: 22px;
+                font-weight: 500;
+                color: ${s.accent};
+                text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+                line-height: 1.1;
+              ">${s.label}</div>
+
+              ${batteryHtml}
+
+              ${fanSpeed ? `<div style="
+                margin-top: 4px;
+                font-family: 'Inter', sans-serif;
+                font-size: 11px;
+                color: rgba(255, 235, 215, 0.55);
+              ">💨 ${fanSpeed}</div>` : ''}
+
+              <!-- status dot -->
+              <div style="
+                position:absolute; top:16px; right:18px;
+                width:9px; height:9px; border-radius:50%;
+                background: ${s.accent};
+                box-shadow: 0 0 10px ${s.glow};
+                ${state === 'cleaning' || state === 'returning' ? 'animation: chargingPulse 1.4s ease-in-out infinite;' : ''}
+              "></div>
+
+              <!-- inner halo accent -->
+              <div style="
+                position:absolute; inset:0; border-radius:18px; pointer-events:none;
+                background: radial-gradient(circle at 85% 30%, ${s.glow} 0%, transparent 60%);
+                opacity: 0.6;
+              "></div>
+            </div>`;
+        ]]]
+
+    styles:
+      card:
+        - background: none
+        - border: none
+        - padding: 0
+        - width: 100%
+        - height: 150px
+        - cursor: pointer
+      custom_fields:
+        body:
+          - width: 100%
+          - height: 100%

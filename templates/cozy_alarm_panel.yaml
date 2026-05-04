@@ -1,0 +1,121 @@
+# ═══════════════════════════════════════════════════════════════════
+#   cozy_alarm_panel — friendly arm/disarm panel for alarm_control_panel
+# ═══════════════════════════════════════════════════════════════════
+#
+# Works with Blink Sync Module's alarm_control_panel, or any other
+# alarm system integrated as alarm_control_panel.* in HA.
+#
+# USAGE:
+#   - type: custom:button-card
+#     template: cozy_alarm_panel
+#     variables:
+#       alarm_entity: alarm_control_panel.home_alarm    # required
+#       alarm_code: ''                                  # optional pin
+#
+# INTERACTIONS:
+#   • Tap state pill → cycle to next state (disarm → home → away → disarm)
+#   • Long-press     → opens HA more-info (full state + code entry)
+# ═══════════════════════════════════════════════════════════════════
+
+button_card_templates:
+  cozy_alarm_panel:
+    variables:
+      alarm_entity: alarm_control_panel.home_alarm
+      alarm_code: ''
+
+    show_name: false
+    show_icon: false
+    tap_action:
+      action: more-info
+      entity: '[[[ return variables.alarm_entity; ]]]'
+
+    custom_fields:
+      body: |
+        [[[
+          const a = states[variables.alarm_entity];
+          if (!a) {
+            return `<div style="color:#888;font-size:13px;padding:18px;">
+              ${variables.alarm_entity} not found
+            </div>`;
+          }
+
+          const state = a.state;
+          // Map alarm_control_panel states → friendly copy + accent
+          const stateMap = {
+            disarmed:        { label: 'Home & cozy',       sub: 'Nothing watching',     emoji: '🏡', color: '#a8d8b9', glow: 'rgba(168, 216, 185, 0.30)' },
+            armed_home:      { label: 'Tucked in safe',    sub: 'Watching the doors',   emoji: '🛏',  color: '#d8b9e8', glow: 'rgba(216, 185, 232, 0.32)' },
+            armed_away:      { label: 'Out and about',     sub: 'Eyes on everything',   emoji: '👁',  color: '#e8b9a8', glow: 'rgba(232, 185, 168, 0.32)' },
+            armed_night:     { label: 'Goodnight watch',   sub: 'Quietly keeping watch',emoji: '🌙', color: '#b9c8e8', glow: 'rgba(185, 200, 232, 0.32)' },
+            armed_vacation:  { label: 'Vacation mode',     sub: 'Holding down the fort',emoji: '✈️', color: '#e8d8a8', glow: 'rgba(232, 216, 168, 0.32)' },
+            arming:          { label: 'Settling in…',      sub: 'Just a moment',        emoji: '⏳', color: '#e8d8a8', glow: 'rgba(232, 216, 168, 0.30)' },
+            disarming:       { label: 'Stand down…',       sub: 'Just a moment',        emoji: '⏳', color: '#a8d8b9', glow: 'rgba(168, 216, 185, 0.30)' },
+            triggered:       { label: 'ALARM!',            sub: 'Something tripped',    emoji: '🚨', color: '#ff8a6a', glow: 'rgba(255, 138, 106, 0.55)' },
+            pending:         { label: 'Heads up…',         sub: 'Triggered, countdown', emoji: '⚠️', color: '#ffb37a', glow: 'rgba(255, 179, 122, 0.40)' },
+          };
+          const s = stateMap[state] || { label: state, sub: '', emoji: '🔐', color: '#aaa', glow: 'rgba(255,255,255,0.15)' };
+          const isArmed = state.startsWith('armed') || state === 'arming';
+          const isTriggered = state === 'triggered' || state === 'pending';
+
+          return `
+            <div style="
+              position: relative;
+              width: 100%; height: 100%;
+              padding: 22px 24px;
+              border-radius: 22px;
+              background: linear-gradient(160deg, ${s.glow} 0%, rgba(25,20,28,0.65) 60%, rgba(15,12,20,0.78) 100%);
+              border: 1px solid ${s.color}55;
+              backdrop-filter: blur(16px) saturate(150%);
+              box-shadow: 0 8px 32px rgba(0,0,0,0.4),
+                          inset 0 1px 0 rgba(255,255,255,0.06),
+                          0 0 ${isTriggered ? '60px' : '0px'} ${s.glow};
+              transition: all 0.6s ease-out;
+              ${isTriggered ? 'animation: chargingPulse 1.2s ease-in-out infinite;' : ''}
+            ">
+              <div style="display:flex; align-items:center; gap:14px;">
+                <div style="font-size: 38px; line-height: 1; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));">
+                  ${s.emoji}
+                </div>
+                <div>
+                  <div style="
+                    font-family: 'Caveat', 'Georgia', cursive;
+                    font-style: italic;
+                    font-size: 26px;
+                    font-weight: 500;
+                    color: ${s.color};
+                    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+                    line-height: 1.1;
+                  ">${s.label}</div>
+                  <div style="
+                    font-family: 'Inter', sans-serif;
+                    font-size: 12px;
+                    font-weight: 300;
+                    color: rgba(255, 235, 215, 0.7);
+                    margin-top: 3px;
+                    letter-spacing: 0.02em;
+                  ">${s.sub}</div>
+                </div>
+              </div>
+
+              <!-- gentle status dot -->
+              <div style="
+                position: absolute; top: 16px; right: 18px;
+                width: 9px; height: 9px; border-radius: 50%;
+                background: ${s.color};
+                box-shadow: 0 0 10px ${s.glow};
+                ${isArmed ? 'animation: gentleBreathe 4s ease-in-out infinite;' : ''}
+              "></div>
+            </div>`;
+        ]]]
+
+    styles:
+      card:
+        - background: none
+        - border: none
+        - padding: 0
+        - width: 100%
+        - height: 110px
+        - cursor: pointer
+      custom_fields:
+        body:
+          - width: 100%
+          - height: 100%

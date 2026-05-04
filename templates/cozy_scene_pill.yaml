@@ -1,0 +1,95 @@
+# ═══════════════════════════════════════════════════════════════════
+#   cozy_scene_pill — tappable scene activator with cute name + emoji
+# ═══════════════════════════════════════════════════════════════════
+#
+# USAGE: paste under `button_card_templates:` in raw config.
+#
+# Use it on a card by referencing template + setting variables:
+#
+#   - type: custom:button-card
+#     template: cozy_scene_pill
+#     variables:
+#       scene_entity: scene.cozy_evening
+#       label: "Cozy evening"
+#       emoji: "🕯"
+#       accent: "warm"          # warm | cool | neutral | rose | sage
+#
+# Tapping a pill calls scene.turn_on. Long-press shows scene info.
+# ═══════════════════════════════════════════════════════════════════
+
+button_card_templates:
+  cozy_scene_pill:
+    variables:
+      scene_entity: scene.unknown
+      label: 'Scene'
+      emoji: '✨'
+      accent: warm   # warm | cool | neutral | rose | sage
+
+    show_name: false
+    show_icon: false
+
+    tap_action:
+      action: call-service
+      service: scene.turn_on
+      service_data:
+        entity_id: '[[[ return variables.scene_entity; ]]]'
+    hold_action:
+      action: more-info
+
+    custom_fields:
+      body: |
+        [[[
+          const accents = {
+            warm:    { bg: 'rgba(255, 210, 165, 0.14)', border: 'rgba(255, 200, 150, 0.35)', glow: 'rgba(255, 195, 140, 0.35)' },
+            cool:    { bg: 'rgba(180, 215, 240, 0.12)', border: 'rgba(190, 220, 245, 0.30)', glow: 'rgba(180, 210, 240, 0.30)' },
+            neutral: { bg: 'rgba(245, 235, 220, 0.10)', border: 'rgba(245, 230, 210, 0.25)', glow: 'rgba(240, 225, 205, 0.25)' },
+            rose:    { bg: 'rgba(255, 195, 200, 0.13)', border: 'rgba(255, 190, 195, 0.32)', glow: 'rgba(255, 180, 190, 0.32)' },
+            sage:    { bg: 'rgba(190, 215, 195, 0.12)', border: 'rgba(195, 220, 200, 0.30)', glow: 'rgba(190, 215, 195, 0.28)' },
+          };
+          const a = accents[variables.accent] || accents.warm;
+          const label = variables.label || 'Scene';
+          const emoji = variables.emoji || '✨';
+
+          return `
+            <div style="
+              display: inline-flex; align-items: center; gap: 8px;
+              padding: 10px 16px;
+              border-radius: 999px;
+              background: ${a.bg};
+              border: 1px solid ${a.border};
+              backdrop-filter: blur(14px) saturate(150%);
+              box-shadow: 0 2px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06);
+              font-family: 'Inter', sans-serif;
+              font-weight: 400;
+              font-size: 14px;
+              letter-spacing: 0.02em;
+              color: rgba(255, 240, 225, 0.92);
+              white-space: nowrap;
+              transition: all 0.4s ease-out;
+              cursor: pointer;
+            ">
+              <span style="font-size: 18px; line-height: 1;">${emoji}</span>
+              <span>${label}</span>
+            </div>`;
+        ]]]
+
+    styles:
+      card:
+        - background: none
+        - border: none
+        - padding: 0
+        - width: auto
+        - cursor: pointer
+        # gentle hover/active press feedback
+        - transform: scale(1)
+        - transition: transform 0.15s ease-out
+      custom_fields:
+        body:
+          - width: 100%
+
+    state:
+      - operator: template
+        value: '[[[ return true; ]]]'
+        styles:
+          card:
+            - filter: drop-shadow(0 0 0 transparent)

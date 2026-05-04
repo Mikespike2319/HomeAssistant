@@ -1,0 +1,37 @@
+# Never commit secrets
+secrets.yaml
+*.secret
+*.token
+.env
+.env.*
+known_hosts*
+id_rsa*
+*.key
+*.pem
+
+# HA runtime state (not for git)
+.storage/
+home-assistant.log*
+*.db
+*.db-shm
+*.db-wal
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Python build artifacts
+__pycache__/
+*.pyc
+*.pyo
+
+# Backup files
+*.backup
+*.bak
+*.bak-*
+*.cozy-merge-backup-*
+*.before-home-replace-*
+*.cozy_backups_*

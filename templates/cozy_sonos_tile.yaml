@@ -1,0 +1,193 @@
+# ═══════════════════════════════════════════════════════════════════
+#   cozy_sonos_tile — one Sonos player as a now-playing tile
+# ═══════════════════════════════════════════════════════════════════
+#
+# Works with ANY media_player entity (Sonos, AirPlay, etc.)
+#
+# USAGE:
+#   - type: custom:button-card
+#     template: cozy_sonos_tile
+#     variables:
+#       media_player_entity: media_player.living_room_sonos
+#       cute_name: "Living room"
+#       emoji: "🛋"
+#
+# INTERACTIONS:
+#   • Tap     → play/pause toggle
+#   • Hold    → HA more-info (full media browser, queue, etc.)
+#
+# DISPLAY:
+#   • Album art as background (blurred + dark overlay for legibility)
+#   • Now playing: song / artist · album
+#   • Volume %, transport state pill
+#   • Soft green dot when actively playing
+# ═══════════════════════════════════════════════════════════════════
+
+button_card_templates:
+  cozy_sonos_tile:
+    variables:
+      media_player_entity: media_player.unknown
+      cute_name: ''
+      emoji: '🔊'
+
+    show_name: false
+    show_icon: false
+    tap_action:
+      action: call-service
+      service: media_player.media_play_pause
+      target:
+        entity_id: '[[[ return variables.media_player_entity; ]]]'
+    hold_action:
+      action: more-info
+      entity: '[[[ return variables.media_player_entity; ]]]'
+
+    custom_fields:
+      body: |
+        [[[
+          const e = states[variables.media_player_entity];
+          if (!e) {
+            return `<div style="color:#888;font-size:12px;padding:14px;">
+              ${variables.media_player_entity} not found
+            </div>`;
+          }
+
+          const state = e.state;
+          const isPlaying = state === 'playing';
+          const isPaused = state === 'paused';
+          const isOff = state === 'off' || state === 'unavailable' || state === 'standby';
+          const isIdle = state === 'idle' || isOff;
+
+          const friendly = (variables.cute_name || e.attributes.friendly_name || 'Speaker').trim();
+          const emoji = variables.emoji || '🔊';
+
+          const albumArt = e.attributes.entity_picture || '';
+          const title    = e.attributes.media_title || '';
+          const artist   = e.attributes.media_artist || '';
+          const album    = e.attributes.media_album_name || '';
+          const source   = e.attributes.source || '';
+          const volume   = Math.round((e.attributes.volume_level || 0) * 100);
+          const muted    = e.attributes.is_volume_muted;
+
+          const hasArt = albumArt && !isIdle;
+          const bgStyle = hasArt
+            ? `background-image: url('${albumArt}'); background-size: cover; background-position: center;`
+            : `background: linear-gradient(160deg, rgba(40,28,38,0.6) 0%, rgba(20,15,24,0.75) 100%);`;
+
+          // Transport state pill
+          let transport;
+          if (isPlaying)      transport = `▶ Playing`;
+          else if (isPaused)  transport = `⏸ Paused`;
+          else if (isOff)     transport = `○ Off`;
+          else                transport = `○ Quiet`;
+
+          const showSong = (isPlaying || isPaused) && title;
+
+          return `
+            <div style="
+              position: relative;
+              width: 100%; height: 100%;
+              border-radius: 18px;
+              overflow: hidden;
+              ${bgStyle}
+              background-color: rgba(20, 17, 24, 0.55);
+              border: 1px solid rgba(255, 235, 215, 0.10);
+              box-shadow: 0 6px 20px rgba(0,0,0,0.4),
+                          inset 0 1px 0 rgba(255,255,255,0.05);
+              transition: all 0.6s ease-out;
+            ">
+              <!-- dark gradient overlay for legibility -->
+              <div style="
+                position: absolute; inset: 0;
+                background: linear-gradient(180deg,
+                  rgba(15,12,18,0.35) 0%,
+                  rgba(15,12,18,0.55) 45%,
+                  rgba(15,12,18,0.92) 100%);
+                ${hasArt ? 'backdrop-filter: blur(2px) saturate(120%);' : ''}
+                pointer-events: none;
+              "></div>
+
+              <!-- content stack -->
+              <div style="position: relative; padding: 14px; height: 100%; display: flex; flex-direction: column;">
+                <!-- top: emoji + room name -->
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 20px; filter: drop-shadow(0 1px 3px rgba(0,0,0,0.6));">${emoji}</span>
+                  <span style="
+                    font-family: 'Inter', sans-serif;
+                    font-size: 13px;
+                    font-weight: 400;
+                    color: rgba(255, 245, 230, 0.95);
+                    letter-spacing: 0.02em;
+                    text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+                  ">${friendly}</span>
+                </div>
+
+                <!-- middle/bottom: now playing or quiet -->
+                <div style="margin-top: auto;">
+                  ${showSong ? `
+                    <div style="
+                      font-family: 'Inter', sans-serif;
+                      font-size: 15px;
+                      font-weight: 500;
+                      color: rgba(255, 245, 230, 0.96);
+                      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+                      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+                    ">${title}</div>
+                    <div style="
+                      font-family: 'Caveat', 'Georgia', cursive;
+                      font-style: italic;
+                      font-size: 15px;
+                      color: rgba(255, 225, 205, 0.85);
+                      margin-top: 1px;
+                      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+                      text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+                    ">${artist}${album ? ' · ' + album : ''}</div>
+                  ` : `
+                    <div style="
+                      font-family: 'Caveat', 'Georgia', cursive;
+                      font-style: italic;
+                      font-size: 18px;
+                      color: rgba(255, 225, 205, 0.7);
+                      text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+                    ">Quiet for now</div>
+                    ${source ? `<div style="font-family:'Inter',sans-serif; font-size:11px; color:rgba(255,235,215,0.5); margin-top:2px;">via ${source}</div>` : ''}
+                  `}
+
+                  <!-- bottom mini status row -->
+                  <div style="
+                    margin-top: 8px;
+                    display: flex; align-items: center; gap: 8px;
+                    font-family: 'Inter', sans-serif;
+                    font-size: 11px;
+                    color: rgba(255, 235, 215, 0.65);
+                  ">
+                    <span>${transport}</span>
+                    <span>·</span>
+                    <span>${muted ? '🔇 muted' : '🔉 ' + volume}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- live dot when playing -->
+              ${isPlaying ? `
+                <div style="
+                  position: absolute; top: 14px; right: 14px;
+                  width: 9px; height: 9px; border-radius: 50%;
+                  background: #a8d8b9;
+                  box-shadow: 0 0 10px #a8d8b9;
+                  animation: chargingPulse 1.4s ease-in-out infinite;
+                "></div>` : ''}
+            </div>`;
+        ]]]
+
+    styles:
+      card:
+        - background: none
+        - border: none
+        - padding: 0
+        - width: 100%
+        - height: 130px
+        - cursor: pointer
+      custom_fields:
+        body:
+          - width: 100%
+          - height: 100%

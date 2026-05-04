@@ -1,0 +1,160 @@
+═══════════════════════════════════════════════════════════════════
+  TESLA MODEL Y 2026 (JUNIPER) — DASHBOARD RENDER PROMPT SET
+═══════════════════════════════════════════════════════════════════
+
+Use these with your preferred image gen (Midjourney, DALL-E, Flux,
+Stable Diffusion, Sora, Imagen). All renders should be PNG with
+transparent background. Output dimensions ~1600×900 (16:9-ish, but
+wider helps on landscape monitors).
+
+Save outputs into your HA setup at:
+  /config/www/tesla/car/<filename>.png
+
+Then they'll be served at /local/tesla/car/<filename>.png
+
+───────────────────────────────────────────────────────────────────
+  SHARED STYLE PREAMBLE (paste before each prompt)
+───────────────────────────────────────────────────────────────────
+
+"Photorealistic 3D render of a 2026 Tesla Model Y Juniper refresh.
+Defining Juniper details: full-width LED light bar across the front
+fascia, slim quad-LED headlights below, redesigned rear taillight
+signature with horizontal indirect-illumination strip, smooth body
+without front fog lights, flush door handles, Crossflow 19-inch
+wheels (or Helix 20-inch). Color: Stealth Grey (matte). Three-quarter
+front-left view. Car positioned slightly right of frame, facing
+front-left. Transparent PNG background. Cinematic lighting, soft
+shadows beneath. Studio-quality, marketing-render fidelity, sharp
+edges, no motion blur."
+
+───────────────────────────────────────────────────────────────────
+  VARIANT 1 — DAYTIME BASE
+  Filename: model_y_day.png
+───────────────────────────────────────────────────────────────────
+
+[shared preamble]
++ "Soft daylight, ambient sky reflection on bodywork. Headlights and
+taillights OFF. No charging cable. Calm, parked. Subtle ground
+shadow only — no environment, no driveway."
+
+───────────────────────────────────────────────────────────────────
+  VARIANT 2 — NIGHTTIME BASE
+  Filename: model_y_night.png
+───────────────────────────────────────────────────────────────────
+
+[shared preamble]
++ "Nighttime mood. Front LED light bar GLOWING white (subtle bloom).
+Quad headlights illuminated. Taillight strip glowing red with soft
+halo. Soft cool blue ambient reflection on hood and roof. Subtle
+underbody glow. No charging cable. Dark transparent background."
+
+───────────────────────────────────────────────────────────────────
+  VARIANT 3 — CHARGING (DAY)
+  Filename: model_y_charging_day.png
+───────────────────────────────────────────────────────────────────
+
+[shared preamble]
++ "Daytime. Charge port (driver-side rear) OPEN with Tesla J3400 NACS
+charge cable plugged in. Cable curves down to the ground out of frame.
+Charge port indicator ring glowing soft GREEN. Otherwise identical to
+daytime base. Headlights/taillights off."
+
+───────────────────────────────────────────────────────────────────
+  VARIANT 4 — CHARGING (NIGHT)
+  Filename: model_y_charging_night.png
+───────────────────────────────────────────────────────────────────
+
+[nighttime base prompt]
++ "Charge port open, NACS cable plugged in, cable curving out of frame.
+Charge port ring pulsing GREEN. Faint green glow on rear quarter
+panel from port LED. Front light bar dimmed (parked-charging state).
+Subtle blue underbody glow."
+
+───────────────────────────────────────────────────────────────────
+  VARIANT 5 — RAIN / WET
+  Filename: model_y_wet.png
+───────────────────────────────────────────────────────────────────
+
+[shared preamble]
++ "Bodywork covered in fine water droplets. Wet reflective surface
+beneath the car (like rain-slicked asphalt) showing inverted
+reflection of the car. Headlights ON (rain mode). Glossy specular
+highlights along body lines. Slight fog/mist haze. Subtle ground
+puddle reflection only — keep background transparent above the
+ground line."
+
+───────────────────────────────────────────────────────────────────
+  VARIANT 6 — SNOW ACCUMULATION
+  Filename: model_y_snow.png
+───────────────────────────────────────────────────────────────────
+
+[shared preamble]
++ "Light layer of fresh snow accumulated on roof, hood, and rear
+trunk. Snow particles dusting the body. Headlights ON warm white.
+Frost halo around taillights. Cold blue tint to bodywork shadows.
+Slight powdery snow scatter on ground beneath wheels. Otherwise
+parked, calm."
+
+───────────────────────────────────────────────────────────────────
+  VARIANT 7 — SENTRY MODE ACTIVE (NIGHT)
+  Filename: model_y_sentry.png
+───────────────────────────────────────────────────────────────────
+
+[nighttime base prompt]
++ "Sentry mode active: subtle RED LED pulse visible inside cabin
+through windows (interior dome light dim red). Front camera housings
+in B-pillars subtly illuminated. Watchful, alert mood. Slight cyan
+side mirror LED. All exterior lights at standby (dim)."
+
+───────────────────────────────────────────────────────────────────
+  VARIANT 8 — DOORS / TRUNK OPEN (CONFIGURABLE — OPTIONAL)
+  Filename: model_y_open.png
+───────────────────────────────────────────────────────────────────
+
+[shared preamble]
++ "Driver door slightly ajar, frunk (front trunk) lifted halfway open
+showing storage cavity, rear liftgate raised. Interior dome lights
+on warm. Otherwise neutral daytime. Used to indicate 'something is
+open' state visually."
+
+───────────────────────────────────────────────────────────────────
+  DRIVEWAY / GROUND LAYER (REPLACES wall_bottom FENCE)
+  Filename: driveway_base.png
+───────────────────────────────────────────────────────────────────
+
+"Photorealistic top-edge slice of a modern driveway. View is the
+foreground ground plane only — concrete with subtle expansion joints,
+or paver stones. Includes a single Tesla Wall Connector mounted on
+the right edge, gen 3 design (white face, black accent, indicator
+LED visible). Soft ambient shadow gradient at top fading into
+transparent background. Aspect ratio 16:5, transparent PNG, edges
+fade to transparent at top, sides clean."
+
+───────────────────────────────────────────────────────────────────
+  GENERATION TIPS
+───────────────────────────────────────────────────────────────────
+
+• Generate VARIANT 1 first. Once you nail the angle/color/composition,
+  use that exact image as a reference (img2img / character reference)
+  for the other variants. This keeps the car identical across states.
+
+• Stealth Grey is suggested because it photographs well in all
+  lighting. If your actual car is a different color, swap "Stealth
+  Grey" → your color (Pearl White / Diamond Black / Glacier Blue /
+  Ultra Red / Quicksilver).
+
+• If your image gen struggles with "Juniper" specifics, attach a
+  reference image of the 2026 Model Y front fascia.
+
+• The car layer is the hero of the dashboard. Spend the most prompt
+  iteration here. The other layers (sky/weather) are shared with
+  the original sky_system and don't need new assets.
+
+───────────────────────────────────────────────────────────────────
+  OPTIONAL SEASONAL VARIANTS (skip unless you want them)
+───────────────────────────────────────────────────────────────────
+
+• model_y_halloween.png — small jack-o-lantern next to car, otherwise
+  daytime base. (Triggers Oct 15+)
+• model_y_christmas.png — small wreath on grille or string lights
+  draped across windshield wipers. (Triggers Dec)

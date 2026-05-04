@@ -1,0 +1,203 @@
+# ═══════════════════════════════════════════════════════════════════
+#   cozy_camera_tile — one Blink/Wyze (or any) camera as cozy tile
+# ═══════════════════════════════════════════════════════════════════
+#
+# Works with ANY HA camera entity (Blink, Wyze, Reolink, Ring, etc.)
+#
+# USAGE:
+#   - type: custom:button-card
+#     template: cozy_camera_tile
+#     variables:
+#       camera_entity: camera.front_door            # required
+#       motion_entity: binary_sensor.front_door_motion  # optional
+#       last_motion_entity: sensor.front_door_last_motion  # optional
+#       battery_entity: sensor.front_door_battery   # optional (Blink)
+#       cute_name: "Front door"
+#       emoji: "🚪"
+#
+# INTERACTIONS:
+#   • Tap     → HA's native camera popup (full live stream)
+#   • Hold    → opens camera entity more-info (settings, notifications)
+#
+# AUTO-BEHAVIOR:
+#   • Border GLOWS RED + pulses when motion within last 60s
+#   • Snapshot refreshes when motion sensor triggers
+#   • Status text: "All quiet" / "Movement now!" / "Seen 12m ago"
+# ═══════════════════════════════════════════════════════════════════
+
+button_card_templates:
+  cozy_camera_tile:
+    variables:
+      camera_entity: camera.unknown
+      motion_entity: ''
+      last_motion_entity: ''
+      battery_entity: ''
+      cute_name: ''
+      emoji: '📷'
+
+    show_name: false
+    show_icon: false
+    tap_action:
+      action: more-info
+      entity: '[[[ return variables.camera_entity; ]]]'
+
+    custom_fields:
+      body: |
+        [[[
+          const cam = states[variables.camera_entity];
+          if (!cam) {
+            return `<div style="color:#888;font-size:12px;padding:14px;">
+              ${variables.camera_entity} not found
+            </div>`;
+          }
+
+          const friendly = (variables.cute_name || cam.attributes.friendly_name || 'Camera').trim();
+          const emoji = variables.emoji || '📷';
+
+          // ── Motion detection ──
+          const motionState = variables.motion_entity ? states[variables.motion_entity] : null;
+          const motionActive = motionState && motionState.state === 'on';
+
+          // ── Last motion timestamp ──
+          let lastMotionStr = '';
+          let recentMotion = false;
+          const lmEntity = variables.last_motion_entity ? states[variables.last_motion_entity] : null;
+          const motionRefEntity = lmEntity || motionState;
+          if (motionRefEntity) {
+            const ts = lmEntity
+              ? new Date(lmEntity.state).getTime()
+              : new Date(motionState.last_changed).getTime();
+            if (!isNaN(ts) && ts > 0) {
+              const diff = Date.now() - ts;
+              recentMotion = diff < 60 * 1000;     // last 60s = pulsing border
+              const mins = Math.round(diff / 60000);
+              const hrs  = Math.round(mins / 60);
+              if (motionActive)        lastMotionStr = 'Movement now!';
+              else if (diff < 60000)    lastMotionStr = 'Just now';
+              else if (mins < 60)       lastMotionStr = `Seen ${mins}m ago`;
+              else if (hrs < 24)        lastMotionStr = `Seen ${hrs}h ago`;
+              else                      lastMotionStr = 'All quiet';
+            } else {
+              lastMotionStr = motionActive ? 'Movement now!' : 'All quiet';
+            }
+          } else {
+            lastMotionStr = 'All quiet';
+          }
+
+          // ── Battery indicator (Blink) ──
+          let batteryHtml = '';
+          if (variables.battery_entity && states[variables.battery_entity]) {
+            const bat = states[variables.battery_entity].state;
+            const batNum = parseInt(bat, 10);
+            // Some integrations report "ok"/"low" instead of %; both handled
+            if (!isNaN(batNum)) {
+              const color = batNum < 20 ? '#ff8a6a' : batNum < 50 ? '#ffd6a8' : 'rgba(255,235,215,0.7)';
+              batteryHtml = `<span style="font-size:11px; color:${color};">🔋 ${batNum}%</span>`;
+            } else if (bat === 'low') {
+              batteryHtml = `<span style="font-size:11px; color:#ff8a6a;">🪫 low</span>`;
+            } else if (bat === 'ok') {
+              batteryHtml = `<span style="font-size:11px; color:rgba(255,235,215,0.65);">🔋 ok</span>`;
+            }
+          }
+
+          // ── Snapshot URL — re-renders on entity changes (motion fires) ──
+          const ts = Math.floor(Date.now() / 30000);
+          const snapshot = `/api/camera_proxy/${variables.camera_entity}?_=${ts}`;
+
+          // ── Border / glow style for motion alert ──
+          const alertStyle = (motionActive || recentMotion)
+            ? `border: 1.5px solid rgba(255, 140, 120, 0.65);
+               box-shadow: 0 0 24px rgba(255, 130, 100, 0.45),
+                           inset 0 0 18px rgba(255, 100, 80, 0.12);
+               animation: gentleBreathe 1.6s ease-in-out infinite;`
+            : `border: 1px solid rgba(255, 230, 210, 0.10);
+               box-shadow: 0 4px 16px rgba(0,0,0,0.35);`;
+
+          const statusColor = motionActive
+            ? 'rgba(255, 200, 180, 0.95)'
+            : recentMotion
+              ? 'rgba(255, 215, 195, 0.85)'
+              : 'rgba(255, 230, 210, 0.7)';
+
+          return `
+            <div style="
+              position: relative;
+              width: 100%; height: 100%;
+              border-radius: 16px;
+              overflow: hidden;
+              background: rgba(20, 17, 22, 0.55);
+              backdrop-filter: blur(12px) saturate(140%);
+              ${alertStyle}
+              transition: all 0.5s ease-out;
+            ">
+              <!-- snapshot fills tile -->
+              <img src="${snapshot}"
+                onerror="this.style.opacity=0.0;"
+                style="
+                  position: absolute; inset: 0;
+                  width: 100%; height: 100%;
+                  object-fit: cover;
+                  filter: ${motionActive ? 'brightness(1.05) contrast(1.05)' : 'brightness(0.92) saturate(0.95)'};
+                  transition: filter 0.4s;
+                ">
+
+              <!-- bottom gradient for legibility -->
+              <div style="
+                position: absolute; left: 0; right: 0; bottom: 0; height: 60%;
+                background: linear-gradient(180deg, transparent 0%, rgba(15,12,18,0.5) 50%, rgba(15,12,18,0.92) 100%);
+                pointer-events: none;
+              "></div>
+
+              <!-- top row: emoji + name + battery -->
+              <div style="
+                position: absolute; top: 10px; left: 12px; right: 12px;
+                display: flex; align-items: center; justify-content: space-between;
+                font-family: 'Inter', sans-serif;
+              ">
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span style="font-size:18px;">${emoji}</span>
+                  <span style="
+                    font-size: 13px;
+                    font-weight: 400;
+                    color: rgba(255, 245, 230, 0.95);
+                    text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+                    letter-spacing: 0.02em;
+                  ">${friendly}</span>
+                </div>
+                ${batteryHtml}
+              </div>
+
+              <!-- bottom: status line -->
+              <div style="
+                position: absolute; bottom: 10px; left: 14px; right: 14px;
+                font-family: 'Caveat', 'Georgia', cursive;
+                font-style: italic;
+                font-size: 16px;
+                color: ${statusColor};
+                text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+              ">${lastMotionStr}</div>
+
+              <!-- live indicator dot -->
+              ${motionActive ? `
+                <div style="
+                  position: absolute; top: 12px; right: 12px;
+                  width: 8px; height: 8px; border-radius: 50%;
+                  background: #ff7a5a;
+                  box-shadow: 0 0 8px rgba(255, 120, 90, 0.9);
+                  animation: chargingPulse 1s ease-in-out infinite;
+                "></div>` : ''}
+            </div>`;
+        ]]]
+
+    styles:
+      card:
+        - background: none
+        - border: none
+        - padding: 0
+        - width: 100%
+        - height: 200px
+        - cursor: pointer
+      custom_fields:
+        body:
+          - width: 100%
+          - height: 100%

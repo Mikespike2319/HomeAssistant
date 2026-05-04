@@ -1,0 +1,184 @@
+# Personalized — your real media players (no Sonos detected,
+# so this uses your TVs / Echo / Spotify connect)
+title: Music
+path: music
+icon: mdi:music
+type: sections
+max_columns: 2
+
+cards:
+
+  - type: custom:button-card
+    template: sky_system_tesla
+
+  - type: custom:mod-card
+    style: |
+      ha-card {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        margin-top: 14vh;
+      }
+    card:
+      type: markdown
+      content: |
+        <div style="
+          font-family: 'Caveat', 'Dancing Script', Georgia, cursive;
+          font-style: italic;
+          font-size: 36px;
+          font-weight: 500;
+          color: rgba(255, 230, 210, 0.92);
+          text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+          text-align: center;
+          letter-spacing: 0.02em;
+        ">
+          Press play 🎵
+        </div>
+
+  # ─── Living room ───
+  - type: custom:mod-card
+    style: |
+      ha-card { background: transparent !important; border: none !important; box-shadow: none !important; }
+    card:
+      type: markdown
+      content: |
+        <div style="font-family:'Caveat',cursive; font-style:italic; font-size:22px; color:rgba(255,220,200,0.85); margin-left:8px;">
+          🛋 Living room
+        </div>
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:button-card
+        template: cozy_sonos_tile
+        variables:
+          media_player_entity: media_player.luna_s_firetvstick
+          cute_name: Luna's FireTV
+          emoji: 🦊
+      - type: custom:button-card
+        template: cozy_sonos_tile
+        variables:
+          media_player_entity: media_player.michael_s_2nd_echo_dot
+          cute_name: Echo
+          emoji: 🔵
+
+  # ─── Bedroom ───
+  - type: custom:mod-card
+    style: |
+      ha-card { background: transparent !important; border: none !important; box-shadow: none !important; }
+    card:
+      type: markdown
+      content: |
+        <div style="font-family:'Caveat',cursive; font-style:italic; font-size:22px; color:rgba(255,220,200,0.85); margin-left:8px;">
+          🛏 Bedroom
+        </div>
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:button-card
+        template: cozy_sonos_tile
+        variables:
+          media_player_entity: media_player.lg_webos_tv_6651
+          cute_name: Bedroom TV
+          emoji: 📺
+      - type: custom:button-card
+        template: cozy_sonos_tile
+        variables:
+          media_player_entity: media_player.bed_room_tv
+          cute_name: Bedroom TV (alt)
+          emoji: 📺
+      - type: custom:button-card
+        template: cozy_sonos_tile
+        variables:
+          media_player_entity: media_player.michael_s_lg_webos_2023_dev_monitor
+          cute_name: Mike's monitor
+          emoji: 💻
+      - type: custom:button-card
+        template: cozy_sonos_tile
+        variables:
+          media_player_entity: media_player.spotify_michael_sanchez
+          cute_name: Mike's Spotify
+          emoji: 🎶
+
+  # ─── Kitchen + outside ───
+  - type: custom:mod-card
+    style: |
+      ha-card { background: transparent !important; border: none !important; box-shadow: none !important; }
+    card:
+      type: markdown
+      content: |
+        <div style="font-family:'Caveat',cursive; font-style:italic; font-size:22px; color:rgba(255,220,200,0.85); margin-left:8px;">
+          🍳 Kitchen + 🌳 Outside
+        </div>
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:button-card
+        template: cozy_sonos_tile
+        variables:
+          media_player_entity: media_player.32q3k
+          cute_name: Kitchen
+          emoji: 🍳
+      - type: custom:button-card
+        template: cozy_sonos_tile
+        variables:
+          media_player_entity: media_player.32q3k_2
+          cute_name: Kitchen 2
+          emoji: 🍳
+      - type: custom:button-card
+        template: cozy_sonos_tile
+        variables:
+          media_player_entity: media_player.lg_webos_tv_ua7700pub
+          cute_name: TV (UA7700)
+          emoji: 📺
+
+  # ─── Quick actions ───
+  - type: horizontal-stack
+    cards:
+      - type: custom:button-card
+        template: cozy_scene_pill
+        variables:
+          label: Pause everything
+          emoji: ⏸
+          accent: neutral
+        tap_action:
+          action: call-service
+          service: media_player.media_pause
+          target:
+            entity_id: all
+      - type: custom:button-card
+        template: cozy_scene_pill
+        variables:
+          label: Mute everything
+          emoji: 🔇
+          accent: cool
+        tap_action:
+          action: call-service
+          service: media_player.volume_mute
+          target:
+            entity_id: all
+          data:
+            is_volume_muted: true
+
+  # ─── Suggested: Sonos integration ───
+  - type: custom:mod-card
+    style: |
+      ha-card {
+        background: rgba(20, 17, 24, 0.5) !important;
+        backdrop-filter: blur(14px) saturate(140%);
+        border: 1px dashed rgba(255, 220, 195, 0.25) !important;
+        border-radius: 18px !important;
+        padding: 16px !important;
+      }
+    card:
+      type: markdown
+      content: |
+        <div style="font-family: 'Caveat', cursive; font-style: italic; font-size: 18px; color: rgba(255, 220, 200, 0.8);">
+          ✨ <b>Want to add Sonos?</b><br/>
+          Settings → Devices & Services → Add Integration → search "Sonos" — HA finds them automatically on your network. They'll appear here as new tiles.
+        </div>
