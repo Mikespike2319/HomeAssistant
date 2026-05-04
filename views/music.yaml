@@ -37,7 +37,7 @@ sections:
         accent_color: rgba(157,226,182,0.95)
     - type: custom:button-card
       template: mf_tile
-      entity: media_player.spotifyplus_michael_trinidad
+      entity: media_player.spotify_michael_sanchez
       variables:
         icon: mdi:music-circle-outline
         title: Spotify
@@ -46,7 +46,7 @@ sections:
         accent_color: rgba(157,226,182,0.95)
     - type: custom:button-card
       template: mf_tile
-      entity: media_player.echo_dot
+      entity: media_player.michael_s_2nd_echo_dot
       variables:
         icon: mdi:speaker-wireless
         title: Echo Dot
@@ -55,7 +55,7 @@ sections:
         accent_color: rgba(121,199,255,0.95)
     - type: custom:button-card
       template: mf_tile
-      entity: media_player.bedroom_tv
+      entity: media_player.lg_webos_tv_6651
       variables:
         icon: mdi:youtube-tv
         title: Bedroom TV
@@ -64,7 +64,7 @@ sections:
         accent_color: rgba(255,211,164,0.96)
     - type: custom:button-card
       template: mf_tile
-      entity: media_player.lg_tv
+      entity: media_player.lg_webos_tv_ua7700pub
       variables:
         icon: mdi:television
         title: LG TV
@@ -85,9 +85,9 @@ sections:
         target:
           entity_id:
           - media_player.den
-          - media_player.spotifyplus_michael_trinidad
-          - media_player.echo_dot
-          - media_player.bedroom_tv
+          - media_player.spotify_michael_sanchez
+          - media_player.michael_s_2nd_echo_dot
+          - media_player.lg_webos_tv_6651
     - type: custom:button-card
       template: mf_pill
       variables:
@@ -100,7 +100,7 @@ sections:
         target:
           entity_id:
           - media_player.den
-          - media_player.echo_dot
-          - media_player.bedroom_tv
+          - media_player.michael_s_2nd_echo_dot
+          - media_player.lg_webos_tv_6651
         data:
           is_volume_muted: true
