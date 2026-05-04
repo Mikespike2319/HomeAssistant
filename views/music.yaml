@@ -17,6 +17,23 @@ cards:
     '
   card:
     type: markdown
+    content: "<div style=\"font-family:'Caveat',cursive; font-style:italic; font-size:22px; color:rgba(255,220,200,0.85); margin-left:8px;\">\n  \U0001F50A Den\n</div>\n"
+- type: grid
+  columns: 1
+  square: false
+  cards:
+  - type: custom:button-card
+    template: cozy_sonos_tile
+    variables:
+      media_player_entity: media_player.den
+      cute_name: Sonos Era 100
+      emoji: 🔊
+- type: custom:mod-card
+  style: 'ha-card { background: transparent !important; border: none !important; box-shadow: none !important; }
+
+    '
+  card:
+    type: markdown
     content: "<div style=\"font-family:'Caveat',cursive; font-style:italic; font-size:22px; color:rgba(255,220,200,0.85); margin-left:8px;\">\n  \U0001F6CB Living room\n</div>\n"
 - type: grid
   columns: 2
