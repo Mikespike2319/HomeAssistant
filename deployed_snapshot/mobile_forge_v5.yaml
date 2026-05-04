@@ -20,129 +20,119 @@ views:
     - type: custom:button-card
       template: sky_system
     - type: custom:button-card
-      template: cozy_weather_hero
+      template: mf_page_title
       variables:
-        weather_entity: weather.forecast_home
+        title: Home
+        subtitle: Quiet night, house steady, El Rocco charging.
     - type: custom:button-card
-      show_name: false
-      show_icon: false
+      template: mf_hero
+      entity: weather.forecast_home
+      icon: '[[[ return states["sun.sun"]?.state === "above_horizon" ? "mdi:weather-sunny" : "mdi:weather-night"; ]]]'
       tap_action:
         action: navigate
-        navigation_path: /mobile-forge/tesla
-      custom_fields:
-        body: "[[[\n  const get = (e) => states[e] ? states[e].state : null;\n  const num = (e) => { const v = get(e); const n = parseFloat(v); return isNaN(n) ? null : n; };\n  const soc = Math.round(num('sensor.el_rocco_battery_level') ?? 0);\n  const range = Math.round(num('sensor.el_rocco_battery_range') ?? 0);\n  const inside = Math.round(num('sensor.el_rocco_inside_temperature') ?? 0);\n  const isLocked = get('lock.el_rocco_lock') === 'locked';\n  const isCharging = get('binary_sensor.el_rocco_charge_cable') === 'on';\n  const sentry = get('switch.el_rocco_sentry_mode') === 'on';\n  let status;\n  if (isCharging) status = 'Sipping electrons \\u26a1';\n  else if (sentry) status = 'Keeping watch \\ud83d\\udc41';\n  else if (isLocked) status = 'All buttoned up \\ud83d\\udd12';\n  else status = 'Resting';\n  const fillClass = isCharging ? 'charge' : (soc < 15 ? 'crit' : soc < 30 ? 'low' : '');\n  const fill = isCharging ? 'linear-gradient(90deg, #ffe0b8, #ffba9c)' : (soc < 15 ? 'linear-gradient(90deg, #ff9a8a, #f06b5a)' : 'linear-gradient(90deg, #ffd6a8, #ff9e7a)');\n  return `\n    <div style=\"\n      position:relative; width:100%; height:100%;\n      padding:14px 18px;\n      border-radius:18px;\n      background: linear-gradient(160deg, rgba(255,210,165,0.10) 0%, rgba(28,22,30,0.6) 60%, rgba(15,12,20,0.78) 100%);\n      border: 1px solid rgba(255,235,215,0.12);\n      backdrop-filter: blur(14px) saturate(140%);\n      box-shadow: 0 6px 20px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);\n      font-family: 'Inter', sans-serif;\n    \">\n      <div style=\"display:flex; align-items:center; gap:10px; margin-bottom:8px;\">\n        <span style=\"font-size:24px;\">\\ud83d\\ude97</span>\n        <span style=\"font-size:13px; color:rgba(255,235,215,0.92);\">El Rocco</span>\n      </div>\n      <div style=\"display:flex; align-items:baseline; gap:14px;\">\n        <div style=\"font-size:36px; font-weight:200; color:rgba(255,245,230,0.97); letter-spacing:-0.02em;\">${soc}<span style=\"font-size:18px; opacity:0.7;\">%</span></div>\n        <div style=\"font-size:13px; color:rgba(255,235,215,0.65);\">${range} mi \\u00b7 ${inside}\\u00b0 inside</div>\n      </div>\n      <div style=\"position:relative; margin-top:8px; width:100%; height:6px; background:rgba(0,0,0,0.35); border-radius:3px; overflow:hidden;\">\n        <div style=\"position:absolute; top:0; left:0; bottom:0; width:${soc}%; background:${fill}; border-radius:3px; transition:width 1s ease-out;\"></div>\n      </div>\n      <div style=\"margin-top:8px; font-family:'Caveat','Georgia',cursive; font-style:italic; font-size:16px; color:rgba(255,225,205,0.85);\">${status}</div>\n    </div>\n  `;\n]]]"
-      styles:
-        card:
-        - background: none
-        - border: none
-        - padding: '0'
-        - width: 100%
-        - height: 150px
-        - cursor: pointer
-        custom_fields:
-          body:
-          - width: 100%
-          - height: 100%
-    - type: horizontal-stack
-      cards:
-      - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          scene_entity: scene.living_room_dreamy_dusk
-          label: Cozy
-          emoji: 🕯
-          accent: warm
-      - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          scene_entity: scene.living_room_nighttime
-          label: Movie
-          emoji: 🎬
-          accent: neutral
-      - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          scene_entity: scene.living_room_energize
-          label: Bright
-          emoji: ☀️
-          accent: cool
-      - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          scene_entity: scene.bedroom_nighttime
-          label: Sleep
-          emoji: 🌙
-          accent: rose
-    - type: custom:button-card
-      template: cozy_alarm_panel
+        navigation_path: /mobile-forge/weather
       variables:
-        alarm_entity: alarm_control_panel.nas_blink_home_security
+        value: '[[[ const w = states["weather.forecast_home"]; return w ? Math.round(w.attributes.temperature) + "°" : "—"; ]]]'
+        subtitle: '[[[ const w = states["weather.forecast_home"]; if (!w) return ""; const cond = w.state.replace(/-/g," "); const h = w.attributes.humidity; const ws = Math.round(w.attributes.wind_speed); return `${cond} · ${h}% humidity · ${ws} mph wind`; ]]]'
+        accent_color: rgba(255,211,164,0.96)
     - type: grid
       columns: 2
       square: false
       cards:
       - type: custom:button-card
-        template: cozy_light_tile
+        template: mf_tile
+        entity: sensor.el_rocco_battery_level
+        tap_action:
+          action: navigate
+          navigation_path: /mobile-forge/tesla
         variables:
-          light_entity: light.living_room_2
-          cute_name: Living room
-          icon_emoji: 🛋
+          icon: mdi:car-electric
+          title: El Rocco
+          value: '[[[ const v = parseFloat(states["sensor.el_rocco_battery_level"]?.state); return isNaN(v) ? "—" : Math.round(v) + "%"; ]]]'
+          subtitle: '[[[ const r = parseFloat(states["sensor.el_rocco_battery_range"]?.state); const c = states["binary_sensor.el_rocco_charge_cable"]?.state === "on"; const tag = c ? " · charging" : ""; return isNaN(r) ? (c ? "charging" : "ready") : Math.round(r) + " mi" + tag; ]]]'
+          accent_color: rgba(121,199,255,0.95)
       - type: custom:button-card
-        template: cozy_light_tile
+        template: mf_tile
+        tap_action:
+          action: navigate
+          navigation_path: /mobile-forge/lights
         variables:
-          light_entity: light.bedroom
-          cute_name: Bedroom
-          icon_emoji: 🛏
+          icon: mdi:lightbulb-group
+          title: Lights
+          value: '[[[ const ids=["light.living_room_2","light.bedroom","light.couch","light.tv","light.ceiling","light.ceiling_2","light.backlight_tv","light.big_lamp","light.mike_side_lamp","light.kiara_side_lamp","light.light_panels_51_66_88"]; const on=ids.filter(i=>states[i]?.state==="on").length; return on + " on"; ]]]'
+          subtitle: '[[[ const r=[["light.living_room_2","Living"],["light.bedroom","Bedroom"],["light.couch","Couch"],["light.kiara_side_lamp","Kiara"],["light.mike_side_lamp","Mike"]]; const on=r.filter(([i,_])=>states[i]?.state==="on").map(([_,n])=>n); return on.length ? on.slice(0,2).join(", ") + " glowing" : "All resting"; ]]]'
+          accent_color: rgba(255,211,164,0.96)
       - type: custom:button-card
-        template: cozy_light_tile
+        template: mf_tile
+        entity: alarm_control_panel.nas_blink_home_security
+        tap_action:
+          action: navigate
+          navigation_path: /mobile-forge/security
         variables:
-          light_entity: light.couch
-          cute_name: Couch
-          icon_emoji: 🛋
+          icon: mdi:shield-home
+          title: Security
+          value: '[[[ const s=states["alarm_control_panel.nas_blink_home_security"]?.state; const m={disarmed:"Home",armed_home:"Tucked in",armed_away:"Armed",armed_night:"Night watch",triggered:"ALARM"}; return m[s]||s||"—"; ]]]'
+          subtitle: '[[[ const m=states["binary_sensor.nas_blink_front_door_motion"]; if(m?.state==="on") return "Motion at front door"; const last=m?new Date(m.last_changed):null; if(last){const min=Math.round((Date.now()-last)/60000); return min<60 ? "Quiet "+min+"m" : "Quiet "+Math.round(min/60)+"h"} return "All quiet"; ]]]'
+          accent_color: rgba(157,226,182,0.95)
       - type: custom:button-card
-        template: cozy_light_tile
+        template: mf_tile
+        tap_action:
+          action: navigate
+          navigation_path: /mobile-forge/sebastian
         variables:
-          light_entity: light.tv
-          cute_name: TV
-          icon_emoji: 📺
+          icon: mdi:robot
+          title: Sebastian
+          value: Online
+          subtitle: Ready
+          accent_color: rgba(121,199,255,0.95)
     - type: horizontal-stack
       cards:
       - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          label: Lock El Rocco
-          emoji: 🔒
-          accent: neutral
+        template: mf_pill
         tap_action:
           action: call-service
-          service: lock.lock
+          service: scene.turn_on
           target:
-            entity_id: lock.el_rocco_lock
+            entity_id: scene.living_room_dreamy_dusk
+        variables:
+          icon: mdi:candle
+          label: Cozy
+          accent_color: rgba(255,211,164,0.96)
       - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          label: All lights off
-          emoji: 💤
-          accent: warm
+        template: mf_pill
         tap_action:
           action: call-service
-          service: light.turn_off
+          service: scene.turn_on
           target:
-            entity_id: all
+            entity_id: scene.living_room_nighttime
+        variables:
+          icon: mdi:filmstrip
+          label: Movie
+          accent_color: rgba(121,199,255,0.95)
       - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          label: Tuck us in
-          emoji: 🛏
-          accent: rose
+        template: mf_pill
         tap_action:
           action: call-service
-          service: alarm_control_panel.alarm_arm_home
+          service: scene.turn_on
           target:
-            entity_id: alarm_control_panel.nas_blink_home_security
-    - &id005
-      type: custom:navbar-card
-      routes: &id002
+            entity_id: scene.living_room_energize
+        variables:
+          icon: mdi:weather-sunny
+          label: Bright
+          accent_color: rgba(255,211,164,0.96)
+      - type: custom:button-card
+        template: mf_pill
+        tap_action:
+          action: call-service
+          service: scene.turn_on
+          target:
+            entity_id: scene.bedroom_nighttime
+        variables:
+          icon: mdi:weather-night
+          label: Sleep
+          accent_color: rgba(243,166,184,0.95)
+    - type: custom:navbar-card
+      routes:
       - url: /mobile-forge/home
         icon: mdi:home
       - url: /mobile-forge/lights
@@ -157,7 +147,7 @@ views:
         icon: mdi:robot-outline
       - url: /mobile-forge/settings
         icon: mdi:cog
-      card_mod: &id003
+      card_mod:
         style: ':host { position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; z-index: 999 !important; }
 
           ha-card { border-radius: 0 !important; border-top: 1px solid rgba(255,255,255,0.06); background: rgba(22,22,26,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding-bottom: env(safe-area-inset-bottom, 0px); }
@@ -361,6 +351,28 @@ views:
           value: '[[[ return entity?.state === "on" ? Math.round(entity.attributes?.brightness / 2.55) + "%" : "off"; ]]]'
           subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
           accent_color: rgba(255,211,164,0.96)
+    - type: custom:navbar-card
+      routes:
+      - url: /mobile-forge/home
+        icon: mdi:home
+      - url: /mobile-forge/lights
+        icon: mdi:lightbulb
+      - url: /mobile-forge/media
+        icon: mdi:music
+      - url: /mobile-forge/tesla
+        icon: mdi:car-electric
+      - url: /mobile-forge/security
+        icon: mdi:shield-lock
+      - url: /mobile-forge/sebastian
+        icon: mdi:robot-outline
+      - url: /mobile-forge/settings
+        icon: mdi:cog
+      card_mod:
+        style: ':host { position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; z-index: 999 !important; }
+
+          ha-card { border-radius: 0 !important; border-top: 1px solid rgba(255,255,255,0.06); background: rgba(22,22,26,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+          '
 - title: Media
   path: media
   icon: mdi:music
@@ -370,7 +382,7 @@ views:
   sections:
   - type: grid
     cards:
-    - &id004
+    - &id002
       type: custom:button-card
       template: sky_system
     - type: custom:mushroom-title-card
@@ -431,8 +443,27 @@ views:
       card_mod:
         style: ha-card { background:none; border:none; box-shadow:none; height:70px; }
     - type: custom:navbar-card
-      routes: *id002
-      card_mod: *id003
+      routes: &id003
+      - url: /mobile-forge/home
+        icon: mdi:home
+      - url: /mobile-forge/lights
+        icon: mdi:lightbulb
+      - url: /mobile-forge/media
+        icon: mdi:music
+      - url: /mobile-forge/tesla
+        icon: mdi:car-electric
+      - url: /mobile-forge/security
+        icon: mdi:shield-lock
+      - url: /mobile-forge/sebastian
+        icon: mdi:robot-outline
+      - url: /mobile-forge/settings
+        icon: mdi:cog
+      card_mod: &id004
+        style: ':host { position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; z-index: 999 !important; }
+
+          ha-card { border-radius: 0 !important; border-top: 1px solid rgba(255,255,255,0.06); background: rgba(22,22,26,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+          '
 - title: El Rocco
   path: tesla
   icon: mdi:car-electric
@@ -653,6 +684,28 @@ views:
           title: Online
           value: '[[[ return entity?.state === "on" ? "Connected" : entity?.state || "Unknown"; ]]]'
           subtitle: Tesla API
+    - type: custom:navbar-card
+      routes:
+      - url: /mobile-forge/home
+        icon: mdi:home
+      - url: /mobile-forge/lights
+        icon: mdi:lightbulb
+      - url: /mobile-forge/media
+        icon: mdi:music
+      - url: /mobile-forge/tesla
+        icon: mdi:car-electric
+      - url: /mobile-forge/security
+        icon: mdi:shield-lock
+      - url: /mobile-forge/sebastian
+        icon: mdi:robot-outline
+      - url: /mobile-forge/settings
+        icon: mdi:cog
+      card_mod:
+        style: ':host { position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; z-index: 999 !important; }
+
+          ha-card { border-radius: 0 !important; border-top: 1px solid rgba(255,255,255,0.06); background: rgba(22,22,26,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+          '
 - title: Security
   path: security
   icon: mdi:shield-home
@@ -753,6 +806,28 @@ views:
           value: '[[[ return entity?.state === "locked" ? "Locked" : entity?.state || "Unknown"; ]]]'
           subtitle: Sentry linked from car page
           accent_color: rgba(121,199,255,0.95)
+    - type: custom:navbar-card
+      routes:
+      - url: /mobile-forge/home
+        icon: mdi:home
+      - url: /mobile-forge/lights
+        icon: mdi:lightbulb
+      - url: /mobile-forge/media
+        icon: mdi:music
+      - url: /mobile-forge/tesla
+        icon: mdi:car-electric
+      - url: /mobile-forge/security
+        icon: mdi:shield-lock
+      - url: /mobile-forge/sebastian
+        icon: mdi:robot-outline
+      - url: /mobile-forge/settings
+        icon: mdi:cog
+      card_mod:
+        style: ':host { position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; z-index: 999 !important; }
+
+          ha-card { border-radius: 0 !important; border-top: 1px solid rgba(255,255,255,0.06); background: rgba(22,22,26,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+          '
 - title: Sebastian
   path: sebastian
   icon: mdi:robot-outline
@@ -762,7 +837,7 @@ views:
   sections:
   - type: grid
     cards:
-    - *id004
+    - *id002
     - type: custom:mushroom-title-card
       title: Sebastian
       card_mod:
@@ -835,8 +910,8 @@ views:
       card_mod:
         style: ha-card { background:none; border:none; box-shadow:none; height:70px; }
     - type: custom:navbar-card
-      routes: *id002
-      card_mod: *id003
+      routes: *id003
+      card_mod: *id004
 - title: Music
   path: music
   icon: mdi:music
@@ -943,6 +1018,28 @@ views:
             - media_player.bedroom_tv
           data:
             is_volume_muted: true
+    - type: custom:navbar-card
+      routes:
+      - url: /mobile-forge/home
+        icon: mdi:home
+      - url: /mobile-forge/lights
+        icon: mdi:lightbulb
+      - url: /mobile-forge/media
+        icon: mdi:music
+      - url: /mobile-forge/tesla
+        icon: mdi:car-electric
+      - url: /mobile-forge/security
+        icon: mdi:shield-lock
+      - url: /mobile-forge/sebastian
+        icon: mdi:robot-outline
+      - url: /mobile-forge/settings
+        icon: mdi:cog
+      card_mod:
+        style: ':host { position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; z-index: 999 !important; }
+
+          ha-card { border-radius: 0 !important; border-top: 1px solid rgba(255,255,255,0.06); background: rgba(22,22,26,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+          '
 - title: House
   path: house
   icon: mdi:robot-vacuum
@@ -1040,6 +1137,28 @@ views:
           service: vacuum.pause
           target:
             entity_id: vacuum.roomba
+    - type: custom:navbar-card
+      routes:
+      - url: /mobile-forge/home
+        icon: mdi:home
+      - url: /mobile-forge/lights
+        icon: mdi:lightbulb
+      - url: /mobile-forge/media
+        icon: mdi:music
+      - url: /mobile-forge/tesla
+        icon: mdi:car-electric
+      - url: /mobile-forge/security
+        icon: mdi:shield-lock
+      - url: /mobile-forge/sebastian
+        icon: mdi:robot-outline
+      - url: /mobile-forge/settings
+        icon: mdi:cog
+      card_mod:
+        style: ':host { position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; z-index: 999 !important; }
+
+          ha-card { border-radius: 0 !important; border-top: 1px solid rgba(255,255,255,0.06); background: rgba(22,22,26,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+          '
 - title: Weather
   path: weather
   icon: mdi:weather-partly-cloudy
@@ -1114,7 +1233,10 @@ views:
         - entity: weather.forecast_home
           name: Conditions
         state_color: true
-    - *id005
+    - &id007
+      type: custom:navbar-card
+      routes: *id003
+      card_mod: *id004
 - title: Forge Classic
   path: forge-classic
   icon: mdi:archive-outline
@@ -1217,7 +1339,7 @@ views:
         tap_action:
           action: navigate
           navigation_path: /mobile-forge/media
-        card_mod: &id006
+        card_mod: &id005
           style: "ha-card {\n  background: rgba(30,30,30,0.65); backdrop-filter: blur(10px);\n  -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.06);\n  border-radius: 20px;\n}\n"
     - type: conditional
       conditions:
@@ -1246,7 +1368,7 @@ views:
         hide_forecast_section: false
         hide_clock: true
         use_browser_time: true
-        card_mod: *id006
+        card_mod: *id005
     - type: grid
       columns: 2
       square: false
@@ -1260,7 +1382,7 @@ views:
           navigation_path: /mobile-forge/tesla
         custom_fields:
           info: "[[[\n  const level = states['sensor.el_rocco_battery_level']?.state;\n  const range = states['sensor.el_rocco_battery_range']?.state;\n  if (!level || level === 'unknown' || level === 'unavailable') {\n    return `<span style=\"font-size:16px;font-weight:500;color:#999;\">Asleep</span>`;\n  }\n  return `<span style=\"font-size:22px;font-weight:600;\">${level}%</span>\n          <span style=\"font-size:11px;color:#aaa;\">${range} mi</span>`;\n]]]\n"
-        styles: &id007
+        styles: &id006
           card:
           - background: rgba(30,30,30,0.65)
           - backdrop-filter: blur(10px)
@@ -1296,7 +1418,7 @@ views:
           navigation_path: /mobile-forge/lights
         custom_fields:
           info: "[[[\n  const lights = ['light.living_room','light.light_panels_51_66_88','light.backlight_tv','light.tv'];\n  const on = lights.filter(l => states[l]?.state === 'on').length;\n  return `<span style=\"font-size:22px;font-weight:600;\">${on} / 4</span>\n          <span style=\"font-size:11px;color:#aaa;\">${on > 0 ? 'on' : 'all off'}</span>`;\n]]]\n"
-        styles: *id007
+        styles: *id006
         icon: mdi:lightbulb-group
       - type: custom:button-card
         entity: sensor.security_posture
@@ -1307,7 +1429,7 @@ views:
           navigation_path: /mobile-forge/security
         custom_fields:
           info: "[[[\n  const posture = entity?.state || 'unknown';\n  return `<span style=\"font-size:16px;font-weight:600;\">${posture}</span>`;\n]]]\n"
-        styles: *id007
+        styles: *id006
         icon: mdi:shield-lock
       - type: custom:button-card
         entity: input_text.sebastian_response
@@ -1318,7 +1440,7 @@ views:
           navigation_path: /mobile-forge/sebastian
         custom_fields:
           info: "[[[\n  const resp = entity?.state || '';\n  const text = (!resp || resp === 'unknown' || resp === 'unavailable') ? 'Awaiting...' : (resp.length > 30 ? resp.substring(0,30) + '...' : resp);\n  return `<span style=\"font-size:11px;color:#CE93D8;line-height:1.3;\">${text}</span>`;\n]]]\n"
-        styles: *id007
+        styles: *id006
         icon: mdi:robot-outline
     - type: horizontal-stack
       cards:
@@ -1442,7 +1564,7 @@ views:
       primary: ''
       card_mod:
         style: ha-card { background:none; border:none; box-shadow:none; height:70px; }
-    - *id005
+    - *id007
 - title: Settings
   path: settings
   icon: mdi:cog
@@ -1452,7 +1574,7 @@ views:
   sections:
   - type: grid
     cards:
-    - *id004
+    - *id002
     - type: custom:mushroom-title-card
       title: Forge Settings
       card_mod:
@@ -1498,8 +1620,8 @@ views:
       card_mod:
         style: ha-card { background:none; border:none; box-shadow:none; height:70px; }
     - type: custom:navbar-card
-      routes: *id002
-      card_mod: *id003
+      routes: *id003
+      card_mod: *id004
 button_card_templates:
   sky_system_tesla:
     variables:
