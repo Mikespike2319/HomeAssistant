@@ -2,147 +2,105 @@ title: Music
 path: music
 icon: mdi:music
 type: sections
-max_columns: 2
-cards:
-- type: custom:button-card
-  template: sky_system
-- type: custom:mod-card
-  style: "ha-card {\n  background: transparent !important;\n  border: none !important;\n  box-shadow: none !important;\n  margin-top: 14vh;\n}\n"
-  card:
-    type: markdown
-    content: "<div style=\"\n  font-family: 'Caveat', 'Dancing Script', Georgia, cursive;\n  font-style: italic;\n  font-size: 36px;\n  font-weight: 500;\n  color: rgba(255, 230, 210, 0.92);\n  text-shadow: 0 2px 8px rgba(0,0,0,0.5);\n  text-align: center;\n  letter-spacing: 0.02em;\n\">\n  Press play \U0001F3B5\n</div>\n"
-- type: custom:mod-card
-  style: 'ha-card { background: transparent !important; border: none !important; box-shadow: none !important; }
-
-    '
-  card:
-    type: markdown
-    content: "<div style=\"font-family:'Caveat',cursive; font-style:italic; font-size:22px; color:rgba(255,220,200,0.85); margin-left:8px;\">\n  \U0001F50A Den\n</div>\n"
+max_columns: 1
+dense_section_placement: true
+sections:
 - type: grid
-  columns: 1
-  square: false
   cards:
   - type: custom:button-card
-    template: cozy_sonos_tile
-    variables:
-      media_player_entity: media_player.den
-      cute_name: Sonos Era 100
-      emoji: 🔊
-- type: custom:mod-card
-  style: 'ha-card { background: transparent !important; border: none !important; box-shadow: none !important; }
-
-    '
-  card:
-    type: markdown
-    content: "<div style=\"font-family:'Caveat',cursive; font-style:italic; font-size:22px; color:rgba(255,220,200,0.85); margin-left:8px;\">\n  \U0001F6CB Living room\n</div>\n"
-- type: grid
-  columns: 2
-  square: false
-  cards:
+    template: sky_system
   - type: custom:button-card
-    template: cozy_sonos_tile
+    template: mf_page_title
     variables:
-      media_player_entity: media_player.luna_s_firetvstick
-      cute_name: Luna's FireTV
-      emoji: 🦊
+      title: Music
+      subtitle: Sonos, Spotify, TVs, and room audio.
   - type: custom:button-card
-    template: cozy_sonos_tile
+    template: mf_hero
+    entity: media_player.den
     variables:
-      media_player_entity: media_player.michael_s_2nd_echo_dot
-      cute_name: Echo
-      emoji: 🔵
-- type: custom:mod-card
-  style: 'ha-card { background: transparent !important; border: none !important; box-shadow: none !important; }
-
-    '
-  card:
-    type: markdown
-    content: "<div style=\"font-family:'Caveat',cursive; font-style:italic; font-size:22px; color:rgba(255,220,200,0.85); margin-left:8px;\">\n  \U0001F6CF Bedroom\n</div>\n"
-- type: grid
-  columns: 2
-  square: false
-  cards:
-  - type: custom:button-card
-    template: cozy_sonos_tile
-    variables:
-      media_player_entity: media_player.lg_webos_tv_6651
-      cute_name: Bedroom TV
-      emoji: 📺
-  - type: custom:button-card
-    template: cozy_sonos_tile
-    variables:
-      media_player_entity: media_player.bed_room_tv
-      cute_name: Bedroom TV (alt)
-      emoji: 📺
-  - type: custom:button-card
-    template: cozy_sonos_tile
-    variables:
-      media_player_entity: media_player.michael_s_lg_webos_2023_dev_monitor
-      cute_name: Mike's monitor
-      emoji: 💻
-  - type: custom:button-card
-    template: cozy_sonos_tile
-    variables:
-      media_player_entity: media_player.spotify_michael_sanchez
-      cute_name: Mike's Spotify
-      emoji: 🎶
-- type: custom:mod-card
-  style: 'ha-card { background: transparent !important; border: none !important; box-shadow: none !important; }
-
-    '
-  card:
-    type: markdown
-    content: "<div style=\"font-family:'Caveat',cursive; font-style:italic; font-size:22px; color:rgba(255,220,200,0.85); margin-left:8px;\">\n  \U0001F373 Kitchen + \U0001F333 Outside\n</div>\n"
-- type: grid
-  columns: 2
-  square: false
-  cards:
-  - type: custom:button-card
-    template: cozy_sonos_tile
-    variables:
-      media_player_entity: media_player.32q3k
-      cute_name: Kitchen
-      emoji: 🍳
-  - type: custom:button-card
-    template: cozy_sonos_tile
-    variables:
-      media_player_entity: media_player.32q3k_2
-      cute_name: Kitchen 2
-      emoji: 🍳
-  - type: custom:button-card
-    template: cozy_sonos_tile
-    variables:
-      media_player_entity: media_player.lg_webos_tv_ua7700pub
-      cute_name: TV (UA7700)
-      emoji: 📺
-- type: horizontal-stack
-  cards:
-  - type: custom:button-card
-    template: cozy_scene_pill
-    variables:
-      label: Pause everything
-      emoji: ⏸
-      accent: neutral
-    tap_action:
-      action: call-service
-      service: media_player.media_pause
-      target:
-        entity_id: all
-  - type: custom:button-card
-    template: cozy_scene_pill
-    variables:
-      label: Mute everything
-      emoji: 🔇
-      accent: cool
-    tap_action:
-      action: call-service
-      service: media_player.volume_mute
-      target:
-        entity_id: all
-      data:
-        is_volume_muted: true
-- type: custom:mod-card
-  style: "ha-card {\n  background: rgba(20, 17, 24, 0.5) !important;\n  backdrop-filter: blur(14px) saturate(140%);\n  border: 1px dashed rgba(255, 220, 195, 0.25) !important;\n  border-radius: 18px !important;\n  padding: 16px !important;\n}\n"
-  card:
-    type: markdown
-    content: "<div style=\"font-family: 'Caveat', cursive; font-style: italic; font-size: 18px; color: rgba(255, 220, 200, 0.8);\">\n  ✨ <b>Want to add Sonos?</b><br/>\n  Settings → Devices & Services → Add Integration → search \"Sonos\" — HA finds them automatically on your network. They'll appear here as new tiles.\n</div>\n"
+      icon: mdi:speaker-wireless
+      value: Den
+      subtitle: Sonos Era 100 · 192.168.50.51 · ready after HA integration
+      accent_color: rgba(157,226,182,0.95)
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+    - type: custom:button-card
+      template: mf_tile
+      entity: media_player.den
+      variables:
+        icon: mdi:speaker-wireless
+        title: Sonos Den
+        value: '[[[ return entity?.state === "playing" ? "Playing" : entity?.state === "unavailable" ? "Add in HA" : "Ready"; ]]]'
+        subtitle: Era 100
+        accent_color: rgba(157,226,182,0.95)
+    - type: custom:button-card
+      template: mf_tile
+      entity: media_player.spotifyplus_michael_trinidad
+      variables:
+        icon: mdi:music-circle-outline
+        title: Spotify
+        value: '[[[ return entity?.state === "playing" ? "Playing" : "Ready"; ]]]'
+        subtitle: Mike's Spotify
+        accent_color: rgba(157,226,182,0.95)
+    - type: custom:button-card
+      template: mf_tile
+      entity: media_player.echo_dot
+      variables:
+        icon: mdi:speaker-wireless
+        title: Echo Dot
+        value: '[[[ return entity?.state === "playing" ? "Playing" : "Idle"; ]]]'
+        subtitle: Local speaker
+        accent_color: rgba(121,199,255,0.95)
+    - type: custom:button-card
+      template: mf_tile
+      entity: media_player.bedroom_tv
+      variables:
+        icon: mdi:youtube-tv
+        title: Bedroom TV
+        value: '[[[ return entity?.state === "playing" ? "Playing" : entity?.state || "Ready"; ]]]'
+        subtitle: YouTube
+        accent_color: rgba(255,211,164,0.96)
+    - type: custom:button-card
+      template: mf_tile
+      entity: media_player.lg_tv
+      variables:
+        icon: mdi:television
+        title: LG TV
+        value: '[[[ return entity?.state || "Unavailable"; ]]]'
+        subtitle: Living room
+        accent_color: rgba(121,199,255,0.95)
+  - type: horizontal-stack
+    cards:
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:pause
+        label: Pause everything
+        accent_color: rgba(255,211,164,0.96)
+      tap_action:
+        action: call-service
+        service: media_player.media_pause
+        target:
+          entity_id:
+          - media_player.den
+          - media_player.spotifyplus_michael_trinidad
+          - media_player.echo_dot
+          - media_player.bedroom_tv
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:volume-mute
+        label: Mute everything
+        accent_color: rgba(243,166,184,0.95)
+      tap_action:
+        action: call-service
+        service: media_player.volume_mute
+        target:
+          entity_id:
+          - media_player.den
+          - media_player.echo_dot
+          - media_player.bedroom_tv
+        data:
+          is_volume_muted: true

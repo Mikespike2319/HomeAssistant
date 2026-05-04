@@ -2,149 +2,197 @@ title: Lights
 path: lights
 icon: mdi:lightbulb-group
 type: sections
-max_columns: 3
-cards:
-- type: custom:button-card
-  template: sky_system
-- type: custom:mod-card
-  style: "ha-card {\n  background: transparent !important;\n  border: none !important;\n  box-shadow: none !important;\n  margin-top: 14vh;\n}\n"
-  card:
-    type: markdown
-    content: "<div style=\"\n  font-family: 'Caveat', 'Dancing Script', Georgia, cursive;\n  font-style: italic;\n  font-size: 36px;\n  font-weight: 500;\n  color: rgba(255, 230, 210, 0.92);\n  text-shadow: 0 2px 8px rgba(0,0,0,0.5);\n  text-align: center;\n  letter-spacing: 0.02em;\n\">\n  A little glow ✨\n</div>\n"
-- type: horizontal-stack
-  cards:
-  - type: custom:button-card
-    template: cozy_scene_pill
-    variables:
-      scene_entity: scene.living_room_dreamy_dusk
-      label: Dreamy dusk
-      emoji: 🌅
-      accent: warm
-  - type: custom:button-card
-    template: cozy_scene_pill
-    variables:
-      scene_entity: scene.living_room_nighttime
-      label: Movie night
-      emoji: 🎬
-      accent: neutral
-  - type: custom:button-card
-    template: cozy_scene_pill
-    variables:
-      scene_entity: scene.living_room_energize
-      label: Bright morning
-      emoji: ☀️
-      accent: cool
-- type: horizontal-stack
-  cards:
-  - type: custom:button-card
-    template: cozy_scene_pill
-    variables:
-      scene_entity: scene.bedroom_dreamy_dusk
-      label: Wind down
-      emoji: 🌙
-      accent: rose
-  - type: custom:button-card
-    template: cozy_scene_pill
-    variables:
-      scene_entity: scene.bedroom_nighttime
-      label: Sweet dreams
-      emoji: 💫
-      accent: cool
-  - type: custom:button-card
-    template: cozy_scene_pill
-    variables:
-      scene_entity: scene.bedroom_energize
-      label: Wake up
-      emoji: ☕
-      accent: warm
-  - type: custom:button-card
-    template: cozy_scene_pill
-    variables:
-      scene_entity: scene.game_room_pensive
-      label: Pensive
-      emoji: 📖
-      accent: sage
-- type: custom:mod-card
-  style: "ha-card {\n  background: transparent !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
-  card:
-    type: markdown
-    content: "<div style=\"\n  font-family: 'Caveat', cursive;\n  font-style: italic;\n  font-size: 22px;\n  color: rgba(255, 220, 200, 0.85);\n  text-align: left;\n  margin-left: 8px;\n\">\n  \U0001F6CB Living room\n</div>\n"
+max_columns: 1
+dense_section_placement: true
+sections:
 - type: grid
-  columns: 3
-  square: false
   cards:
   - type: custom:button-card
-    template: cozy_light_tile
-    variables:
-      light_entity: light.living_room_2
-      cute_name: All living room
-      icon_emoji: 🛋
+    template: sky_system
   - type: custom:button-card
-    template: cozy_light_tile
+    template: mf_page_title
     variables:
-      light_entity: light.couch
-      cute_name: Couch
-      icon_emoji: 🛋
+      title: Lights
+      subtitle: Rooms, scenes, and every glow in one rhythm.
+  - type: horizontal-stack
+    cards:
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:weather-sunset
+        label: Dreamy dusk
+        accent_color: rgba(255,211,164,0.96)
+      tap_action:
+        action: call-service
+        service: scene.turn_on
+        target:
+          entity_id: scene.living_room_dreamy_dusk
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:movie-open-outline
+        label: Movie night
+        accent_color: rgba(121,199,255,0.95)
+      tap_action:
+        action: call-service
+        service: scene.turn_on
+        target:
+          entity_id: scene.living_room_nighttime
+  - type: horizontal-stack
+    cards:
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:white-balance-sunny
+        label: Bright morning
+        accent_color: rgba(255,211,164,0.96)
+      tap_action:
+        action: call-service
+        service: scene.turn_on
+        target:
+          entity_id: scene.living_room_energize
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:moon-waning-crescent
+        label: Wind down
+        accent_color: rgba(243,166,184,0.95)
+      tap_action:
+        action: call-service
+        service: scene.turn_on
+        target:
+          entity_id: scene.bedroom_dreamy_dusk
+  - type: horizontal-stack
+    cards:
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:star-four-points-outline
+        label: Sweet dreams
+        accent_color: rgba(121,199,255,0.95)
+      tap_action:
+        action: call-service
+        service: scene.turn_on
+        target:
+          entity_id: scene.bedroom_nighttime
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:coffee-outline
+        label: Wake up
+        accent_color: rgba(255,211,164,0.96)
+      tap_action:
+        action: call-service
+        service: scene.turn_on
+        target:
+          entity_id: scene.bedroom_energize
   - type: custom:button-card
-    template: cozy_light_tile
+    template: mf_section_label
     variables:
-      light_entity: light.tv
-      cute_name: TV
-      icon_emoji: 📺
+      icon: mdi:sofa-outline
+      label: Living room
+      accent_color: rgba(121,199,255,0.95)
+  - type: grid
+    columns: 3
+    square: false
+    cards:
+    - type: custom:button-card
+      template: mf_tile
+      entity: light.living_room_2
+      variables:
+        icon: mdi:lightbulb-group-outline
+        title: All living room
+        value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
+        subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
+    - type: custom:button-card
+      template: mf_tile
+      entity: light.couch
+      variables:
+        icon: mdi:sofa-outline
+        title: Couch
+        value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
+        subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
+    - type: custom:button-card
+      template: mf_tile
+      entity: light.tv
+      variables:
+        icon: mdi:television
+        title: TV
+        value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
+        subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
+    - type: custom:button-card
+      template: mf_tile
+      entity: light.backlight_tv
+      variables:
+        icon: mdi:television-ambient-light
+        title: TV backlight
+        value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
+        subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
+    - type: custom:button-card
+      template: mf_tile
+      entity: light.ceiling
+      variables:
+        icon: mdi:ceiling-light-outline
+        title: Ceiling
+        value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
+        subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
+    - type: custom:button-card
+      template: mf_tile
+      entity: light.ceiling_2
+      variables:
+        icon: mdi:ceiling-light-outline
+        title: Ceiling back
+        value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
+        subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
   - type: custom:button-card
-    template: cozy_light_tile
+    template: mf_section_label
     variables:
-      light_entity: light.backlight_tv
-      cute_name: TV backlight
-      icon_emoji: ✨
-  - type: custom:button-card
-    template: cozy_light_tile
-    variables:
-      light_entity: light.ceiling
-      cute_name: Ceiling
-      icon_emoji: 💡
-  - type: custom:button-card
-    template: cozy_light_tile
-    variables:
-      light_entity: light.ceiling_2
-      cute_name: Ceiling (back)
-      icon_emoji: 💡
-- type: custom:mod-card
-  style: "ha-card {\n  background: transparent !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
-  card:
-    type: markdown
-    content: "<div style=\"\n  font-family: 'Caveat', cursive;\n  font-style: italic;\n  font-size: 22px;\n  color: rgba(255, 220, 200, 0.85);\n  text-align: left;\n  margin-left: 8px;\n\">\n  \U0001F6CF Bedroom\n</div>\n"
-- type: grid
-  columns: 3
-  square: false
-  cards:
-  - type: custom:button-card
-    template: cozy_light_tile
-    variables:
-      light_entity: light.bedroom
-      cute_name: All bedroom
-      icon_emoji: 🛏
-  - type: custom:button-card
-    template: cozy_light_tile
-    variables:
-      light_entity: light.mike_side_lamp
-      cute_name: Mike's side
-      icon_emoji: 🌙
-  - type: custom:button-card
-    template: cozy_light_tile
-    variables:
-      light_entity: light.kiara_side_lamp
-      cute_name: Kiara's side
-      icon_emoji: 💫
-  - type: custom:button-card
-    template: cozy_light_tile
-    variables:
-      light_entity: light.light_panels_51_66_88
-      cute_name: Light panels
-      icon_emoji: 🎨
-  - type: custom:button-card
-    template: cozy_light_tile
-    variables:
-      light_entity: light.big_lamp
-      cute_name: Big lamp
-      icon_emoji: 💡
+      icon: mdi:bed-king-outline
+      label: Bedroom
+      accent_color: rgba(243,166,184,0.95)
+  - type: grid
+    columns: 3
+    square: false
+    cards:
+    - type: custom:button-card
+      template: mf_tile
+      entity: light.bedroom
+      variables:
+        icon: mdi:bed-king-outline
+        title: All bedroom
+        value: '[[[ return entity?.state === "on" ? Math.round(entity.attributes?.brightness / 2.55) + "%" : "off"; ]]]'
+        subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
+        accent_color: rgba(255,211,164,0.96)
+    - type: custom:button-card
+      template: mf_tile
+      entity: light.mike_side_lamp
+      variables:
+        icon: mdi:moon-waning-crescent
+        title: Mike's side
+        value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
+        subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
+    - type: custom:button-card
+      template: mf_tile
+      entity: light.kiara_side_lamp
+      variables:
+        icon: mdi:moon-waxing-crescent
+        title: Kiara's side
+        value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
+        subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
+    - type: custom:button-card
+      template: mf_tile
+      entity: light.light_panels_51_66_88
+      variables:
+        icon: mdi:hexagon-multiple-outline
+        title: Light panels
+        value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
+        subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
+    - type: custom:button-card
+      template: mf_tile
+      entity: light.big_lamp
+      variables:
+        icon: mdi:floor-lamp-outline
+        title: Big lamp
+        value: '[[[ return entity?.state === "on" ? Math.round(entity.attributes?.brightness / 2.55) + "%" : "off"; ]]]'
+        subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
+        accent_color: rgba(255,211,164,0.96)

@@ -43,20 +43,7 @@ def build_dashboard_config() -> dict:
 
     # Load templates from the repo.
     print("→ Loading templates...")
-    template_files = [
-        COZY / "templates" / "sky_system.yaml",
-        COZY / "templates" / "sky_system_tesla.yaml",
-        COZY / "templates" / "cozy_light_tile.yaml",
-        COZY / "templates" / "cozy_scene_pill.yaml",
-        COZY / "templates" / "cozy_camera_tile.yaml",
-        COZY / "templates" / "cozy_alarm_panel.yaml",
-        COZY / "templates" / "cozy_sonos_tile.yaml",
-        COZY / "templates" / "cozy_sonos_favorite.yaml",
-        COZY / "templates" / "cozy_thermostat_tile.yaml",
-        COZY / "templates" / "cozy_vacuum_tile.yaml",
-        COZY / "templates" / "cozy_weather_hero.yaml",
-        COZY / "templates" / "tesla_tap_zone.yaml",
-    ]
+    template_files = sorted((COZY / "templates").glob("*.yaml"))
     button_card_templates: dict = {}
     for f in template_files:
         d = load_yaml(f)
@@ -167,6 +154,22 @@ def add_font_resource() -> None:
     print(f"  ✓ Caveat font CSS registered as resource")
 
 
+def copy_dashboard_assets() -> None:
+    """Copy assets so Lovelace can serve them from /local/mobile-forge/."""
+    src_dir = COZY / "assets"
+    dst_dir = HA_ROOT / "www" / "mobile-forge"
+    if not src_dir.exists():
+        print("  • no assets directory found, skipping")
+        return
+    dst_dir.mkdir(parents=True, exist_ok=True)
+    for src in sorted(src_dir.iterdir()):
+        if src.is_file():
+            dst = dst_dir / src.name
+            import shutil
+            shutil.copy2(src, dst)
+            print(f"  ✓ copied {dst}")
+
+
 def main():
     print(f"\n{'='*60}\n  COZY DASHBOARD DEPLOY\n{'='*60}\n")
     if not HA_ROOT.exists():
@@ -176,20 +179,23 @@ def main():
         print(f"FATAL: {COZY} not found — run from a system with the cozy build")
         sys.exit(1)
 
-    print("[1/4] Building dashboard config from YAML sources...")
+    print("[1/5] Building dashboard config from YAML sources...")
     cfg = build_dashboard_config()
     n_templates = len(cfg["button_card_templates"])
     n_views = len(cfg["views"])
     print(f"\n  → {n_templates} templates, {n_views} views ready")
 
-    print("\n[2/4] Writing dashboard storage file...")
+    print("\n[2/5] Writing dashboard storage file...")
     write_dashboard_storage(cfg)
 
-    print("\n[3/4] Registering dashboard in sidebar...")
+    print("\n[3/5] Registering dashboard in sidebar...")
     register_dashboard_in_list()
 
-    print("\n[4/4] Adding Caveat font resource...")
+    print("\n[4/5] Adding Caveat font resource...")
     add_font_resource()
+
+    print("\n[5/5] Copying local dashboard assets...")
+    copy_dashboard_assets()
 
     print(f"\n{'='*60}")
     print(f"  ✓ DEPLOY COMPLETE")

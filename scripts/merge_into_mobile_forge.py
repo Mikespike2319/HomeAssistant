@@ -27,20 +27,7 @@ def load_yaml(p: Path) -> dict:
 #  Build button_card_templates dict from all template files
 # ─────────────────────────────────────────────────────────────────
 def collect_templates() -> dict:
-    files = [
-        COZY / "templates" / "sky_system.yaml",
-        COZY / "templates" / "sky_system_tesla.yaml",
-        COZY / "templates" / "cozy_light_tile.yaml",
-        COZY / "templates" / "cozy_scene_pill.yaml",
-        COZY / "templates" / "cozy_camera_tile.yaml",
-        COZY / "templates" / "cozy_alarm_panel.yaml",
-        COZY / "templates" / "cozy_sonos_tile.yaml",
-        COZY / "templates" / "cozy_sonos_favorite.yaml",
-        COZY / "templates" / "cozy_thermostat_tile.yaml",
-        COZY / "templates" / "cozy_vacuum_tile.yaml",
-        COZY / "templates" / "cozy_weather_hero.yaml",
-        COZY / "templates" / "tesla_tap_zone.yaml",
-    ]
+    files = sorted((COZY / "templates").glob("*.yaml"))
     templates = {}
     for f in files:
         d = load_yaml(f)

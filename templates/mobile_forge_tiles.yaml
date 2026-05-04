@@ -1,0 +1,259 @@
+button_card_templates:
+  mf_page_title:
+    show_icon: false
+    show_name: true
+    show_label: true
+    name: '[[[ return variables.title || ""; ]]]'
+    label: '[[[ return variables.subtitle || ""; ]]]'
+    styles:
+      card:
+        - padding: 18px 4px 8px
+        - background: transparent
+        - box-shadow: none
+        - border: none
+        - position: relative
+        - z-index: 2
+      name:
+        - justify-self: start
+        - color: rgba(255,246,235,0.96)
+        - font-size: 30px
+        - line-height: 34px
+        - font-weight: 800
+        - letter-spacing: 0
+      label:
+        - justify-self: start
+        - color: rgba(255,235,215,0.62)
+        - font-size: 14px
+        - line-height: 19px
+        - font-weight: 650
+        - padding-top: 6px
+
+  mf_hero:
+    show_icon: true
+    show_name: false
+    show_label: true
+    icon: '[[[ return variables.icon || "mdi:home"; ]]]'
+    label: '[[[ return variables.subtitle || ""; ]]]'
+    custom_fields:
+      value: '[[[ return variables.value || (entity ? entity.state : ""); ]]]'
+    styles:
+      card:
+        - min-height: 144px
+        - padding: 20px
+        - border-radius: 18px
+        - border: 1px solid rgba(255,235,215,0.13)
+        - background: linear-gradient(150deg, rgba(35,31,42,0.76), rgba(22,20,28,0.72))
+        - box-shadow: 0 18px 48px rgba(0,0,0,0.24)
+        - backdrop-filter: blur(20px) saturate(1.16)
+        - position: relative
+        - z-index: 2
+      grid:
+        - grid-template-areas: '"i value" "i l"'
+        - grid-template-columns: 92px 1fr
+        - grid-template-rows: min-content min-content
+        - column-gap: 18px
+        - align-items: center
+      icon:
+        - width: 42px
+        - color: '[[[ return variables.accent_color || "rgba(255,211,164,0.96)"; ]]]'
+      img_cell:
+        - grid-area: i
+        - width: 74px
+        - height: 74px
+        - border-radius: 22px
+        - background: rgba(255,226,162,0.08)
+        - box-shadow: inset 0 0 0 1px rgba(255,226,162,0.12), 0 18px 38px rgba(0,0,0,0.22)
+      label:
+        - grid-area: l
+        - justify-self: start
+        - color: rgba(255,235,215,0.62)
+        - font-size: 13px
+        - line-height: 18px
+        - font-weight: 650
+      custom_fields:
+        value:
+          - grid-area: value
+          - justify-self: start
+          - color: rgba(255,246,235,0.96)
+          - font-size: 48px
+          - line-height: 50px
+          - font-weight: 300
+
+  mf_tile:
+    show_icon: true
+    show_name: true
+    show_label: true
+    show_state: false
+    icon: '[[[ return variables.icon || "mdi:circle"; ]]]'
+    name: '[[[ return variables.title || entity?.attributes?.friendly_name || ""; ]]]'
+    label: '[[[ return variables.subtitle || ""; ]]]'
+    custom_fields:
+      value: '[[[ return variables.value || (entity ? entity.state : ""); ]]]'
+    styles:
+      card:
+        - min-height: 106px
+        - padding: 14px
+        - border-radius: 18px
+        - border: 1px solid rgba(255,235,215,0.13)
+        - background: linear-gradient(150deg, rgba(35,31,42,0.76), rgba(22,20,28,0.72))
+        - box-shadow: 0 18px 48px rgba(0,0,0,0.24)
+        - backdrop-filter: blur(20px) saturate(1.16)
+        - position: relative
+        - z-index: 2
+      grid:
+        - grid-template-areas: '"i n" "value value" "l l"'
+        - grid-template-columns: 22px 1fr
+        - grid-template-rows: min-content 1fr min-content
+        - column-gap: 8px
+        - row-gap: 5px
+        - align-items: start
+      icon:
+        - width: 18px
+        - color: '[[[ return variables.accent_color || "rgba(121,199,255,0.95)"; ]]]'
+      img_cell:
+        - justify-self: start
+        - align-self: center
+      name:
+        - justify-self: start
+        - align-self: center
+        - color: rgba(255,246,235,0.94)
+        - font-size: 14px
+        - line-height: 18px
+        - font-weight: 800
+        - white-space: normal
+        - text-align: left
+      label:
+        - justify-self: start
+        - color: rgba(255,235,215,0.62)
+        - font-size: 13px
+        - line-height: 17px
+        - font-weight: 650
+      custom_fields:
+        value:
+          - grid-area: value
+          - justify-self: start
+          - align-self: end
+          - color: rgba(255,246,235,0.96)
+          - font-size: 30px
+          - line-height: 32px
+          - font-weight: 300
+
+  mf_pill:
+    show_icon: true
+    show_name: true
+    icon: '[[[ return variables.icon || "mdi:circle"; ]]]'
+    name: '[[[ return variables.label || ""; ]]]'
+    styles:
+      card:
+        - min-height: 40px
+        - padding: 0 14px
+        - border-radius: 999px
+        - border: 1px solid rgba(255,235,215,0.13)
+        - background: rgba(23,22,28,0.7)
+        - box-shadow: none
+        - position: relative
+        - z-index: 2
+      grid:
+        - grid-template-areas: '"i n"'
+        - grid-template-columns: 18px 1fr
+        - column-gap: 8px
+        - align-items: center
+      icon:
+        - width: 16px
+        - color: '[[[ return variables.accent_color || "rgba(255,211,164,0.96)"; ]]]'
+      name:
+        - justify-self: start
+        - color: rgba(255,246,235,0.86)
+        - font-size: 13px
+        - line-height: 15px
+        - font-weight: 800
+
+  mf_section_label:
+    show_icon: true
+    show_name: true
+    icon: '[[[ return variables.icon || "mdi:label-outline"; ]]]'
+    name: '[[[ return variables.label || ""; ]]]'
+    styles:
+      card:
+        - min-height: 44px
+        - padding: 0 14px
+        - border-radius: 14px
+        - border: 1px solid rgba(255,255,255,0.08)
+        - background: rgba(11,12,15,0.54)
+        - box-shadow: none
+        - position: relative
+        - z-index: 2
+      grid:
+        - grid-template-areas: '"i n"'
+        - grid-template-columns: 22px 1fr
+        - column-gap: 8px
+        - align-items: center
+      icon:
+        - width: 18px
+        - color: '[[[ return variables.accent_color || "rgba(121,199,255,0.95)"; ]]]'
+      name:
+        - justify-self: start
+        - color: rgba(255,246,235,0.86)
+        - font-size: 16px
+        - line-height: 18px
+        - font-weight: 850
+
+  mf_model_y_juniper:
+    show_icon: false
+    show_name: false
+    show_label: false
+    custom_fields:
+      image: |
+        [[[
+          const src = variables.image || "/local/mobile-forge/model-y-juniper.png";
+          return `
+            <img src="${src}" alt="Tesla Model Y Juniper" style="
+              width:100%;
+              height:244px;
+              display:block;
+              object-fit:cover;
+              object-position:center;
+              filter:saturate(0.94) contrast(1.02);
+            ">
+            <div style="
+              position:absolute;
+              left:12px;
+              bottom:12px;
+              min-height:36px;
+              padding:0 12px;
+              display:inline-flex;
+              align-items:center;
+              gap:8px;
+              border-radius:15px;
+              border:1px solid rgba(255,255,255,0.16);
+              background:rgba(13,15,19,0.78);
+              color:rgba(255,246,235,0.94);
+              font-weight:900;
+              font-size:13px;
+              line-height:1;
+              backdrop-filter:blur(12px);
+              box-shadow:0 12px 28px rgba(0,0,0,0.28);
+              pointer-events:none;
+            ">
+              <ha-icon icon="mdi:car-electric" style="width:17px;height:17px;color:rgba(121,199,255,0.95);"></ha-icon>
+              <span>Model Y Juniper</span>
+            </div>
+          `;
+        ]]]
+    styles:
+      card:
+        - height: 244px
+        - padding: 0
+        - border-radius: 18px
+        - border: 1px solid rgba(255,235,215,0.13)
+        - background: linear-gradient(150deg, rgba(35,31,42,0.76), rgba(22,20,28,0.72))
+        - box-shadow: 0 18px 48px rgba(0,0,0,0.24)
+        - backdrop-filter: blur(20px) saturate(1.16)
+        - overflow: hidden
+        - position: relative
+        - z-index: 2
+      grid:
+        - grid-template-areas: '"image"'
+      custom_fields:
+        image:
+          - grid-area: image

@@ -1,36 +1,97 @@
 title: House
 path: house
-icon: mdi:home-thermometer
+icon: mdi:robot-vacuum
 type: sections
-max_columns: 2
-cards:
-- type: custom:button-card
-  template: sky_system
-- type: custom:mod-card
-  style: "ha-card {\n  background: transparent !important;\n  border: none !important;\n  box-shadow: none !important;\n  margin-top: 14vh;\n}\n"
-  card:
-    type: markdown
-    content: "<div style=\"\n  font-family: 'Caveat', 'Dancing Script', Georgia, cursive;\n  font-style: italic;\n  font-size: 36px;\n  font-weight: 500;\n  color: rgba(255, 230, 210, 0.92);\n  text-shadow: 0 2px 8px rgba(0,0,0,0.5);\n  text-align: center;\n  letter-spacing: 0.02em;\n\">\n  Around the house \U0001F3E1\n</div>\n"
-- type: custom:mod-card
-  style: "ha-card {\n  background: rgba(20, 17, 24, 0.5) !important;\n  backdrop-filter: blur(14px) saturate(140%);\n  border: 1px dashed rgba(255, 220, 195, 0.30) !important;\n  border-radius: 18px !important;\n  padding: 22px !important;\n}\n"
-  card:
-    type: markdown
-    content: "<div style=\"font-family:'Caveat',cursive; font-style:italic; font-size:24px; color:rgba(255,220,200,0.9);\">\n  \U0001F321 House thermostat\n</div>\n<div style=\"font-family:'Inter',sans-serif; font-size:13px; color:rgba(255,235,215,0.72); margin-top:8px; line-height:1.5;\">\n  Your thermostat is on Alexa, not in Home Assistant yet. To get it here:\n  <br/><br/>\n  <b>Easiest:</b> Settings → Devices & Services → Add Integration → search for your thermostat brand directly (Honeywell, Ecobee, Nest, Sensi, etc.).\n  <br/><br/>\n  <b>Alexa fallback:</b> install the HACS <i>Amazon Devices</i> integration — it pulls thermostat state from Alexa cloud (~30 second lag).\n  <br/><br/>\n  Once it shows up as a <code>climate.*</code> entity, swap it into this tile.\n</div>\n"
-- type: custom:mod-card
-  style: "ha-card {\n  background: rgba(20, 17, 24, 0.5) !important;\n  backdrop-filter: blur(14px) saturate(140%);\n  border: 1px dashed rgba(255, 220, 195, 0.30) !important;\n  border-radius: 18px !important;\n  padding: 22px !important;\n}\n"
-  card:
-    type: markdown
-    content: "<div style=\"font-family:'Caveat',cursive; font-style:italic; font-size:24px; color:rgba(255,220,200,0.9);\">\n  \U0001F916 iRobot Roomba\n</div>\n<div style=\"font-family:'Inter',sans-serif; font-size:13px; color:rgba(255,235,215,0.72); margin-top:8px; line-height:1.5;\">\n  Your Roomba isn't connected to HA yet. To add it:\n  <br/><br/>\n  1. Settings → Devices & Services → Add Integration<br/>\n  2. Search \"iRobot\" or \"Roomba\"<br/>\n  3. Sign in with your iRobot account<br/>\n  4. The vacuum will appear as <code>vacuum.roomba</code> (or similar)\n  <br/><br/>\n  Once connected, this card will turn into a cozy tile with a battery bar, status messages (\"Tidying up the place\", \"Resting at home\"), and one-tap start/pause/dock.\n</div>\n"
-- type: custom:mod-card
-  style: 'ha-card { background: transparent !important; border: none !important; box-shadow: none !important; }
-
-    '
-  card:
-    type: markdown
-    content: "<div style=\"font-family:'Caveat',cursive; font-style:italic; font-size:22px; color:rgba(255,220,200,0.85); margin-left:8px;\">\n  \U0001F697 Currently only Tesla cabin climate is in HA\n</div>\n"
-- type: custom:button-card
-  template: cozy_thermostat_tile
-  variables:
-    climate_entity: climate.el_rocco_climate
-    cute_name: El Rocco cabin
-    emoji: 🚗
+max_columns: 1
+dense_section_placement: true
+sections:
+- type: grid
+  cards:
+  - type: custom:button-card
+    template: sky_system
+  - type: custom:button-card
+    template: mf_page_title
+    variables:
+      title: House
+      subtitle: Roomba, cabin climate, and home devices.
+  - type: custom:button-card
+    template: mf_hero
+    entity: vacuum.roomba
+    variables:
+      icon: mdi:robot-vacuum
+      value: '[[[ return entity?.state === "unavailable" || !entity ? "Ready" : entity.state.replace("_", " "); ]]]'
+      subtitle: Roomba not online yet · El Rocco cabin climate available
+      accent_color: rgba(121,199,255,0.95)
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+    - type: custom:button-card
+      template: mf_tile
+      entity: vacuum.roomba
+      variables:
+        icon: mdi:robot-vacuum
+        title: Roomba
+        value: '[[[ return entity?.state === "unavailable" || !entity ? "Offline" : entity.state.replace("_", " "); ]]]'
+        subtitle: Power on dock to add
+        accent_color: rgba(121,199,255,0.95)
+    - type: custom:button-card
+      template: mf_tile
+      entity: climate.el_rocco_climate
+      variables:
+        icon: mdi:thermometer
+        title: Cabin climate
+        value: '[[[ return (entity?.attributes?.temperature || 70) + "°"; ]]]'
+        subtitle: El Rocco
+    - type: custom:button-card
+      template: mf_tile
+      entity: light.living_room_2
+      variables:
+        icon: mdi:bridge
+        title: Hue bridge
+        value: 14 lights
+        subtitle: Already integrated
+        accent_color: rgba(255,211,164,0.96)
+    - type: custom:button-card
+      template: mf_tile
+      variables:
+        icon: mdi:robot-happy-outline
+        title: Sebastian
+        value: Online
+        subtitle: Assistant ready
+        accent_color: rgba(157,226,182,0.95)
+  - type: horizontal-stack
+    cards:
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:home-import-outline
+        label: Dock
+        accent_color: rgba(157,226,182,0.95)
+      tap_action:
+        action: call-service
+        service: vacuum.return_to_base
+        target:
+          entity_id: vacuum.roomba
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:star-four-points-outline
+        label: Clean kitchen
+        accent_color: rgba(255,211,164,0.96)
+      tap_action:
+        action: call-service
+        service: vacuum.start
+        target:
+          entity_id: vacuum.roomba
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:pause
+        label: Pause
+        accent_color: rgba(243,166,184,0.95)
+      tap_action:
+        action: call-service
+        service: vacuum.pause
+        target:
+          entity_id: vacuum.roomba

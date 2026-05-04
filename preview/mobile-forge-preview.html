@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mobile Forge Preview</title>
+  <link rel="stylesheet" href="./preview.css">
+</head>
+<body>
+  <aside class="ha-sidebar">
+    <div class="ha-title">Home Assistant</div>
+    <div class="ha-active">Mobile Forge</div>
+    <div>Command Center</div>
+    <div>Map</div>
+    <div>Overview</div>
+    <div>Settings</div>
+  </aside>
+
+  <main class="shell">
+    <section class="sky">
+      <div class="moon"></div>
+      <div class="stars"></div>
+      <div class="cloud cloud-a"></div>
+      <div class="cloud cloud-b"></div>
+    </section>
+
+    <section class="phone">
+      <div class="page-head">
+        <p class="eyebrow">Mobile Forge</p>
+        <h1 id="page-title">Home</h1>
+        <p id="page-subtitle">Quiet night, house steady, El Rocco charging.</p>
+      </div>
+
+      <div id="view-root" class="view-root"></div>
+
+      <nav class="dock" aria-label="Preview nav">
+        <button class="nav active" data-view="home" aria-label="Home"></button>
+        <button class="nav" data-view="lights" aria-label="Lights"></button>
+        <button class="nav" data-view="music" aria-label="Music"></button>
+        <button class="nav" data-view="tesla" aria-label="Car"></button>
+        <button class="nav" data-view="security" aria-label="Security"></button>
+        <button class="nav" data-view="house" aria-label="House"></button>
+      </nav>
+    </section>
+  </main>
+
+  <script src="./preview.js"></script>
+</body>
+</html>

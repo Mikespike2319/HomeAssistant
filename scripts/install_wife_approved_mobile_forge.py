@@ -204,6 +204,22 @@ def backup_source(source: dict[str, Any]) -> Path:
     return backup
 
 
+def copy_dashboard_assets(config_dir: Path) -> list[Path]:
+    """Copy repo assets into Home Assistant's /local served directory."""
+    source_dir = REPO_ROOT / "assets"
+    target_dir = config_dir / "www" / "mobile-forge"
+    copied: list[Path] = []
+    if not source_dir.exists():
+        return copied
+    target_dir.mkdir(parents=True, exist_ok=True)
+    for asset in sorted(source_dir.iterdir()):
+        if asset.is_file():
+            target = target_dir / asset.name
+            shutil.copy2(asset, target)
+            copied.append(target)
+    return copied
+
+
 def fetch_sky_template() -> dict[str, Any]:
     local_template = REPO_ROOT / "templates" / "sky_system.yaml"
     if local_template.exists():
@@ -348,6 +364,10 @@ def button_template_styles(height: str = "72px") -> dict[str, Any]:
 
 def install_templates(dashboard: dict[str, Any], sky_template: dict[str, Any]) -> None:
     templates = dashboard.setdefault("button_card_templates", {})
+    templates["sky_system"] = sky_template
+    for template_file in sorted((REPO_ROOT / "templates").glob("*.yaml")):
+        parsed = load_yaml(template_file)
+        templates.update((parsed or {}).get("button_card_templates", {}))
     templates["sky_system"] = sky_template
     templates["mf_glass_tile"] = {
         "show_name": False,
@@ -674,15 +694,19 @@ def main() -> int:
     backup = backup_source(source)
     print(f"  backup: {backup}")
 
-    print("[5/7] Writing active dashboard")
+    print("[5/7] Copying dashboard assets")
+    for asset in copy_dashboard_assets(config_dir):
+        print(f"  asset: {asset}")
+
+    print("[6/7] Writing active dashboard")
     save_dashboard(source, dashboard, wrapper)
 
-    print("[6/7] Re-loading written dashboard and verifying")
+    print("[7/7] Re-loading written dashboard and verifying")
     reloaded, _ = load_dashboard(source)
     final = assert_integrity(reloaded)
     new_mtime = changed_object.stat().st_mtime if changed_object.exists() else None
 
-    print("[7/7] Before/after summary")
+    print("[8/8] Before/after summary")
     print(f"  active dashboard source: {changed_object}")
     print(f"  active dashboard path: /{TARGET_DASHBOARD_PATH}")
     print(f"  active Home view path: /{TARGET_DASHBOARD_PATH}/{TARGET_VIEW_PATH}")

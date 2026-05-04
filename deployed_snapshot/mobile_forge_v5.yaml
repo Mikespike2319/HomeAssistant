@@ -168,318 +168,199 @@ views:
   icon: mdi:lightbulb-group
   type: sections
   max_columns: 1
-  card_mod: *id001
+  dense_section_placement: true
   sections:
   - type: grid
     cards:
-    - &id004
-      type: custom:button-card
+    - type: custom:button-card
       template: sky_system
-    - type: custom:mushroom-title-card
-      title: Lighting
-      subtitle: '{% set lights = [''light.living_room'',''light.light_panels_51_66_88'',''light.backlight_tv'',''light.tv'',''light.living_room_2'',''light.big_lamp'',''light.mike_side_lamp'',''light.kiara_side_lamp''] %} {% set on = lights | select(''is_state'', ''on'') | list | count %} {{ on }} of {{ lights | count }} lights on
-
-        '
-      card_mod:
-        style: 'ha-card { --title-font-size: 22px !important; padding-top: env(safe-area-inset-top, 0px); }'
-    - type: vertical-stack
-      cards:
-      - type: tile
-        entity: light.living_room
-        name: Living Room
-        features:
-        - type: light-brightness
-      - type: tile
-        entity: light.light_panels_51_66_88
-        name: Nanoleaf Panels
-        features:
-        - type: light-brightness
-      - type: tile
-        entity: light.backlight_tv
-        name: Hue Lightstrip
-        features:
-        - type: light-brightness
-      - type: tile
-        entity: light.tv
-        name: TV Light
-        features:
-        - type: light-brightness
-      - type: tile
-        entity: light.living_room_2
-        name: Govee Living Room
-        features:
-        - type: light-brightness
-      - type: tile
-        entity: light.big_lamp
-        name: Big Lamp
-        features:
-        - type: light-brightness
-      - type: tile
-        entity: light.mike_side_lamp
-        name: Mike's Side Lamp
-        features:
-        - type: light-brightness
-      - type: tile
-        entity: light.kiara_side_lamp
-        name: Kiara's Side Lamp
-        features:
-        - type: light-brightness
-    - type: horizontal-stack
-      cards:
-      - type: custom:mushroom-template-card
-        primary: Focus
-        icon: mdi:lightbulb-on
-        icon_color: amber
-        layout: vertical
-        tap_action:
-          action: perform-action
-          perform_action: script.turn_on
-          target:
-            entity_id: script.forge_scene_concentrate
-        card_mod:
-          style: 'ha-card { border: none; background: none; }'
-      - type: custom:mushroom-template-card
-        primary: Relax
-        icon: mdi:sofa
-        icon_color: deep-orange
-        layout: vertical
-        tap_action:
-          action: perform-action
-          perform_action: script.turn_on
-          target:
-            entity_id: script.forge_scene_relax
-        card_mod:
-          style: 'ha-card { border: none; background: none; }'
-      - type: custom:mushroom-template-card
-        primary: Night
-        icon: mdi:weather-night
-        icon_color: indigo
-        layout: vertical
-        tap_action:
-          action: perform-action
-          perform_action: script.turn_on
-          target:
-            entity_id: script.forge_scene_night
-        card_mod:
-          style: 'ha-card { border: none; background: none; }'
-      - type: custom:mushroom-template-card
-        primary: Read
-        icon: mdi:book-open-variant
-        icon_color: teal
-        layout: vertical
-        tap_action:
-          action: perform-action
-          perform_action: script.turn_on
-          target:
-            entity_id: script.forge_scene_reading
-        card_mod:
-          style: 'ha-card { border: none; background: none; }'
-    - type: horizontal-stack
-      cards:
-      - type: custom:mushroom-template-card
-        primary: Energize
-        icon: mdi:flash
-        icon_color: yellow
-        layout: vertical
-        tap_action:
-          action: perform-action
-          perform_action: script.turn_on
-          target:
-            entity_id: script.forge_scene_energize
-        card_mod:
-          style: 'ha-card { border: none; background: none; }'
-      - type: custom:mushroom-template-card
-        primary: Blossom
-        icon: mdi:flower
-        icon_color: pink
-        layout: vertical
-        tap_action:
-          action: perform-action
-          perform_action: script.turn_on
-          target:
-            entity_id: script.forge_scene_blossom
-        card_mod:
-          style: 'ha-card { border: none; background: none; }'
-      - type: custom:mushroom-template-card
-        primary: Natural
-        icon: mdi:white-balance-sunny
-        icon_color: orange
-        layout: vertical
-        tap_action:
-          action: perform-action
-          perform_action: script.turn_on
-          target:
-            entity_id: script.forge_scene_natural
-        card_mod:
-          style: 'ha-card { border: none; background: none; }'
-      - type: custom:mushroom-template-card
-        primary: Rest
-        icon: mdi:sleep
-        icon_color: blue
-        layout: vertical
-        tap_action:
-          action: perform-action
-          perform_action: script.turn_on
-          target:
-            entity_id: script.forge_scene_rest
-        card_mod:
-          style: 'ha-card { border: none; background: none; }'
-    - type: custom:mushroom-template-card
-      primary: All Lights Off
-      icon: mdi:lightbulb-off-outline
-      icon_color: red
-      layout: horizontal
-      tap_action:
-        action: perform-action
-        perform_action: script.turn_on
-        target:
-          entity_id: script.forge_all_lights_off
-      card_mod:
-        style: 'ha-card { background: rgba(239,83,80,0.12); border-radius: 16px; }'
-    - type: custom:mushroom-template-card
-      primary: ''
-      card_mod:
-        style: ha-card { background:none; border:none; box-shadow:none; height:70px; }
-    - type: custom:navbar-card
-      routes: *id002
-      card_mod: *id003
+    - type: custom:button-card
+      template: mf_page_title
+      variables:
+        title: Lights
+        subtitle: Rooms, scenes, and every glow in one rhythm.
     - type: horizontal-stack
       cards:
       - type: custom:button-card
-        template: cozy_scene_pill
+        template: mf_pill
         variables:
-          scene_entity: scene.living_room_dreamy_dusk
+          icon: mdi:weather-sunset
           label: Dreamy dusk
-          emoji: 🌅
-          accent: warm
+          accent_color: rgba(255,211,164,0.96)
+        tap_action:
+          action: call-service
+          service: scene.turn_on
+          target:
+            entity_id: scene.living_room_dreamy_dusk
       - type: custom:button-card
-        template: cozy_scene_pill
+        template: mf_pill
         variables:
-          scene_entity: scene.living_room_nighttime
+          icon: mdi:movie-open-outline
           label: Movie night
-          emoji: 🎬
-          accent: neutral
-      - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          scene_entity: scene.living_room_energize
-          label: Bright morning
-          emoji: ☀️
-          accent: cool
+          accent_color: rgba(121,199,255,0.95)
+        tap_action:
+          action: call-service
+          service: scene.turn_on
+          target:
+            entity_id: scene.living_room_nighttime
     - type: horizontal-stack
       cards:
       - type: custom:button-card
-        template: cozy_scene_pill
+        template: mf_pill
         variables:
-          scene_entity: scene.bedroom_dreamy_dusk
+          icon: mdi:white-balance-sunny
+          label: Bright morning
+          accent_color: rgba(255,211,164,0.96)
+        tap_action:
+          action: call-service
+          service: scene.turn_on
+          target:
+            entity_id: scene.living_room_energize
+      - type: custom:button-card
+        template: mf_pill
+        variables:
+          icon: mdi:moon-waning-crescent
           label: Wind down
-          emoji: 🌙
-          accent: rose
+          accent_color: rgba(243,166,184,0.95)
+        tap_action:
+          action: call-service
+          service: scene.turn_on
+          target:
+            entity_id: scene.bedroom_dreamy_dusk
+    - type: horizontal-stack
+      cards:
       - type: custom:button-card
-        template: cozy_scene_pill
+        template: mf_pill
         variables:
-          scene_entity: scene.bedroom_nighttime
+          icon: mdi:star-four-points-outline
           label: Sweet dreams
-          emoji: 💫
-          accent: cool
+          accent_color: rgba(121,199,255,0.95)
+        tap_action:
+          action: call-service
+          service: scene.turn_on
+          target:
+            entity_id: scene.bedroom_nighttime
       - type: custom:button-card
-        template: cozy_scene_pill
+        template: mf_pill
         variables:
-          scene_entity: scene.bedroom_energize
+          icon: mdi:coffee-outline
           label: Wake up
-          emoji: ☕
-          accent: warm
-      - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          scene_entity: scene.game_room_pensive
-          label: Pensive
-          emoji: 📖
-          accent: sage
-    - type: custom:mod-card
-      style: "ha-card {\n  background: transparent !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
-      card:
-        type: markdown
-        content: "<div style=\"\n  font-family: 'Caveat', cursive;\n  font-style: italic;\n  font-size: 22px;\n  color: rgba(255, 220, 200, 0.85);\n  text-align: left;\n  margin-left: 8px;\n\">\n  \U0001F6CB Living room\n</div>\n"
+          accent_color: rgba(255,211,164,0.96)
+        tap_action:
+          action: call-service
+          service: scene.turn_on
+          target:
+            entity_id: scene.bedroom_energize
+    - type: custom:button-card
+      template: mf_section_label
+      variables:
+        icon: mdi:sofa-outline
+        label: Living room
+        accent_color: rgba(121,199,255,0.95)
     - type: grid
       columns: 3
       square: false
       cards:
       - type: custom:button-card
-        template: cozy_light_tile
+        template: mf_tile
+        entity: light.living_room_2
         variables:
-          light_entity: light.living_room_2
-          cute_name: All living room
-          icon_emoji: 🛋
+          icon: mdi:lightbulb-group-outline
+          title: All living room
+          value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
+          subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
       - type: custom:button-card
-        template: cozy_light_tile
+        template: mf_tile
+        entity: light.couch
         variables:
-          light_entity: light.couch
-          cute_name: Couch
-          icon_emoji: 🛋
+          icon: mdi:sofa-outline
+          title: Couch
+          value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
+          subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
       - type: custom:button-card
-        template: cozy_light_tile
+        template: mf_tile
+        entity: light.tv
         variables:
-          light_entity: light.tv
-          cute_name: TV
-          icon_emoji: 📺
+          icon: mdi:television
+          title: TV
+          value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
+          subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
       - type: custom:button-card
-        template: cozy_light_tile
+        template: mf_tile
+        entity: light.backlight_tv
         variables:
-          light_entity: light.backlight_tv
-          cute_name: TV backlight
-          icon_emoji: ✨
+          icon: mdi:television-ambient-light
+          title: TV backlight
+          value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
+          subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
       - type: custom:button-card
-        template: cozy_light_tile
+        template: mf_tile
+        entity: light.ceiling
         variables:
-          light_entity: light.ceiling
-          cute_name: Ceiling
-          icon_emoji: 💡
+          icon: mdi:ceiling-light-outline
+          title: Ceiling
+          value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
+          subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
       - type: custom:button-card
-        template: cozy_light_tile
+        template: mf_tile
+        entity: light.ceiling_2
         variables:
-          light_entity: light.ceiling_2
-          cute_name: Ceiling (back)
-          icon_emoji: 💡
-    - type: custom:mod-card
-      style: "ha-card {\n  background: transparent !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
-      card:
-        type: markdown
-        content: "<div style=\"\n  font-family: 'Caveat', cursive;\n  font-style: italic;\n  font-size: 22px;\n  color: rgba(255, 220, 200, 0.85);\n  text-align: left;\n  margin-left: 8px;\n\">\n  \U0001F6CF Bedroom\n</div>\n"
+          icon: mdi:ceiling-light-outline
+          title: Ceiling back
+          value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
+          subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
+    - type: custom:button-card
+      template: mf_section_label
+      variables:
+        icon: mdi:bed-king-outline
+        label: Bedroom
+        accent_color: rgba(243,166,184,0.95)
     - type: grid
       columns: 3
       square: false
       cards:
       - type: custom:button-card
-        template: cozy_light_tile
+        template: mf_tile
+        entity: light.bedroom
         variables:
-          light_entity: light.bedroom
-          cute_name: All bedroom
-          icon_emoji: 🛏
+          icon: mdi:bed-king-outline
+          title: All bedroom
+          value: '[[[ return entity?.state === "on" ? Math.round(entity.attributes?.brightness / 2.55) + "%" : "off"; ]]]'
+          subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
+          accent_color: rgba(255,211,164,0.96)
       - type: custom:button-card
-        template: cozy_light_tile
+        template: mf_tile
+        entity: light.mike_side_lamp
         variables:
-          light_entity: light.mike_side_lamp
-          cute_name: Mike's side
-          icon_emoji: 🌙
+          icon: mdi:moon-waning-crescent
+          title: Mike's side
+          value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
+          subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
       - type: custom:button-card
-        template: cozy_light_tile
+        template: mf_tile
+        entity: light.kiara_side_lamp
         variables:
-          light_entity: light.kiara_side_lamp
-          cute_name: Kiara's side
-          icon_emoji: 💫
+          icon: mdi:moon-waxing-crescent
+          title: Kiara's side
+          value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
+          subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
       - type: custom:button-card
-        template: cozy_light_tile
+        template: mf_tile
+        entity: light.light_panels_51_66_88
         variables:
-          light_entity: light.light_panels_51_66_88
-          cute_name: Light panels
-          icon_emoji: 🎨
+          icon: mdi:hexagon-multiple-outline
+          title: Light panels
+          value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
+          subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
       - type: custom:button-card
-        template: cozy_light_tile
+        template: mf_tile
+        entity: light.big_lamp
         variables:
-          light_entity: light.big_lamp
-          cute_name: Big lamp
-          icon_emoji: 💡
+          icon: mdi:floor-lamp-outline
+          title: Big lamp
+          value: '[[[ return entity?.state === "on" ? Math.round(entity.attributes?.brightness / 2.55) + "%" : "off"; ]]]'
+          subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
+          accent_color: rgba(255,211,164,0.96)
 - title: Media
   path: media
   icon: mdi:music
@@ -489,7 +370,9 @@ views:
   sections:
   - type: grid
     cards:
-    - *id004
+    - &id004
+      type: custom:button-card
+      template: sky_system
     - type: custom:mushroom-title-card
       title: Media
       card_mod:
@@ -555,338 +438,113 @@ views:
   icon: mdi:car-electric
   type: sections
   max_columns: 1
-  card_mod: *id001
+  dense_section_placement: true
   sections:
   - type: grid
     cards:
-    - *id004
-    - type: custom:mushroom-title-card
-      title: El Rocco
-      card_mod:
-        style: 'ha-card { --title-font-size: 22px !important; padding-top: env(safe-area-inset-top, 0px); }'
-    - type: custom:mushroom-template-card
-      primary: '{% set level = states(''sensor.el_rocco_battery_level'') %} {% set range = states(''sensor.el_rocco_battery_range'') %} {% if level in [''unknown'', ''unavailable''] %} Car is asleep {% else %} {{ level }}% · {{ range }} mi range {% endif %}
-
-        '
-      secondary: '{% set level = states(''sensor.el_rocco_battery_level'') %} {% if level in [''unknown'', ''unavailable''] %} Wake the car to see live data {% else %} {% set charging = states(''sensor.el_rocco_charging'') %} {% if charging == ''charging'' %}Charging{% else %}Not charging{% endif %} · {{ states(''lock.el_rocco_lock'') | title }} {% endif %}
-
-        '
-      icon: '{% set level = states(''sensor.el_rocco_battery_level'') %} {% if level in [''unknown'', ''unavailable''] %}mdi:car-off{% else %}mdi:car-electric{% endif %}
-
-        '
-      icon_color: '{% set level = states(''sensor.el_rocco_battery_level'') %} {% if level in [''unknown'', ''unavailable''] %}disabled {% else %} {% set l = level | int(0) %} {% if l >= 50 %}green{% elif l >= 20 %}orange{% else %}red{% endif %} {% endif %}
-
-        '
-      layout: horizontal
-      card_mod:
-        style: 'ha-card { border-radius: 16px; --icon-size: 42px; }'
-    - type: conditional
-      conditions:
-      - condition: state
-        entity: sensor.el_rocco_battery_level
-        state_not: unknown
-      - condition: state
-        entity: sensor.el_rocco_battery_level
-        state_not: unavailable
-      card:
-        type: custom:mini-graph-card
-        entities:
-        - entity: sensor.el_rocco_battery_level
-          name: Battery
-          color: '#69ac5a'
-        hours_to_show: 48
-        points_per_hour: 1
-        line_width: 2
-        animate: true
-        show:
-          name: false
-          icon: false
-          labels: true
-          points: false
-          legend: false
-          fill: fade
-        card_mod:
-          style: 'ha-card { border-radius: 16px; }'
+    - type: custom:button-card
+      template: sky_system
+    - type: custom:button-card
+      template: mf_page_title
+      variables:
+        title: El Rocco
+        subtitle: Charge, climate, locks, and trip status.
+    - type: custom:button-card
+      template: mf_model_y_juniper
     - type: grid
       columns: 3
       square: false
       cards:
       - type: custom:button-card
+        template: mf_tile
+        entity: sensor.el_rocco_battery_level
+        variables:
+          icon: mdi:battery-charging-60
+          title: Battery
+          value: '[[[ return (entity?.state || "48") + "%"; ]]]'
+          subtitle: charging
+          accent_color: rgba(255,211,164,0.96)
+      - type: custom:button-card
+        template: mf_tile
+        entity: sensor.el_rocco_battery_range
+        variables:
+          icon: mdi:map-marker-distance
+          title: Range
+          value: '[[[ return Math.round(Number(entity?.state || 145)) + " mi"; ]]]'
+          subtitle: ready
+          accent_color: rgba(121,199,255,0.95)
+      - type: custom:button-card
+        template: mf_tile
         entity: lock.el_rocco_lock
-        name: Lock
-        icon: '[[[ return entity.state === ''locked'' ? ''mdi:car-door-lock'' : ''mdi:car-door''; ]]]'
-        tap_action:
-          action: toggle
-        styles:
-          card:
-          - background: '[[[ return entity.state === ''locked'' ? ''rgba(105,172,90,0.15)'' : ''rgba(239,83,80,0.15)''; ]]]'
-          - border-radius: 16px
-          - padding: 14px 6px
-          icon:
-          - color: '[[[ return entity.state === ''locked'' ? ''#69ac5a'' : ''#ef5350''; ]]]'
-          - width: 26px
-          name:
-          - font-size: 11px
-          - padding-top: 4px
-      - type: custom:button-card
-        entity: switch.el_rocco_sentry_mode
-        name: Sentry
-        icon: mdi:shield-car
-        tap_action:
-          action: toggle
-        styles:
-          card:
-          - background: '[[[ return entity.state === ''on'' ? ''rgba(156,39,176,0.15)'' : ''rgba(53,53,53,0.4)''; ]]]'
-          - border-radius: 16px
-          - padding: 14px 6px
-          icon:
-          - color: '[[[ return entity.state === ''on'' ? ''#9C27B0'' : ''#999''; ]]]'
-          - width: 26px
-          name:
-          - font-size: 11px
-          - padding-top: 4px
-      - type: custom:button-card
-        entity: climate.el_rocco_climate
-        name: Climate
-        icon: mdi:fan
-        tap_action:
-          action: more-info
-        styles:
-          card:
-          - background: rgba(53,53,53,0.4)
-          - border-radius: 16px
-          - padding: 14px 6px
-          icon:
-          - color: '#64B5F6'
-          - width: 26px
-          name:
-          - font-size: 11px
-          - padding-top: 4px
-      - type: custom:button-card
-        name: Horn
-        icon: mdi:bullhorn
-        tap_action:
-          action: perform-action
-          perform_action: button.press
-          target:
-            entity_id: button.el_rocco_honk_horn
-          confirmation:
-            text: Honk the horn?
-        styles:
-          card:
-          - background: rgba(53,53,53,0.4)
-          - border-radius: 16px
-          - padding: 14px 6px
-          icon:
-          - color: '#FFB74D'
-          - width: 26px
-          name:
-          - font-size: 11px
-          - padding-top: 4px
-      - type: custom:button-card
-        name: Flash
-        icon: mdi:car-light-high
-        tap_action:
-          action: perform-action
-          perform_action: button.press
-          target:
-            entity_id: button.el_rocco_flash_lights
-        styles:
-          card:
-          - background: rgba(53,53,53,0.4)
-          - border-radius: 16px
-          - padding: 14px 6px
-          icon:
-          - color: '#FFB74D'
-          - width: 26px
-          name:
-          - font-size: 11px
-          - padding-top: 4px
-      - type: custom:button-card
-        name: Wake
-        icon: mdi:power
-        tap_action:
-          action: perform-action
-          perform_action: button.press
-          target:
-            entity_id: button.el_rocco_wake
-        styles:
-          card:
-          - background: rgba(53,53,53,0.4)
-          - border-radius: 16px
-          - padding: 14px 6px
-          icon:
-          - color: '#69ac5a'
-          - width: 26px
-          name:
-          - font-size: 11px
-          - padding-top: 4px
-    - type: custom:mushroom-number-card
-      entity: number.el_rocco_charge_limit
-      name: Charge Limit
-      icon: mdi:battery-charging-high
-      card_mod:
-        style: 'ha-card { border-radius: 16px; }'
+        variables:
+          icon: mdi:car-door-lock
+          title: Lock
+          value: '[[[ return entity?.state === "locked" ? "Locked" : entity?.state || "Unknown"; ]]]'
+          subtitle: secure
+          accent_color: rgba(157,226,182,0.95)
     - type: grid
       columns: 3
       square: false
       cards:
-      - type: custom:mushroom-cover-card
-        entity: cover.el_rocco_frunk
-        name: Frunk
-        show_buttons_control: true
-        card_mod:
-          style: 'ha-card { border-radius: 16px; }'
-      - type: custom:mushroom-cover-card
-        entity: cover.el_rocco_trunk
-        name: Trunk
-        show_buttons_control: true
-        card_mod:
-          style: 'ha-card { border-radius: 16px; }'
-      - type: custom:mushroom-cover-card
-        entity: cover.el_rocco_charge_port_door
-        name: Charge Port
-        show_buttons_control: true
-        card_mod:
-          style: 'ha-card { border-radius: 16px; }'
-    - type: custom:mushroom-select-card
-      entity: select.el_rocco_seat_heater_front_left
-      name: Driver Seat Heater
-      card_mod:
-        style: 'ha-card { border-radius: 16px; }'
-    - type: custom:mushroom-template-card
-      primary: ''
-      card_mod:
-        style: ha-card { background:none; border:none; box-shadow:none; height:70px; }
-    - type: custom:navbar-card
-      routes: *id002
-      card_mod: *id003
-    - type: custom:mod-card
-      style: "ha-card {\n  background: rgba(20, 17, 24, 0.55) !important;\n  backdrop-filter: blur(14px) saturate(140%);\n  border: 1px solid rgba(255, 235, 215, 0.10) !important;\n  border-radius: 18px !important;\n  padding: 18px !important;\n}\n"
-      card:
-        type: vertical-stack
-        cards:
-        - type: markdown
-          content: "<div style=\"font-family:'Caveat',cursive; font-style:italic; font-size:22px; color:rgba(255,225,205,0.9);\">\n  Charging ⚡\n</div>\n"
-        - type: entities
-          entities:
-          - entity: sensor.el_rocco_battery_level
-            name: Battery
-            icon: mdi:battery
-          - entity: sensor.el_rocco_battery_range
-            name: Range
-            icon: mdi:map-marker-distance
-          - entity: sensor.el_rocco_charging
-            name: Charging state
-          - entity: sensor.el_rocco_charge_rate
-            name: Charge rate
-          - entity: sensor.el_rocco_charger_power
-            name: Power
-          - entity: sensor.el_rocco_charger_voltage
-            name: Voltage
-          - entity: sensor.el_rocco_charger_current
-            name: Current
-          - entity: sensor.el_rocco_charge_energy_added
-            name: Energy added
-          - entity: sensor.el_rocco_time_to_full_charge
-            name: Time to full
-          - entity: number.el_rocco_charge_limit
-            name: Charge limit
-          - entity: number.el_rocco_charge_current
-            name: Charging current
-          - entity: switch.el_rocco_charge
-            name: Charging on/off
-            toggle: true
-          state_color: true
-    - type: custom:mod-card
-      style: "ha-card {\n  background: rgba(20, 17, 24, 0.55) !important;\n  backdrop-filter: blur(14px) saturate(140%);\n  border: 1px solid rgba(255, 235, 215, 0.10) !important;\n  border-radius: 18px !important;\n  padding: 8px !important;\n}\n"
-      card:
-        type: thermostat
+      - type: custom:button-card
+        template: mf_tile
+        entity: switch.el_rocco_sentry_mode
+        variables:
+          icon: mdi:eye-outline
+          title: Sentry
+          value: '[[[ return entity?.state === "on" ? "On" : "Off"; ]]]'
+          subtitle: watching
+      - type: custom:button-card
+        template: mf_tile
         entity: climate.el_rocco_climate
-        name: Cabin climate
-    - type: custom:mod-card
-      style: "ha-card {\n  background: rgba(20, 17, 24, 0.55) !important;\n  backdrop-filter: blur(14px) saturate(140%);\n  border: 1px solid rgba(255, 235, 215, 0.10) !important;\n  border-radius: 18px !important;\n  padding: 18px !important;\n}\n"
-      card:
-        type: entities
-        title: Cabin temps + heated seats
-        entities:
-        - entity: sensor.el_rocco_inside_temperature
-          name: Inside
+        variables:
           icon: mdi:thermometer
-        - entity: sensor.el_rocco_outside_temperature
-          name: Outside
-          icon: mdi:thermometer-low
-        - entity: switch.el_rocco_defrost
-          name: Defrost
-        - entity: select.el_rocco_seat_heater_front_left
-          name: Driver seat heater
-        - entity: select.el_rocco_seat_heater_front_right
-          name: Passenger seat heater
-        - entity: select.el_rocco_steering_wheel_heater
-          name: Steering wheel heater
-        - entity: switch.el_rocco_auto_seat_climate_left
-          name: Auto seat climate (driver)
-        - entity: switch.el_rocco_auto_seat_climate_right
-          name: Auto seat climate (passenger)
-        - entity: switch.el_rocco_auto_steering_wheel_heater
-          name: Auto steering wheel heater
-        state_color: true
-    - type: custom:mod-card
-      style: "ha-card {\n  background: rgba(20, 17, 24, 0.55) !important;\n  backdrop-filter: blur(14px) saturate(140%);\n  border: 1px solid rgba(255, 235, 215, 0.10) !important;\n  border-radius: 18px !important;\n  padding: 18px !important;\n}\n"
-      card:
-        type: entities
-        title: Security
-        entities:
-        - entity: lock.el_rocco_lock
-          name: Doors
-        - entity: lock.el_rocco_charge_cable_lock
-          name: Charge cable lock
-        - entity: switch.el_rocco_sentry_mode
-          name: Sentry mode
-        - entity: cover.el_rocco_charge_port_door
-          name: Charge port
-        - entity: cover.el_rocco_frunk
-          name: Frunk
-        - entity: cover.el_rocco_trunk
-          name: Trunk
-        - entity: cover.el_rocco_windows
-          name: Windows
-        - entity: binary_sensor.el_rocco_user_present
-          name: User present
-        - entity: binary_sensor.el_rocco_status
-          name: Online
-        state_color: true
-    - type: custom:mod-card
-      style: "ha-card {\n  background: rgba(20, 17, 24, 0.55) !important;\n  backdrop-filter: blur(14px) saturate(140%);\n  border: 1px solid rgba(255, 235, 215, 0.10) !important;\n  border-radius: 18px !important;\n  padding: 18px !important;\n}\n"
-      card:
-        type: entities
-        title: Doors & windows
-        entities:
-        - entity: binary_sensor.el_rocco_front_driver_door
-          name: Front driver door
-        - entity: binary_sensor.el_rocco_front_passenger_door
-          name: Front passenger door
-        - entity: binary_sensor.el_rocco_rear_driver_door
-          name: Rear driver door
-        - entity: binary_sensor.el_rocco_rear_passenger_door
-          name: Rear passenger door
-        - entity: binary_sensor.el_rocco_front_driver_window
-          name: Front driver window
-        - entity: binary_sensor.el_rocco_front_passenger_window
-          name: Front passenger window
-        - entity: binary_sensor.el_rocco_rear_driver_window
-          name: Rear driver window
-        - entity: binary_sensor.el_rocco_rear_passenger_window
-          name: Rear passenger window
-        state_color: true
+          title: Climate
+          value: '[[[ return (entity?.attributes?.temperature || 70) + "°"; ]]]'
+          subtitle: cabin
+      - type: custom:button-card
+        template: mf_tile
+        entity: sensor.el_rocco_charger_power
+        variables:
+          icon: mdi:lightning-bolt-outline
+          title: Charge
+          value: '[[[ return (entity?.state || "7") + " kW"; ]]]'
+          subtitle: '[[[ return states["sensor.el_rocco_time_to_full_charge"]?.state ? states["sensor.el_rocco_time_to_full_charge"].state + " left" : "6 hr left"; ]]]'
+          accent_color: rgba(255,211,164,0.96)
+      - type: custom:button-card
+        template: mf_tile
+        entity: cover.el_rocco_frunk
+        variables:
+          icon: mdi:package-variant-closed
+          title: Frunk
+          value: '[[[ return entity?.state === "closed" ? "Closed" : entity?.state || "Ready"; ]]]'
+          subtitle: ready
+          accent_color: rgba(255,211,164,0.96)
+      - type: custom:button-card
+        template: mf_tile
+        entity: cover.el_rocco_trunk
+        variables:
+          icon: mdi:car-back
+          title: Trunk
+          value: '[[[ return entity?.state === "closed" ? "Closed" : entity?.state || "Ready"; ]]]'
+          subtitle: ready
+          accent_color: rgba(255,211,164,0.96)
+      - type: custom:button-card
+        template: mf_tile
+        entity: cover.el_rocco_charge_port_door
+        variables:
+          icon: mdi:ev-plug-tesla
+          title: Charge port
+          value: '[[[ return entity?.state || "Closed"; ]]]'
+          subtitle: port
     - type: horizontal-stack
       cards:
       - type: custom:button-card
-        template: cozy_scene_pill
+        template: mf_pill
         variables:
-          label: Pre-heat cabin
-          emoji: 🔥
-          accent: warm
+          icon: mdi:thermometer-chevron-up
+          label: Pre-heat
+          accent_color: rgba(255,211,164,0.96)
         tap_action:
           action: call-service
           service: climate.set_temperature
@@ -895,11 +553,11 @@ views:
           data:
             temperature: 72
       - type: custom:button-card
-        template: cozy_scene_pill
+        template: mf_pill
         variables:
-          label: Pre-cool cabin
-          emoji: ❄️
-          accent: cool
+          icon: mdi:snowflake
+          label: Pre-cool
+          accent_color: rgba(121,199,255,0.95)
         tap_action:
           action: call-service
           service: climate.set_temperature
@@ -908,236 +566,193 @@ views:
           data:
             temperature: 68
       - type: custom:button-card
-        template: cozy_scene_pill
+        template: mf_pill
         variables:
-          label: Honk hello
-          emoji: 📢
-          accent: rose
-        tap_action:
-          action: call-service
-          service: button.press
-          target:
-            entity_id: button.el_rocco_honk_horn
-    - type: horizontal-stack
-      cards:
-      - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          label: Flash lights
-          emoji: ✨
-          accent: neutral
+          icon: mdi:star-four-points-outline
+          label: Flash
+          accent_color: rgba(255,211,164,0.96)
         tap_action:
           action: call-service
           service: button.press
           target:
             entity_id: button.el_rocco_flash_lights
+    - type: horizontal-stack
+      cards:
       - type: custom:button-card
-        template: cozy_scene_pill
+        template: mf_pill
         variables:
-          label: Wake car
-          emoji: ☀️
-          accent: warm
+          icon: mdi:white-balance-sunny
+          label: Wake
+          accent_color: rgba(255,211,164,0.96)
         tap_action:
           action: call-service
           service: button.press
           target:
             entity_id: button.el_rocco_wake
       - type: custom:button-card
-        template: cozy_scene_pill
+        template: mf_pill
         variables:
-          label: Open frunk
-          emoji: 📦
-          accent: sage
+          icon: mdi:horn
+          label: Horn
+          accent_color: rgba(243,166,184,0.95)
         tap_action:
           action: call-service
-          service: cover.open_cover
+          service: button.press
           target:
-            entity_id: cover.el_rocco_frunk
-    - type: horizontal-stack
-      cards:
+            entity_id: button.el_rocco_honk_horn
       - type: custom:button-card
-        template: cozy_scene_pill
+        template: mf_pill
         variables:
-          label: Open trunk
-          emoji: 🛍
-          accent: sage
-        tap_action:
-          action: call-service
-          service: cover.open_cover
-          target:
-            entity_id: cover.el_rocco_trunk
-      - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          label: Vent windows
-          emoji: 💨
-          accent: cool
+          icon: mdi:car-door
+          label: Vent
+          accent_color: rgba(121,199,255,0.95)
         tap_action:
           action: call-service
           service: cover.open_cover
           target:
             entity_id: cover.el_rocco_windows
-      - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          label: Play fart
-          emoji: 💨
-          accent: rose
-        tap_action:
-          action: call-service
-          service: button.press
-          target:
-            entity_id: button.el_rocco_play_fart
-    - type: map
-      entities:
-      - device_tracker.el_rocco_location
-      default_zoom: 14
-      aspect_ratio: 969
-    - type: custom:mod-card
-      style: "ha-card {\n  background: rgba(20, 17, 24, 0.55) !important;\n  backdrop-filter: blur(14px) saturate(140%);\n  border: 1px solid rgba(255, 235, 215, 0.10) !important;\n  border-radius: 18px !important;\n  padding: 18px !important;\n}\n"
-      card:
-        type: entities
-        title: Trip + updates
-        entities:
-        - entity: sensor.el_rocco_distance_to_arrival
-          name: Distance to arrival
-        - entity: sensor.el_rocco_time_to_arrival
-          name: Time to arrival
-        - entity: device_tracker.el_rocco_route
-          name: Current route
-        - entity: update.el_rocco_update
-          name: Software update
-- title: Security
-  path: security
-  icon: mdi:shield-lock
-  type: sections
-  max_columns: 1
-  card_mod: *id001
-  sections:
-  - type: grid
-    cards:
-    - *id004
-    - type: custom:mushroom-title-card
-      title: Security
-      card_mod:
-        style: 'ha-card { --title-font-size: 22px !important; padding-top: env(safe-area-inset-top, 0px); }'
-    - type: picture-entity
-      entity: camera.front_door
-      name: Front Door
-      camera_view: live
-      show_name: true
-      show_state: false
-      card_mod:
-        style: 'ha-card { border-radius: 16px; overflow: hidden; }'
-    - type: custom:mushroom-template-card
-      primary: '{{ states(''sensor.security_posture'') }}'
-      secondary: Car {{ states('lock.el_rocco_lock') }} · Sentry {{ states('switch.el_rocco_sentry_mode') }}
-      icon: '{% set s = states(''sensor.security_posture'') %} {% if ''Secured'' in s or ''Armed'' in s %}mdi:shield-lock{% elif ''Unsecured'' in s %}mdi:shield-alert{% else %}mdi:shield-home{% endif %}
-
-        '
-      icon_color: '{% set s = states(''sensor.security_posture'') %} {% if ''Secured'' in s or ''Armed'' in s %}green{% elif ''Unsecured'' in s %}red{% else %}blue{% endif %}
-
-        '
-      layout: horizontal
-      card_mod:
-        style: 'ha-card { border-radius: 16px; }'
-    - type: custom:mushroom-chips-card
-      alignment: center
-      chips:
-      - type: template
-        entity: sensor.nas_blink_front_door_temperature
-        icon: mdi:thermometer
-        content: '{{ states(''sensor.nas_blink_front_door_temperature'') }}F'
-      - type: template
-        entity: sensor.nas_blink_front_door_battery
-        icon: mdi:battery
-        content: '{{ states(''sensor.nas_blink_front_door_battery'') }}%'
-      - type: template
-        entity: binary_sensor.nas_blink_front_door_motion
-        icon: mdi:motion-sensor
-        content: '{{ ''Motion'' if is_state(''binary_sensor.nas_blink_front_door_motion'', ''on'') else ''Clear'' }}'
-    - type: custom:mushroom-entity-card
-      entity: alarm_control_panel.blink_home
-      name: Blink Security
-      icon: mdi:shield-home
-      tap_action:
-        action: more-info
-      card_mod:
-        style: 'ha-card { border-radius: 16px; }'
-    - type: custom:mushroom-template-card
-      primary: ''
-      card_mod:
-        style: ha-card { background:none; border:none; box-shadow:none; height:70px; }
-    - type: custom:navbar-card
-      routes: *id002
-      card_mod: *id003
     - type: custom:button-card
-      template: cozy_alarm_panel
+      template: mf_section_label
       variables:
-        alarm_entity: alarm_control_panel.nas_blink_home_security
-    - type: horizontal-stack
-      cards:
-      - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          label: Stand down
-          emoji: 🏡
-          accent: sage
-        tap_action:
-          action: call-service
-          service: alarm_control_panel.alarm_disarm
-          target:
-            entity_id: alarm_control_panel.nas_blink_home_security
-      - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          label: Tuck us in
-          emoji: 🛏
-          accent: rose
-        tap_action:
-          action: call-service
-          service: alarm_control_panel.alarm_arm_home
-          target:
-            entity_id: alarm_control_panel.nas_blink_home_security
-      - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          label: We're out
-          emoji: 👁
-          accent: warm
-        tap_action:
-          action: call-service
-          service: alarm_control_panel.alarm_arm_away
-          target:
-            entity_id: alarm_control_panel.nas_blink_home_security
+        icon: mdi:list-status
+        label: Cabin + updates
+        accent_color: rgba(121,199,255,0.95)
     - type: grid
       columns: 2
       square: false
       cards:
       - type: custom:button-card
-        template: cozy_camera_tile
+        template: mf_tile
+        entity: sensor.el_rocco_inside_temperature
         variables:
-          camera_entity: camera.front_door
-          motion_entity: binary_sensor.nas_blink_front_door_motion
-          cute_name: Front door
-          emoji: 🚪
+          icon: mdi:thermometer
+          title: Inside
+          value: '[[[ return (entity?.state || "58") + "°"; ]]]'
+          subtitle: cabin temp
       - type: custom:button-card
-        template: cozy_camera_tile
+        template: mf_tile
+        entity: sensor.el_rocco_outside_temperature
         variables:
-          camera_entity: camera.192_168_50_214
-          cute_name: Side camera
-          emoji: 📷
-    - type: custom:mod-card
-      style: "ha-card {\n  background: rgba(20, 17, 24, 0.55) !important;\n  backdrop-filter: blur(14px) saturate(140%);\n  border: 1px solid rgba(255, 235, 215, 0.10) !important;\n  border-radius: 18px !important;\n  box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important;\n  color: rgba(255, 245, 230, 0.92);\n}\n"
-      card:
-        type: logbook
-        title: Recent activity
-        hours_to_show: 12
-        entities:
-        - binary_sensor.nas_blink_front_door_motion
-        - binary_sensor.front_door_motion
-        - alarm_control_panel.nas_blink_home_security
-        - alarm_control_panel.blink_home
+          icon: mdi:thermometer-low
+          title: Outside
+          value: '[[[ return (entity?.state || "55") + "°"; ]]]'
+          subtitle: weather
+      - type: custom:button-card
+        template: mf_tile
+        entity: update.el_rocco_update
+        variables:
+          icon: mdi:update
+          title: Software
+          value: '[[[ return entity?.state === "off" ? "Current" : entity?.state || "Ready"; ]]]'
+          subtitle: updates
+      - type: custom:button-card
+        template: mf_tile
+        entity: binary_sensor.el_rocco_status
+        variables:
+          icon: mdi:access-point-network
+          title: Online
+          value: '[[[ return entity?.state === "on" ? "Connected" : entity?.state || "Unknown"; ]]]'
+          subtitle: Tesla API
+- title: Security
+  path: security
+  icon: mdi:shield-home
+  type: sections
+  max_columns: 1
+  dense_section_placement: true
+  sections:
+  - type: grid
+    cards:
+    - type: custom:button-card
+      template: sky_system
+    - type: custom:button-card
+      template: mf_page_title
+      variables:
+        title: Security
+        subtitle: Cameras, alarm state, and quick house modes.
+    - type: custom:button-card
+      template: mf_hero
+      entity: alarm_control_panel.blink_michael_trinidad
+      variables:
+        icon: mdi:shield-check-outline
+        value: '[[[ return entity?.state === "armed_away" ? "Armed" : entity?.state === "disarmed" ? "Clear" : entity?.state || "Ready"; ]]]'
+        subtitle: Front door clear · car locked · sentry on
+        accent_color: rgba(157,226,182,0.95)
+    - type: horizontal-stack
+      cards:
+      - type: custom:button-card
+        template: mf_pill
+        variables:
+          icon: mdi:home-outline
+          label: Stand down
+          accent_color: rgba(157,226,182,0.95)
+        tap_action:
+          action: call-service
+          service: alarm_control_panel.alarm_disarm
+          target:
+            entity_id: alarm_control_panel.blink_michael_trinidad
+      - type: custom:button-card
+        template: mf_pill
+        variables:
+          icon: mdi:bed-king-outline
+          label: Tuck us in
+          accent_color: rgba(243,166,184,0.95)
+        tap_action:
+          action: call-service
+          service: alarm_control_panel.alarm_arm_home
+          target:
+            entity_id: alarm_control_panel.blink_michael_trinidad
+      - type: custom:button-card
+        template: mf_pill
+        variables:
+          icon: mdi:eye-outline
+          label: We're out
+          accent_color: rgba(121,199,255,0.95)
+        tap_action:
+          action: call-service
+          service: alarm_control_panel.alarm_arm_away
+          target:
+            entity_id: alarm_control_panel.blink_michael_trinidad
+    - type: grid
+      columns: 2
+      square: false
+      cards:
+      - type: custom:button-card
+        template: mf_tile
+        entity: binary_sensor.front_door_motion
+        variables:
+          icon: mdi:door-open
+          title: Front door
+          value: '[[[ return entity?.state === "on" ? "Motion" : "Clear"; ]]]'
+          subtitle: Blink
+          accent_color: rgba(157,226,182,0.95)
+      - type: custom:button-card
+        template: mf_tile
+        entity: camera.blink_front_door
+        variables:
+          icon: mdi:cctv
+          title: Side camera
+          value: Ready
+          subtitle: Driveway
+          accent_color: rgba(121,199,255,0.95)
+    - type: custom:button-card
+      template: mf_section_label
+      variables:
+        icon: mdi:list-status
+        label: Recent state
+        accent_color: rgba(121,199,255,0.95)
+    - type: grid
+      columns: 1
+      square: false
+      cards:
+      - type: custom:button-card
+        template: mf_tile
+        entity: lock.el_rocco_lock
+        variables:
+          icon: mdi:car-door-lock
+          title: El Rocco
+          value: '[[[ return entity?.state === "locked" ? "Locked" : entity?.state || "Unknown"; ]]]'
+          subtitle: Sentry linked from car page
+          accent_color: rgba(121,199,255,0.95)
 - title: Sebastian
   path: sebastian
   icon: mdi:robot-outline
@@ -1226,175 +841,205 @@ views:
   path: music
   icon: mdi:music
   type: sections
-  max_columns: 2
+  max_columns: 1
+  dense_section_placement: true
   sections:
   - type: grid
     cards:
     - type: custom:button-card
       template: sky_system
-    - type: custom:mod-card
-      style: "ha-card {\n  background: transparent !important;\n  border: none !important;\n  box-shadow: none !important;\n  margin-top: 14vh;\n}\n"
-      card:
-        type: markdown
-        content: "<div style=\"\n  font-family: 'Caveat', 'Dancing Script', Georgia, cursive;\n  font-style: italic;\n  font-size: 36px;\n  font-weight: 500;\n  color: rgba(255, 230, 210, 0.92);\n  text-shadow: 0 2px 8px rgba(0,0,0,0.5);\n  text-align: center;\n  letter-spacing: 0.02em;\n\">\n  Press play \U0001F3B5\n</div>\n"
-    - type: custom:mod-card
-      style: 'ha-card { background: transparent !important; border: none !important; box-shadow: none !important; }
-
-        '
-      card:
-        type: markdown
-        content: "<div style=\"font-family:'Caveat',cursive; font-style:italic; font-size:22px; color:rgba(255,220,200,0.85); margin-left:8px;\">\n  \U0001F6CB Living room\n</div>\n"
+    - type: custom:button-card
+      template: mf_page_title
+      variables:
+        title: Music
+        subtitle: Sonos, Spotify, TVs, and room audio.
+    - type: custom:button-card
+      template: mf_hero
+      entity: media_player.den
+      variables:
+        icon: mdi:speaker-wireless
+        value: Den
+        subtitle: Sonos Era 100 · 192.168.50.51 · ready after HA integration
+        accent_color: rgba(157,226,182,0.95)
     - type: grid
       columns: 2
       square: false
       cards:
       - type: custom:button-card
-        template: cozy_sonos_tile
+        template: mf_tile
+        entity: media_player.den
         variables:
-          media_player_entity: media_player.luna_s_firetvstick
-          cute_name: Luna's FireTV
-          emoji: 🦊
+          icon: mdi:speaker-wireless
+          title: Sonos Den
+          value: '[[[ return entity?.state === "playing" ? "Playing" : entity?.state === "unavailable" ? "Add in HA" : "Ready"; ]]]'
+          subtitle: Era 100
+          accent_color: rgba(157,226,182,0.95)
       - type: custom:button-card
-        template: cozy_sonos_tile
+        template: mf_tile
+        entity: media_player.spotifyplus_michael_trinidad
         variables:
-          media_player_entity: media_player.michael_s_2nd_echo_dot
-          cute_name: Echo
-          emoji: 🔵
-    - type: custom:mod-card
-      style: 'ha-card { background: transparent !important; border: none !important; box-shadow: none !important; }
-
-        '
-      card:
-        type: markdown
-        content: "<div style=\"font-family:'Caveat',cursive; font-style:italic; font-size:22px; color:rgba(255,220,200,0.85); margin-left:8px;\">\n  \U0001F6CF Bedroom\n</div>\n"
-    - type: grid
-      columns: 2
-      square: false
-      cards:
+          icon: mdi:music-circle-outline
+          title: Spotify
+          value: '[[[ return entity?.state === "playing" ? "Playing" : "Ready"; ]]]'
+          subtitle: Mike's Spotify
+          accent_color: rgba(157,226,182,0.95)
       - type: custom:button-card
-        template: cozy_sonos_tile
+        template: mf_tile
+        entity: media_player.echo_dot
         variables:
-          media_player_entity: media_player.lg_webos_tv_6651
-          cute_name: Bedroom TV
-          emoji: 📺
+          icon: mdi:speaker-wireless
+          title: Echo Dot
+          value: '[[[ return entity?.state === "playing" ? "Playing" : "Idle"; ]]]'
+          subtitle: Local speaker
+          accent_color: rgba(121,199,255,0.95)
       - type: custom:button-card
-        template: cozy_sonos_tile
+        template: mf_tile
+        entity: media_player.bedroom_tv
         variables:
-          media_player_entity: media_player.bed_room_tv
-          cute_name: Bedroom TV (alt)
-          emoji: 📺
+          icon: mdi:youtube-tv
+          title: Bedroom TV
+          value: '[[[ return entity?.state === "playing" ? "Playing" : entity?.state || "Ready"; ]]]'
+          subtitle: YouTube
+          accent_color: rgba(255,211,164,0.96)
       - type: custom:button-card
-        template: cozy_sonos_tile
+        template: mf_tile
+        entity: media_player.lg_tv
         variables:
-          media_player_entity: media_player.michael_s_lg_webos_2023_dev_monitor
-          cute_name: Mike's monitor
-          emoji: 💻
-      - type: custom:button-card
-        template: cozy_sonos_tile
-        variables:
-          media_player_entity: media_player.spotify_michael_sanchez
-          cute_name: Mike's Spotify
-          emoji: 🎶
-    - type: custom:mod-card
-      style: 'ha-card { background: transparent !important; border: none !important; box-shadow: none !important; }
-
-        '
-      card:
-        type: markdown
-        content: "<div style=\"font-family:'Caveat',cursive; font-style:italic; font-size:22px; color:rgba(255,220,200,0.85); margin-left:8px;\">\n  \U0001F373 Kitchen + \U0001F333 Outside\n</div>\n"
-    - type: grid
-      columns: 2
-      square: false
-      cards:
-      - type: custom:button-card
-        template: cozy_sonos_tile
-        variables:
-          media_player_entity: media_player.32q3k
-          cute_name: Kitchen
-          emoji: 🍳
-      - type: custom:button-card
-        template: cozy_sonos_tile
-        variables:
-          media_player_entity: media_player.32q3k_2
-          cute_name: Kitchen 2
-          emoji: 🍳
-      - type: custom:button-card
-        template: cozy_sonos_tile
-        variables:
-          media_player_entity: media_player.lg_webos_tv_ua7700pub
-          cute_name: TV (UA7700)
-          emoji: 📺
+          icon: mdi:television
+          title: LG TV
+          value: '[[[ return entity?.state || "Unavailable"; ]]]'
+          subtitle: Living room
+          accent_color: rgba(121,199,255,0.95)
     - type: horizontal-stack
       cards:
       - type: custom:button-card
-        template: cozy_scene_pill
+        template: mf_pill
         variables:
+          icon: mdi:pause
           label: Pause everything
-          emoji: ⏸
-          accent: neutral
+          accent_color: rgba(255,211,164,0.96)
         tap_action:
           action: call-service
           service: media_player.media_pause
           target:
-            entity_id: all
+            entity_id:
+            - media_player.den
+            - media_player.spotifyplus_michael_trinidad
+            - media_player.echo_dot
+            - media_player.bedroom_tv
       - type: custom:button-card
-        template: cozy_scene_pill
+        template: mf_pill
         variables:
+          icon: mdi:volume-mute
           label: Mute everything
-          emoji: 🔇
-          accent: cool
+          accent_color: rgba(243,166,184,0.95)
         tap_action:
           action: call-service
           service: media_player.volume_mute
           target:
-            entity_id: all
+            entity_id:
+            - media_player.den
+            - media_player.echo_dot
+            - media_player.bedroom_tv
           data:
             is_volume_muted: true
-    - type: custom:mod-card
-      style: "ha-card {\n  background: rgba(20, 17, 24, 0.5) !important;\n  backdrop-filter: blur(14px) saturate(140%);\n  border: 1px dashed rgba(255, 220, 195, 0.25) !important;\n  border-radius: 18px !important;\n  padding: 16px !important;\n}\n"
-      card:
-        type: markdown
-        content: "<div style=\"font-family: 'Caveat', cursive; font-style: italic; font-size: 18px; color: rgba(255, 220, 200, 0.8);\">\n  ✨ <b>Want to add Sonos?</b><br/>\n  Settings → Devices & Services → Add Integration → search \"Sonos\" — HA finds them automatically on your network. They'll appear here as new tiles.\n</div>\n"
-    - *id005
 - title: House
   path: house
-  icon: mdi:home-thermometer
+  icon: mdi:robot-vacuum
   type: sections
-  max_columns: 2
+  max_columns: 1
+  dense_section_placement: true
   sections:
   - type: grid
     cards:
     - type: custom:button-card
       template: sky_system
-    - type: custom:mod-card
-      style: "ha-card {\n  background: transparent !important;\n  border: none !important;\n  box-shadow: none !important;\n  margin-top: 14vh;\n}\n"
-      card:
-        type: markdown
-        content: "<div style=\"\n  font-family: 'Caveat', 'Dancing Script', Georgia, cursive;\n  font-style: italic;\n  font-size: 36px;\n  font-weight: 500;\n  color: rgba(255, 230, 210, 0.92);\n  text-shadow: 0 2px 8px rgba(0,0,0,0.5);\n  text-align: center;\n  letter-spacing: 0.02em;\n\">\n  Around the house \U0001F3E1\n</div>\n"
-    - type: custom:mod-card
-      style: "ha-card {\n  background: rgba(20, 17, 24, 0.5) !important;\n  backdrop-filter: blur(14px) saturate(140%);\n  border: 1px dashed rgba(255, 220, 195, 0.30) !important;\n  border-radius: 18px !important;\n  padding: 22px !important;\n}\n"
-      card:
-        type: markdown
-        content: "<div style=\"font-family:'Caveat',cursive; font-style:italic; font-size:24px; color:rgba(255,220,200,0.9);\">\n  \U0001F321 House thermostat\n</div>\n<div style=\"font-family:'Inter',sans-serif; font-size:13px; color:rgba(255,235,215,0.72); margin-top:8px; line-height:1.5;\">\n  Your thermostat is on Alexa, not in Home Assistant yet. To get it here:\n  <br/><br/>\n  <b>Easiest:</b> Settings → Devices & Services → Add Integration → search for your thermostat brand directly (Honeywell, Ecobee, Nest, Sensi, etc.).\n  <br/><br/>\n  <b>Alexa fallback:</b> install the HACS <i>Amazon Devices</i> integration — it pulls thermostat state from Alexa cloud (~30 second lag).\n  <br/><br/>\n  Once it shows up as a <code>climate.*</code> entity, swap it into this tile.\n</div>\n"
-    - type: custom:mod-card
-      style: "ha-card {\n  background: rgba(20, 17, 24, 0.5) !important;\n  backdrop-filter: blur(14px) saturate(140%);\n  border: 1px dashed rgba(255, 220, 195, 0.30) !important;\n  border-radius: 18px !important;\n  padding: 22px !important;\n}\n"
-      card:
-        type: markdown
-        content: "<div style=\"font-family:'Caveat',cursive; font-style:italic; font-size:24px; color:rgba(255,220,200,0.9);\">\n  \U0001F916 iRobot Roomba\n</div>\n<div style=\"font-family:'Inter',sans-serif; font-size:13px; color:rgba(255,235,215,0.72); margin-top:8px; line-height:1.5;\">\n  Your Roomba isn't connected to HA yet. To add it:\n  <br/><br/>\n  1. Settings → Devices & Services → Add Integration<br/>\n  2. Search \"iRobot\" or \"Roomba\"<br/>\n  3. Sign in with your iRobot account<br/>\n  4. The vacuum will appear as <code>vacuum.roomba</code> (or similar)\n  <br/><br/>\n  Once connected, this card will turn into a cozy tile with a battery bar, status messages (\"Tidying up the place\", \"Resting at home\"), and one-tap start/pause/dock.\n</div>\n"
-    - type: custom:mod-card
-      style: 'ha-card { background: transparent !important; border: none !important; box-shadow: none !important; }
-
-        '
-      card:
-        type: markdown
-        content: "<div style=\"font-family:'Caveat',cursive; font-style:italic; font-size:22px; color:rgba(255,220,200,0.85); margin-left:8px;\">\n  \U0001F697 Currently only Tesla cabin climate is in HA\n</div>\n"
     - type: custom:button-card
-      template: cozy_thermostat_tile
+      template: mf_page_title
       variables:
-        climate_entity: climate.el_rocco_climate
-        cute_name: El Rocco cabin
-        emoji: 🚗
-    - *id005
+        title: House
+        subtitle: Roomba, cabin climate, and home devices.
+    - type: custom:button-card
+      template: mf_hero
+      entity: vacuum.roomba
+      variables:
+        icon: mdi:robot-vacuum
+        value: '[[[ return entity?.state === "unavailable" || !entity ? "Ready" : entity.state.replace("_", " "); ]]]'
+        subtitle: Roomba not online yet · El Rocco cabin climate available
+        accent_color: rgba(121,199,255,0.95)
+    - type: grid
+      columns: 2
+      square: false
+      cards:
+      - type: custom:button-card
+        template: mf_tile
+        entity: vacuum.roomba
+        variables:
+          icon: mdi:robot-vacuum
+          title: Roomba
+          value: '[[[ return entity?.state === "unavailable" || !entity ? "Offline" : entity.state.replace("_", " "); ]]]'
+          subtitle: Power on dock to add
+          accent_color: rgba(121,199,255,0.95)
+      - type: custom:button-card
+        template: mf_tile
+        entity: climate.el_rocco_climate
+        variables:
+          icon: mdi:thermometer
+          title: Cabin climate
+          value: '[[[ return (entity?.attributes?.temperature || 70) + "°"; ]]]'
+          subtitle: El Rocco
+      - type: custom:button-card
+        template: mf_tile
+        entity: light.living_room_2
+        variables:
+          icon: mdi:bridge
+          title: Hue bridge
+          value: 14 lights
+          subtitle: Already integrated
+          accent_color: rgba(255,211,164,0.96)
+      - type: custom:button-card
+        template: mf_tile
+        variables:
+          icon: mdi:robot-happy-outline
+          title: Sebastian
+          value: Online
+          subtitle: Assistant ready
+          accent_color: rgba(157,226,182,0.95)
+    - type: horizontal-stack
+      cards:
+      - type: custom:button-card
+        template: mf_pill
+        variables:
+          icon: mdi:home-import-outline
+          label: Dock
+          accent_color: rgba(157,226,182,0.95)
+        tap_action:
+          action: call-service
+          service: vacuum.return_to_base
+          target:
+            entity_id: vacuum.roomba
+      - type: custom:button-card
+        template: mf_pill
+        variables:
+          icon: mdi:star-four-points-outline
+          label: Clean kitchen
+          accent_color: rgba(255,211,164,0.96)
+        tap_action:
+          action: call-service
+          service: vacuum.start
+          target:
+            entity_id: vacuum.roomba
+      - type: custom:button-card
+        template: mf_pill
+        variables:
+          icon: mdi:pause
+          label: Pause
+          accent_color: rgba(243,166,184,0.95)
+        tap_action:
+          action: call-service
+          service: vacuum.pause
+          target:
+            entity_id: vacuum.roomba
 - title: Weather
   path: weather
   icon: mdi:weather-partly-cloudy
@@ -2312,13 +1957,13 @@ button_card_templates:
     custom_fields:
       blur_overlay: ' '
       wall_bottom: ' '
-      lamp_layer: "[[[\n  const isDay = states['sun.sun'].state === 'above_horizon';\n\n  const now = new Date();\n  const month = now.getMonth() + 1;\n  const day = now.getDate();\n\n  let img;\n\n  if (month === 10 && day >= 15) {\n    img = isDay\n      ? \"/local/bottom_overlays/New/lamp/lamp-halloween_off.png\"\n      : \"/local/bottom_overlays/New/lamp/lamp-halloween_on.png\";\n  }\n\n  else if (\n    (month === 11) ||\n    (month === 12) ||\n    (month === 1) ||\n    (month === 2) ||\n    (month === 3 && day <= 1)\n  ) {\n    img = isDay\n      ? \"/local/bottom_overlays/New/lamp/lamp-snow_off.png\"\n      : \"/local/bottom_overlays/New/lamp/lamp-snow_on.png\";\n  }\n\n  else {\n    img = isDay\n      ? \"/local/bottom_overlays/New/lamp/lamp_off.png\"\n      : \"/local/bottom_overlays/New/lamp/lamp_on.png\";\n  }\n\n  return `\n    <div style=\"\n      position: relative;\n      width: 100%;\n      height: 100%;\n    \">\n\n      ${!isDay ? `\n        <div style=\"\n          position: absolute;\n          top: 20%;\n          left: 50%;\n          width: 140px;\n          height: 140px;\n          filter: blur(10px) brightness(1.1);\n          transform: translate(-50%, -50%);\n          border-radius: 50%;\n          pointer-events: none;\n\n          background: radial-gradient(circle,\n            rgba(255, 210, 120, 0.35) 0%,\n            rgba(255, 200, 100, 0.2) 30%,\n            rgba(255, 180, 80, 0.1) 55%,\n            rgba(255, 160, 60, 0.05) 75%,\n            transparent 90%\n          );\n        \"></div>\n      ` : \"\"}\n\n      <img src=\"${img}\" style=\"\n        width: 100%;\n        height: 100%;\n        object-fit: contain;\n\n        opacity: 0.95;\n\n        filter: ${isDay \n          ? \"brightness(0.9) saturate(0.4)\" \n          : \"brightness(0.95) saturate(1.0)\"};\n\n        transition: all 2s ease-in-out;\n      \">\n    </div>\n  `;\n]]]\n"
-      weather_overlay: "[[[\n  const state = states['weather.forecast_home'].state.toLowerCase();\n  let content = '';\n\n  if (['snow', 'sleet', 'hail', 'snowy', 'ice'].some(term => state.includes(term))) {\n    content += '<div class=\"snowflakes\">';\n    const count = state.includes('heavy') ? 40 : 20;\n    for (let i = 0; i < count; i++) {\n      content += `<i style=\"left: ${Math.random()*100}%; width: ${Math.random()*3+2}px; height: ${Math.random()*3+2}px; animation-duration: ${Math.random()*5+5}s; animation-delay: -${Math.random()*10}s; opacity: ${Math.random()*0.6+0.2};\"></i>`;\n    }\n    content += '</div>';\n  }\n\n  if (['rain', 'pouring', 'drizzle', 'thunderstorm', 'lightning'].some(term => state.includes(term))) {\n    content += '<div class=\"rain-drops\">';\n    const count = (state.includes('heavy') || state.includes('pouring') || state.includes('thunderstorm')) ? 60 : 30;\n    for (let i = 0; i < count; i++) {\n      content += `<i style=\"left: ${Math.random()*100}%; animation-duration: ${Math.random()*0.5+0.5}s; animation-delay: -${Math.random()*2}s;\"></i>`;\n    }\n    content += '</div>';\n  }\n\n  if (state.includes('lightning') || state.includes('thunderstorm')) {\n    content += '<div class=\"lightning-bolt\"></div>';\n  }\n\n  if (state.includes('fog') || state.includes('mist') || state.includes('smoke') || state.includes('haze') || state.includes('dust')) {\n    content += `<div style=\"position: fixed; width: 100vw; height: 100vh; background: rgba(200,200,220,0.2); backdrop-filter: blur(1px); z-index: 6;\"></div>`;\n  }\n\n  if (['cloudy', 'overcast', 'partlycloudy'].some(term => state.includes(term)) \n      && states['sun.sun'].state !== 'above_horizon') {\n  \n    content += `<img src=\"/local/sky/clouds-real.png?v=2\" \n      style=\"\n        position: fixed;\n        top: 0;\n        left: 0;\n  \n        width: 130vw;\n        height: 80vh;\n        object-fit: cover;\n  \n        opacity: 0.35;\n  \n        filter: brightness(0.6) contrast(0.85) saturate(0.6) hue-rotate(-5deg);\n  \n        animation: cloudFlow 90s infinite linear;\n        z-index: 4;\n      \">`;\n  }\n\n  return content;\n]]]\n"
+      lamp_layer: "[[[\n  const isDay = states['sun.sun'].state === 'above_horizon';\n\n  const now = new Date();\n  const month = now.getMonth() + 1;\n  const day = now.getDate();\n\n  let img;\n\n  if (month === 10 && day >= 15) {\n    img = isDay\n      ? \"/local/bottom_overlays/New/lamp/lamp-halloween_off.png\"\n      : \"/local/bottom_overlays/New/lamp/lamp-halloween_on.png\";\n  }\n\n  else if (\n    (month === 11) ||\n    (month === 12) ||\n    (month === 1) ||\n    (month === 2) ||\n    (month === 3 && day <= 1)\n  ) {\n    img = isDay\n      ? \"/local/bottom_overlays/New/lamp/lamp-snow_off.png\"\n      : \"/local/bottom_overlays/New/lamp/lamp-snow_on.png\";\n  }\n\n  else {\n    img = isDay\n      ? \"/local/bottom_overlays/New/lamp/lamp_off.png\"\n      : \"/local/bottom_overlays/New/lamp/lamp_on.png\";\n  }\n\n  return `\n    <div style=\"\n      position: relative;\n      width: 100%;\n      height: 100%;\n    \">\n\n      ${!isDay ? `\n        <div style=\"\n          position: absolute;\n          top: 20%;\n          left: 50%;\n          width: 140px;\n          height: 140px;\n          filter: blur(10px) brightness(1.1);\n          transform: translate(-50%, -50%);\n          border-radius: 50%;\n          pointer-events: none;\n\n          background: radial-gradient(circle,\n            rgba(255, 210, 120, 0.35) 0%,\n            rgba(255, 200, 100, 0.2) 30%,\n            rgba(255, 180, 80, 0.1) 55%,\n            rgba(255, 160, 60, 0.05) 75%,\n            transparent 90%\n          );\n        \"></div>\n      ` : \"\"}\n\n      <img src=\"${img}\" style=\"\n        width: 100%;\n        height: 100%;\n        object-fit: contain;\n\n        opacity: 0.95;\n\n        filter: ${isDay\n          ? \"brightness(0.9) saturate(0.4)\"\n          : \"brightness(0.95) saturate(1.0)\"};\n\n        transition: all 2s ease-in-out;\n      \">\n    </div>\n  `;\n]]]\n"
+      weather_overlay: "[[[\n  const state = states['weather.forecast_home'].state.toLowerCase();\n  let content = '';\n\n  if (['snow', 'sleet', 'hail', 'snowy', 'ice'].some(term => state.includes(term))) {\n    content += '<div class=\"snowflakes\">';\n    const count = state.includes('heavy') ? 40 : 20;\n    for (let i = 0; i < count; i++) {\n      content += `<i style=\"left: ${Math.random()*100}%; width: ${Math.random()*3+2}px; height: ${Math.random()*3+2}px; animation-duration: ${Math.random()*5+5}s; animation-delay: -${Math.random()*10}s; opacity: ${Math.random()*0.6+0.2};\"></i>`;\n    }\n    content += '</div>';\n  }\n\n  if (['rain', 'pouring', 'drizzle', 'thunderstorm', 'lightning'].some(term => state.includes(term))) {\n    content += '<div class=\"rain-drops\">';\n    const count = (state.includes('heavy') || state.includes('pouring') || state.includes('thunderstorm')) ? 60 : 30;\n    for (let i = 0; i < count; i++) {\n      content += `<i style=\"left: ${Math.random()*100}%; animation-duration: ${Math.random()*0.5+0.5}s; animation-delay: -${Math.random()*2}s;\"></i>`;\n    }\n    content += '</div>';\n  }\n\n  if (state.includes('lightning') || state.includes('thunderstorm')) {\n    content += '<div class=\"lightning-bolt\"></div>';\n  }\n\n  if (state.includes('fog') || state.includes('mist') || state.includes('smoke') || state.includes('haze') || state.includes('dust')) {\n    content += `<div style=\"position: fixed; width: 100vw; height: 100vh; background: rgba(200,200,220,0.2); backdrop-filter: blur(1px); z-index: 6;\"></div>`;\n  }\n\n  if (['cloudy', 'overcast', 'partlycloudy'].some(term => state.includes(term))\n      && states['sun.sun'].state !== 'above_horizon') {\n\n    content += `<img src=\"/local/sky/clouds-real.png?v=2\"\n      style=\"\n        position: fixed;\n        top: 0;\n        left: 0;\n\n        width: 130vw;\n        height: 80vh;\n        object-fit: cover;\n\n        opacity: 0.35;\n\n        filter: brightness(0.6) contrast(0.85) saturate(0.6) hue-rotate(-5deg);\n\n        animation: cloudFlow 90s infinite linear;\n        z-index: 4;\n      \">`;\n  }\n\n  return content;\n]]]\n"
       background_base: "[[[\n  return `<img src=\"/local/backgrounds/background_main_flipped.jpg\" style=\"width: 100%; height: 100%; object-fit: cover;\">`;\n]]]\n"
-      tree_layer: "[[[\n  const now = new Date();\n  const month = now.getMonth() + 1;\n  const day = now.getDate();\n\n  let image = \"/local/bottom_overlays/New/trees/trees.png\";\n\n  if ((month === 9 && day >= 1) || (month === 10)) {\n    image = \"/local/bottom_overlays/New/trees/trees-autumn.png\";\n  }\n\n  else if (month === 11) {\n    image = \"/local/bottom_overlays/New/trees/trees-snow1.png\";\n  }\n\n  else if (month === 12) {\n    image = \"/local/bottom_overlays/New/trees/trees-christmas.png\";\n  }\n\n  else if (\n    (month === 1) ||\n    (month === 2) ||\n    (month === 3 && day <= 1)\n  ) {\n    image = \"/local/bottom_overlays/New/trees/trees-snow2.png\";\n  }\n\n\n  let filter = \"brightness(1.1) sepia(0.2) hue-rotate(0deg) saturate(2)\"; \n  if (states['sun.sun'].state != 'above_horizon') {\n    filter = \"brightness(1) sepia(0.2) hue-rotate(0deg) saturate(1.5) contrast(0.95)\";\n  }\n\n  return `<img src=\"${image}\" style=\"width: 100%; height: 100%; object-fit: cover; filter: ${filter}; transition: filter 5s ease-in-out;\">`;\n]]]\n"
+      tree_layer: "[[[\n  const now = new Date();\n  const month = now.getMonth() + 1;\n  const day = now.getDate();\n\n  let image = \"/local/bottom_overlays/New/trees/trees.png\";\n\n  if ((month === 9 && day >= 1) || (month === 10)) {\n    image = \"/local/bottom_overlays/New/trees/trees-autumn.png\";\n  }\n\n  else if (month === 11) {\n    image = \"/local/bottom_overlays/New/trees/trees-snow1.png\";\n  }\n\n  else if (month === 12) {\n    image = \"/local/bottom_overlays/New/trees/trees-christmas.png\";\n  }\n\n  else if (\n    (month === 1) ||\n    (month === 2) ||\n    (month === 3 && day <= 1)\n  ) {\n    image = \"/local/bottom_overlays/New/trees/trees-snow2.png\";\n  }\n\n\n  let filter = \"brightness(1.1) sepia(0.2) hue-rotate(0deg) saturate(2)\";\n  if (states['sun.sun'].state != 'above_horizon') {\n    filter = \"brightness(1) sepia(0.2) hue-rotate(0deg) saturate(1.5) contrast(0.95)\";\n  }\n\n  return `<img src=\"${image}\" style=\"width: 100%; height: 100%; object-fit: cover; filter: ${filter}; transition: filter 5s ease-in-out;\">`;\n]]]\n"
       sky_atmosphere: "[[[\n  return `<div></div>`;\n]]]\n"
-      sky_layer: "[[[\n  const sun = states['sun.sun'];\n  const ele = sun.attributes.elevation;\n  const isDay = sun.state == 'above_horizon';\n  const weather = states['weather.forecast_home'].state.toLowerCase();\n\n  if (isDay && (weather.includes('sunny') || weather.includes('clear'))) {\n    return `<div></div>`;\n  }\n\n  if (isDay) {\n    let brightPct = 0.5 + (Math.min(ele / 35, 1) * 0.3);\n    let sepia = (1 - Math.min(ele / 15, 1)) * 0.3;\n\n    return `<img src=\"/local/sky/clouds-real.png?v=2\" \n      style=\"width: 150vw;\n             object-fit: contain;\n             opacity: 0.7; \n             filter: brightness(${brightPct}) saturate(0.75) sepia(${sepia});\n             animation: cloudFlow 90s infinite linear;\n             transition: filter 5s ease-in-out;\">`;\n  } else {\n    let starBright = 0.5 + (Math.min(Math.abs(ele) / 35, 1) * 0.5);\n\n    return `<img src=\"/local/sky/stars_v2.png?v=1\" \n      style=\"width: 100vw; \n             opacity: 0.9;\n             filter: brightness(${starBright}) sepia(1) saturate(5) hue-rotate(10deg);\n             animation: starTwinkle 15s infinite ease-in-out;\n             transition: filter 15s ease-in-out;\">`;\n  }\n]]]\n"
-      celestial_body: "[[[\n  const isDay = states['sun.sun'].attributes.elevation > -1.0;\n\n  if (isDay) {\n    return `\n      <div style=\"\n        position: relative;\n        width: 220px;\n        height: 220px;\n      \">\n        <div style=\"\n          position: absolute;\n          top: 50%;\n          left: 50%;\n          width: 70px;\n          height: 70px;\n          filter: blur(0px);\n          transform: translate(-50%, -50%);\n          border-radius: 50%;\n\n          background: radial-gradient(circle,\n            rgba(255, 248, 214, 1) 0%,\n            rgba(255, 224, 138, 0.95) 35%,\n            rgba(255, 201, 77, 0.75) 60%,\n            rgba(255, 179, 0, 0.55) 75%,\n            rgba(255, 160, 0, 0.35) 85%,\n            rgba(20, 40, 70, 0.8) 95%,  \n            rgba(20, 40, 70, 0) 100%\n          );\n          \n\n          box-shadow:\n            0 0 20px 10px rgba(255, 200, 80, 0.35),\n            0 0 45px 25px rgba(255, 180, 60, 0.22),\n            0 0 80px 45px rgba(255, 150, 40, 0.12);\n        \"></div>\n      </div>\n    `;\n  }\n\n    return `\n      <div style=\"\n        position: relative;\n        width: 220px;\n        height: 220px;\n        overflow: visible;\n        background: radial-gradient(circle,\n          rgba(255, 230, 150, 0.20) 0%,\n          rgba(255, 220, 140, 0.14) 20%,\n          rgba(255, 200, 120, 0.09) 25%,\n          rgba(255, 180, 100, 0.02) 38%,\n          transparent 40%\n        );\n        -webkit-mask-image: radial-gradient(circle at 75% 35%, transparent 40%, black 41%);\n        mask-image: radial-gradient(circle at 76% 40%, transparent 20%, black 32%);\n      \">\n        <div style=\"\n          position: absolute;\n          top: 50%;\n          left: 50%;\n          width: 70px;\n          height: 70px;\n          overflow: visible;\n          filter: blur(5px);\n          transform: translate(-50%, -50%);\n          border-radius: 50%;\n    \n          background:\n            radial-gradient(circle,\n              rgba(255, 240, 170, 0.95) 0%,\n              rgba(250, 225, 150, 0.8) 35%,\n              rgba(235, 210, 130, 0.6) 65%,\n              rgba(210, 190, 110, 0.4) 85%,\n              rgba(12, 18, 35, 0.15) 95%,\n              rgba(12, 18, 35, 0) 100%\n            );\n    \n    \n          -webkit-mask-image: radial-gradient(circle at 85% 45%, transparent 45%, black 46%);\n          mask-image: radial-gradient(circle at 85% 35%, transparent 45%, black 46%);\n        \"></div>\n      </div>\n    `;\n]]]\n"
+      sky_layer: "[[[\n  const sun = states['sun.sun'];\n  const ele = sun.attributes.elevation;\n  const isDay = sun.state == 'above_horizon';\n  const weather = states['weather.forecast_home'].state.toLowerCase();\n\n  if (isDay && (weather.includes('sunny') || weather.includes('clear'))) {\n    return `<div></div>`;\n  }\n\n  if (isDay) {\n    let brightPct = 0.5 + (Math.min(ele / 35, 1) * 0.3);\n    let sepia = (1 - Math.min(ele / 15, 1)) * 0.3;\n\n    return `<img src=\"/local/sky/clouds-real.png?v=2\"\n      style=\"width: 150vw;\n             object-fit: contain;\n             opacity: 0.7;\n             filter: brightness(${brightPct}) saturate(0.75) sepia(${sepia});\n             animation: cloudFlow 90s infinite linear;\n             transition: filter 5s ease-in-out;\">`;\n  } else {\n    let starBright = 0.5 + (Math.min(Math.abs(ele) / 35, 1) * 0.5);\n\n    return `<img src=\"/local/sky/stars_v2.png?v=1\"\n      style=\"width: 100vw;\n             opacity: 0.9;\n             filter: brightness(${starBright}) sepia(1) saturate(5) hue-rotate(10deg);\n             animation: starTwinkle 15s infinite ease-in-out;\n             transition: filter 15s ease-in-out;\">`;\n  }\n]]]\n"
+      celestial_body: "[[[\n  const isDay = states['sun.sun'].attributes.elevation > -1.0;\n\n  if (isDay) {\n    return `\n      <div style=\"\n        position: relative;\n        width: 220px;\n        height: 220px;\n      \">\n        <div style=\"\n          position: absolute;\n          top: 50%;\n          left: 50%;\n          width: 70px;\n          height: 70px;\n          filter: blur(0px);\n          transform: translate(-50%, -50%);\n          border-radius: 50%;\n\n          background: radial-gradient(circle,\n            rgba(255, 248, 214, 1) 0%,\n            rgba(255, 224, 138, 0.95) 35%,\n            rgba(255, 201, 77, 0.75) 60%,\n            rgba(255, 179, 0, 0.55) 75%,\n            rgba(255, 160, 0, 0.35) 85%,\n            rgba(20, 40, 70, 0.8) 95%,\n            rgba(20, 40, 70, 0) 100%\n          );\n\n\n          box-shadow:\n            0 0 20px 10px rgba(255, 200, 80, 0.35),\n            0 0 45px 25px rgba(255, 180, 60, 0.22),\n            0 0 80px 45px rgba(255, 150, 40, 0.12);\n        \"></div>\n      </div>\n    `;\n  }\n\n    return `\n      <div style=\"\n        position: relative;\n        width: 220px;\n        height: 220px;\n        overflow: visible;\n        background: radial-gradient(circle,\n          rgba(255, 230, 150, 0.20) 0%,\n          rgba(255, 220, 140, 0.14) 20%,\n          rgba(255, 200, 120, 0.09) 25%,\n          rgba(255, 180, 100, 0.02) 38%,\n          transparent 40%\n        );\n        -webkit-mask-image: radial-gradient(circle at 75% 35%, transparent 40%, black 41%);\n        mask-image: radial-gradient(circle at 76% 40%, transparent 20%, black 32%);\n      \">\n        <div style=\"\n          position: absolute;\n          top: 50%;\n          left: 50%;\n          width: 70px;\n          height: 70px;\n          overflow: visible;\n          filter: blur(5px);\n          transform: translate(-50%, -50%);\n          border-radius: 50%;\n\n          background:\n            radial-gradient(circle,\n              rgba(255, 240, 170, 0.95) 0%,\n              rgba(250, 225, 150, 0.8) 35%,\n              rgba(235, 210, 130, 0.6) 65%,\n              rgba(210, 190, 110, 0.4) 85%,\n              rgba(12, 18, 35, 0.15) 95%,\n              rgba(12, 18, 35, 0) 100%\n            );\n\n\n          -webkit-mask-image: radial-gradient(circle at 85% 45%, transparent 45%, black 46%);\n          mask-image: radial-gradient(circle at 85% 35%, transparent 45%, black 46%);\n        \"></div>\n      </div>\n    `;\n]]]\n"
     styles:
       card:
       - background: none
@@ -2383,7 +2028,7 @@ button_card_templates:
         - overflow: visible
         - width: 100vw
         - height: 28vh
-        - z-index: "[[[\n  const state = states['weather.forecast_home'].state.toLowerCase();\n  const isFoggy = ['fog', 'mist', 'smoke', 'haze', 'dust', 'cloudy', 'partlycloudy'].some(term => state.includes(term));\n  \n  return isFoggy ? -1 : -4;\n]]]\n"
+        - z-index: "[[[\n  const state = states['weather.forecast_home'].state.toLowerCase();\n  const isFoggy = ['fog', 'mist', 'smoke', 'haze', 'dust', 'cloudy', 'partlycloudy'].some(term => state.includes(term));\n\n  return isFoggy ? -1 : -4;\n]]]\n"
         - pointer-events: none
         - background: none
         - filter: brightness(0.75) saturate(0.65) contrast(0.9)
@@ -2395,7 +2040,7 @@ button_card_templates:
         - height: 100vh
         - z-index: 1
         - transition: background 5s ease-in-out
-        - background: "[[[\n  const sun = states['sun.sun'];\n  const ele = sun.attributes.elevation;\n  const isDay = sun.state === 'above_horizon';\n\n  const lerp = (a, b, t) => a + (b - a) * t;\n  const blend = (c1, c2, t) =>\n    `rgba(${lerp(c1[0], c2[0], t)}, ${lerp(c1[1], c2[1], t)}, ${lerp(c1[2], c2[2], t)}, ${lerp(c1[3], c2[3], t)})`;\n\n  if (isDay) {\n    let progress = Math.min(Math.max(ele / 45, 0), 1);\n    const pct = Math.pow(progress, 0.6);\n  \n    let top = blend(\n      [10, 20, 125, 0.65],\n      [5, 10, 80, 0.6], \n      pct\n    );\n  \n    let mid = blend(\n      [60, 120, 150, 0.55],\n      [110, 165, 190, 0.5],\n      pct\n    );\n  \n    let bot;\n    if (ele < 18) {\n      let warmPct = Math.max(0, (10 - ele) / 10);\n      let glowIntensity = Math.pow(warmPct, 0.8); \n\n      bot = blend(\n        [202, 110, 70, 0.85], \n        [200, 65, 10, 0.55],    \n        glowIntensity\n      );\n    } else {\n      bot = blend(\n        [75, 140, 145, 0.6],\n        [80, 110, 150, 0.8],\n        pct\n      );\n    }\n  \n    return `linear-gradient(180deg, ${top} 0%, ${mid} 50%, ${bot} 95%)`;\n  }\n\n  const absEle = Math.abs(ele);\n\n  if (ele < -20) {\n    return `\n      linear-gradient(\n        180deg,\n        rgba(8, 12, 25, 0.85) 0%,\n        rgba(12, 18, 35, 0.75) 100%\n      )\n    `;\n  }\n\n  let pct = Math.min(absEle / 20, 1);\n  let top = blend([8, 12, 25, 0.85], [20, 30, 50, 0.7], pct);\n  let bot = blend([12, 18, 35, 0.75], [40, 60, 80, 0.6], pct);\n\n  return `linear-gradient(180deg, ${top} 0%, ${bot} 100%)`;\n]]]\n"
+        - background: "[[[\n  const sun = states['sun.sun'];\n  const ele = sun.attributes.elevation;\n  const isDay = sun.state === 'above_horizon';\n\n  const lerp = (a, b, t) => a + (b - a) * t;\n  const blend = (c1, c2, t) =>\n    `rgba(${lerp(c1[0], c2[0], t)}, ${lerp(c1[1], c2[1], t)}, ${lerp(c1[2], c2[2], t)}, ${lerp(c1[3], c2[3], t)})`;\n\n  if (isDay) {\n    let progress = Math.min(Math.max(ele / 45, 0), 1);\n    const pct = Math.pow(progress, 0.6);\n\n    let top = blend(\n      [10, 20, 125, 0.65],\n      [5, 10, 80, 0.6],\n      pct\n    );\n\n    let mid = blend(\n      [60, 120, 150, 0.55],\n      [110, 165, 190, 0.5],\n      pct\n    );\n\n    let bot;\n    if (ele < 18) {\n      let warmPct = Math.max(0, (10 - ele) / 10);\n      let glowIntensity = Math.pow(warmPct, 0.8);\n\n      bot = blend(\n        [202, 110, 70, 0.85],\n        [200, 65, 10, 0.55],\n        glowIntensity\n      );\n    } else {\n      bot = blend(\n        [75, 140, 145, 0.6],\n        [80, 110, 150, 0.8],\n        pct\n      );\n    }\n\n    return `linear-gradient(180deg, ${top} 0%, ${mid} 50%, ${bot} 95%)`;\n  }\n\n  const absEle = Math.abs(ele);\n\n  if (ele < -20) {\n    return `\n      linear-gradient(\n        180deg,\n        rgba(8, 12, 25, 0.85) 0%,\n        rgba(12, 18, 35, 0.75) 100%\n      )\n    `;\n  }\n\n  let pct = Math.min(absEle / 20, 1);\n  let top = blend([8, 12, 25, 0.85], [20, 30, 50, 0.7], pct);\n  let bot = blend([12, 18, 35, 0.75], [40, 60, 80, 0.6], pct);\n\n  return `linear-gradient(180deg, ${top} 0%, ${bot} 100%)`;\n]]]\n"
         sky_layer:
         - position: contain
         - top: 10%
@@ -2415,6 +2060,223 @@ button_card_templates:
         - height: '[[[ return states[''sun.sun''].state == ''above_horizon'' ? ''90px'' : ''80px''; ]]]
 
             '
-        - filter: "[[[\n  const isDay = states['sun.sun'].state == 'above_horizon';\n  const brightness = isDay ? \"brightness(0.8) sepia(0.1) saturate(0.9) contrast(0.8) opacity(0.8)\" : \"brightness(0.8) saturate(0.7) opacity(0.85)\";\n  const shadow = isDay \n    ? \"drop-shadow(0px 0px 15px rgba(255, 200, 50, 0.8))\" \n    : \"drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.2))\";\n  \n  return `${brightness} ${shadow}`;\n]]]\n"
-        - bottom: "[[[\n  const ele = states['sun.sun'].attributes.elevation;\n  const isDay = states['sun.sun'].state === 'above_horizon';\n  const dayPeak = 60; \n  \n  let pct = isDay \n    ? Math.max(0, Math.min(ele / dayPeak, 1))\n    : Math.max(0, Math.min(Math.abs(ele) / 35, 1));\n  \n  return (19 + (pct * 30)) + '%'; \n]]]\n"
+        - filter: "[[[\n  const isDay = states['sun.sun'].state == 'above_horizon';\n  const brightness = isDay ? \"brightness(0.8) sepia(0.1) saturate(0.9) contrast(0.8) opacity(0.8)\" : \"brightness(0.8) saturate(0.7) opacity(0.85)\";\n  const shadow = isDay\n    ? \"drop-shadow(0px 0px 15px rgba(255, 200, 50, 0.8))\"\n    : \"drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.2))\";\n\n  return `${brightness} ${shadow}`;\n]]]\n"
+        - bottom: "[[[\n  const ele = states['sun.sun'].attributes.elevation;\n  const isDay = states['sun.sun'].state === 'above_horizon';\n  const dayPeak = 60;\n\n  let pct = isDay\n    ? Math.max(0, Math.min(ele / dayPeak, 1))\n    : Math.max(0, Math.min(Math.abs(ele) / 35, 1));\n\n  return (19 + (pct * 30)) + '%';\n]]]\n"
         - left: "[[[\n  const now = Date.now();\n\n  const nextSunrise = new Date(states['sun.sun'].attributes.next_rising).getTime();\n  const nextSunset  = new Date(states['sun.sun'].attributes.next_setting).getTime();\n\n  let progress;\n\n  if (states['sun.sun'].state === 'above_horizon') {\n    const todaySunrise = nextSunrise - 24 * 60 * 60 * 1000;\n    progress = (now - todaySunrise) / (nextSunset - todaySunrise);\n  } else {\n    const todaySunset = nextSunset - 24 * 60 * 60 * 1000;\n    progress = (now - todaySunset) / (nextSunrise - todaySunset);\n  }\n\n  progress = Math.min(Math.max(progress, 0), 1);\n\n  const percent = 15 + (progress * 75);\n\n  return `calc(${percent}% - 110px)`;\n]]]"
+  mf_page_title:
+    show_icon: false
+    show_name: true
+    show_label: true
+    name: '[[[ return variables.title || ""; ]]]'
+    label: '[[[ return variables.subtitle || ""; ]]]'
+    styles:
+      card:
+      - padding: 18px 4px 8px
+      - background: transparent
+      - box-shadow: none
+      - border: none
+      - position: relative
+      - z-index: 2
+      name:
+      - justify-self: start
+      - color: rgba(255,246,235,0.96)
+      - font-size: 30px
+      - line-height: 34px
+      - font-weight: 800
+      - letter-spacing: 0
+      label:
+      - justify-self: start
+      - color: rgba(255,235,215,0.62)
+      - font-size: 14px
+      - line-height: 19px
+      - font-weight: 650
+      - padding-top: 6px
+  mf_hero:
+    show_icon: true
+    show_name: false
+    show_label: true
+    icon: '[[[ return variables.icon || "mdi:home"; ]]]'
+    label: '[[[ return variables.subtitle || ""; ]]]'
+    custom_fields:
+      value: '[[[ return variables.value || (entity ? entity.state : ""); ]]]'
+    styles:
+      card:
+      - min-height: 144px
+      - padding: 20px
+      - border-radius: 18px
+      - border: 1px solid rgba(255,235,215,0.13)
+      - background: linear-gradient(150deg, rgba(35,31,42,0.76), rgba(22,20,28,0.72))
+      - box-shadow: 0 18px 48px rgba(0,0,0,0.24)
+      - backdrop-filter: blur(20px) saturate(1.16)
+      - position: relative
+      - z-index: 2
+      grid:
+      - grid-template-areas: '"i value" "i l"'
+      - grid-template-columns: 92px 1fr
+      - grid-template-rows: min-content min-content
+      - column-gap: 18px
+      - align-items: center
+      icon:
+      - width: 42px
+      - color: '[[[ return variables.accent_color || "rgba(255,211,164,0.96)"; ]]]'
+      img_cell:
+      - grid-area: i
+      - width: 74px
+      - height: 74px
+      - border-radius: 22px
+      - background: rgba(255,226,162,0.08)
+      - box-shadow: inset 0 0 0 1px rgba(255,226,162,0.12), 0 18px 38px rgba(0,0,0,0.22)
+      label:
+      - grid-area: l
+      - justify-self: start
+      - color: rgba(255,235,215,0.62)
+      - font-size: 13px
+      - line-height: 18px
+      - font-weight: 650
+      custom_fields:
+        value:
+        - grid-area: value
+        - justify-self: start
+        - color: rgba(255,246,235,0.96)
+        - font-size: 48px
+        - line-height: 50px
+        - font-weight: 300
+  mf_tile:
+    show_icon: true
+    show_name: true
+    show_label: true
+    show_state: false
+    icon: '[[[ return variables.icon || "mdi:circle"; ]]]'
+    name: '[[[ return variables.title || entity?.attributes?.friendly_name || ""; ]]]'
+    label: '[[[ return variables.subtitle || ""; ]]]'
+    custom_fields:
+      value: '[[[ return variables.value || (entity ? entity.state : ""); ]]]'
+    styles:
+      card:
+      - min-height: 106px
+      - padding: 14px
+      - border-radius: 18px
+      - border: 1px solid rgba(255,235,215,0.13)
+      - background: linear-gradient(150deg, rgba(35,31,42,0.76), rgba(22,20,28,0.72))
+      - box-shadow: 0 18px 48px rgba(0,0,0,0.24)
+      - backdrop-filter: blur(20px) saturate(1.16)
+      - position: relative
+      - z-index: 2
+      grid:
+      - grid-template-areas: '"i n" "value value" "l l"'
+      - grid-template-columns: 22px 1fr
+      - grid-template-rows: min-content 1fr min-content
+      - column-gap: 8px
+      - row-gap: 5px
+      - align-items: start
+      icon:
+      - width: 18px
+      - color: '[[[ return variables.accent_color || "rgba(121,199,255,0.95)"; ]]]'
+      img_cell:
+      - justify-self: start
+      - align-self: center
+      name:
+      - justify-self: start
+      - align-self: center
+      - color: rgba(255,246,235,0.94)
+      - font-size: 14px
+      - line-height: 18px
+      - font-weight: 800
+      - white-space: normal
+      - text-align: left
+      label:
+      - justify-self: start
+      - color: rgba(255,235,215,0.62)
+      - font-size: 13px
+      - line-height: 17px
+      - font-weight: 650
+      custom_fields:
+        value:
+        - grid-area: value
+        - justify-self: start
+        - align-self: end
+        - color: rgba(255,246,235,0.96)
+        - font-size: 30px
+        - line-height: 32px
+        - font-weight: 300
+  mf_pill:
+    show_icon: true
+    show_name: true
+    icon: '[[[ return variables.icon || "mdi:circle"; ]]]'
+    name: '[[[ return variables.label || ""; ]]]'
+    styles:
+      card:
+      - min-height: 40px
+      - padding: 0 14px
+      - border-radius: 999px
+      - border: 1px solid rgba(255,235,215,0.13)
+      - background: rgba(23,22,28,0.7)
+      - box-shadow: none
+      - position: relative
+      - z-index: 2
+      grid:
+      - grid-template-areas: '"i n"'
+      - grid-template-columns: 18px 1fr
+      - column-gap: 8px
+      - align-items: center
+      icon:
+      - width: 16px
+      - color: '[[[ return variables.accent_color || "rgba(255,211,164,0.96)"; ]]]'
+      name:
+      - justify-self: start
+      - color: rgba(255,246,235,0.86)
+      - font-size: 13px
+      - line-height: 15px
+      - font-weight: 800
+  mf_section_label:
+    show_icon: true
+    show_name: true
+    icon: '[[[ return variables.icon || "mdi:label-outline"; ]]]'
+    name: '[[[ return variables.label || ""; ]]]'
+    styles:
+      card:
+      - min-height: 44px
+      - padding: 0 14px
+      - border-radius: 14px
+      - border: 1px solid rgba(255,255,255,0.08)
+      - background: rgba(11,12,15,0.54)
+      - box-shadow: none
+      - position: relative
+      - z-index: 2
+      grid:
+      - grid-template-areas: '"i n"'
+      - grid-template-columns: 22px 1fr
+      - column-gap: 8px
+      - align-items: center
+      icon:
+      - width: 18px
+      - color: '[[[ return variables.accent_color || "rgba(121,199,255,0.95)"; ]]]'
+      name:
+      - justify-self: start
+      - color: rgba(255,246,235,0.86)
+      - font-size: 16px
+      - line-height: 18px
+      - font-weight: 850
+  mf_model_y_juniper:
+    show_icon: false
+    show_name: false
+    show_label: false
+    custom_fields:
+      image: "[[[\n  const src = variables.image || \"/local/mobile-forge/model-y-juniper.png\";\n  return `\n    <img src=\"${src}\" alt=\"Tesla Model Y Juniper\" style=\"\n      width:100%;\n      height:244px;\n      display:block;\n      object-fit:cover;\n      object-position:center;\n      filter:saturate(0.94) contrast(1.02);\n    \">\n    <div style=\"\n      position:absolute;\n      left:12px;\n      bottom:12px;\n      min-height:36px;\n      padding:0 12px;\n      display:inline-flex;\n      align-items:center;\n      gap:8px;\n      border-radius:15px;\n      border:1px solid rgba(255,255,255,0.16);\n      background:rgba(13,15,19,0.78);\n      color:rgba(255,246,235,0.94);\n      font-weight:900;\n      font-size:13px;\n      line-height:1;\n      backdrop-filter:blur(12px);\n      box-shadow:0 12px 28px rgba(0,0,0,0.28);\n      pointer-events:none;\n    \">\n      <ha-icon icon=\"mdi:car-electric\" style=\"width:17px;height:17px;color:rgba(121,199,255,0.95);\"></ha-icon>\n      <span>Model Y Juniper</span>\n    </div>\n  `;\n]]]\n"
+    styles:
+      card:
+      - height: 244px
+      - padding: 0
+      - border-radius: 18px
+      - border: 1px solid rgba(255,235,215,0.13)
+      - background: linear-gradient(150deg, rgba(35,31,42,0.76), rgba(22,20,28,0.72))
+      - box-shadow: 0 18px 48px rgba(0,0,0,0.24)
+      - backdrop-filter: blur(20px) saturate(1.16)
+      - overflow: hidden
+      - position: relative
+      - z-index: 2
+      grid:
+      - grid-template-areas: '"image"'
+      custom_fields:
+        image:
+        - grid-area: image
