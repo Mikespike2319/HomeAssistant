@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Replace the Mobile Forge Home view contents with the Wife-Approved
+"""Replace the Mobile Forge Home view contents with the Wife Approved
 animated-sky landing page.
 
 Preserves: navbar-card (bottom nav).
@@ -30,11 +30,11 @@ def save(p, d):
 #  New Home view — Wife Approved animated sky landing
 # ────────────────────────────────────────────────────────────
 def build_new_home(navbar_card):
-    """Compact tiles layered on top of the sky_system_tesla backdrop."""
+    """Compact tiles layered on top of the real sky_system backdrop."""
     cards = [
-        # 1. Backdrop — animated sky, sun/moon arc, weather particles,
+        # 1. Backdrop - animated sky, sun/moon arc, weather particles,
         #    greeting at top of viewport, El Rocco HUD at bottom.
-        {"type": "custom:button-card", "template": "sky_system_tesla"},
+        {"type": "custom:button-card", "template": "sky_system"},
 
         # 2. Cozy weather hero — current conditions + friendly summary
         {
@@ -187,7 +187,7 @@ def main():
     # backdrop card we previously added + navbar which we re-add)
     classic_cards = [c for c in old_cards
                      if not (c.get("type") == "custom:button-card"
-                             and c.get("template") == "sky_system_tesla")
+                             and c.get("template") in ("sky_system", "sky_system_tesla"))
                      and c.get("type") != "custom:navbar-card"]
 
     print(f"\n[2/6] Preserving {len(classic_cards)} old Home cards in new 'Forge Classic' view")
@@ -202,7 +202,7 @@ def main():
     # Ensure no duplicate forge-classic from previous run
     d["views"] = [v for v in d["views"] if v.get("path") != "forge-classic"]
 
-    print(f"\n[3/6] Building new Home view (Wife Approved sky_system_tesla layout)...")
+    print(f"\n[3/6] Building new Home view (Wife Approved sky_system layout)...")
     new_home_cards = build_new_home(navbar)
     print(f"      ✓ {len(new_home_cards)} cards in new Home")
 
@@ -228,14 +228,14 @@ def main():
         home2 = next(v for v in d2["views"] if v.get("path") == "home")
         n_new = len(home2["sections"][0]["cards"])
         has_sky = any(c.get("type") == "custom:button-card"
-                      and c.get("template") == "sky_system_tesla"
+                      and c.get("template") == "sky_system"
                       for c in home2["sections"][0]["cards"])
-        has_sky_template = "sky_system_tesla" in (d2.get("button_card_templates", {}) or {})
+        has_sky_template = "sky_system" in (d2.get("button_card_templates", {}) or {})
         paths = [v.get("path") for v in d2["views"]]
         print(f"      ✓ YAML valid")
         print(f"      ✓ Home cards: {n_old} → {n_new}")
-        print(f"      ✓ template:sky_system_tesla in Home: {has_sky}")
-        print(f"      ✓ button_card_templates has sky_system_tesla: {has_sky_template}")
+        print(f"      ✓ template:sky_system in Home: {has_sky}")
+        print(f"      ✓ button_card_templates has sky_system: {has_sky_template}")
         print(f"      ✓ paths unique: {len(paths) == len(set(paths))}")
         print(f"      ✓ paths: {paths}")
     except Exception as e:

@@ -1,217 +1,150 @@
-# Personalized for Michael & Kiara
-# 14 Hue lights organized by area + 7 real Hue scenes
 title: Lights
 path: lights
 icon: mdi:lightbulb-group
 type: sections
 max_columns: 3
-
 cards:
-
+- type: custom:button-card
+  template: sky_system
+- type: custom:mod-card
+  style: "ha-card {\n  background: transparent !important;\n  border: none !important;\n  box-shadow: none !important;\n  margin-top: 14vh;\n}\n"
+  card:
+    type: markdown
+    content: "<div style=\"\n  font-family: 'Caveat', 'Dancing Script', Georgia, cursive;\n  font-style: italic;\n  font-size: 36px;\n  font-weight: 500;\n  color: rgba(255, 230, 210, 0.92);\n  text-shadow: 0 2px 8px rgba(0,0,0,0.5);\n  text-align: center;\n  letter-spacing: 0.02em;\n\">\n  A little glow ✨\n</div>\n"
+- type: horizontal-stack
+  cards:
   - type: custom:button-card
-    template: sky_system_tesla
-
-  - type: custom:mod-card
-    style: |
-      ha-card {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-        margin-top: 14vh;
-      }
-    card:
-      type: markdown
-      content: |
-        <div style="
-          font-family: 'Caveat', 'Dancing Script', Georgia, cursive;
-          font-style: italic;
-          font-size: 36px;
-          font-weight: 500;
-          color: rgba(255, 230, 210, 0.92);
-          text-shadow: 0 2px 8px rgba(0,0,0,0.5);
-          text-align: center;
-          letter-spacing: 0.02em;
-        ">
-          A little glow ✨
-        </div>
-
-  # ─── MOOD SCENES — Living room (your most-used scenes) ───
-  - type: horizontal-stack
-    cards:
-      - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          scene_entity: scene.living_room_dreamy_dusk
-          label: Dreamy dusk
-          emoji: 🌅
-          accent: warm
-      - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          scene_entity: scene.living_room_nighttime
-          label: Movie night
-          emoji: 🎬
-          accent: neutral
-      - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          scene_entity: scene.living_room_energize
-          label: Bright morning
-          emoji: ☀️
-          accent: cool
-
-  # ─── MOOD SCENES — Bedroom + Game Room ───
-  - type: horizontal-stack
-    cards:
-      - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          scene_entity: scene.bedroom_dreamy_dusk
-          label: Wind down
-          emoji: 🌙
-          accent: rose
-      - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          scene_entity: scene.bedroom_nighttime
-          label: Sweet dreams
-          emoji: 💫
-          accent: cool
-      - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          scene_entity: scene.bedroom_energize
-          label: Wake up
-          emoji: ☕
-          accent: warm
-      - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          scene_entity: scene.game_room_pensive
-          label: Pensive
-          emoji: 📖
-          accent: sage
-
-  # ═══════════════════════════════════════════════════════════
-  #  LIVING ROOM — your main hub (7 lights)
-  # ═══════════════════════════════════════════════════════════
-  - type: custom:mod-card
-    style: |
-      ha-card {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-      }
-    card:
-      type: markdown
-      content: |
-        <div style="
-          font-family: 'Caveat', cursive;
-          font-style: italic;
-          font-size: 22px;
-          color: rgba(255, 220, 200, 0.85);
-          text-align: left;
-          margin-left: 8px;
-        ">
-          🛋 Living room
-        </div>
-
-  - type: grid
-    columns: 3
-    square: false
-    cards:
-      - type: custom:button-card
-        template: cozy_light_tile
-        variables:
-          light_entity: light.living_room_2
-          cute_name: All living room
-          icon_emoji: 🛋
-      - type: custom:button-card
-        template: cozy_light_tile
-        variables:
-          light_entity: light.couch
-          cute_name: Couch
-          icon_emoji: 🛋
-      - type: custom:button-card
-        template: cozy_light_tile
-        variables:
-          light_entity: light.tv
-          cute_name: TV
-          icon_emoji: 📺
-      - type: custom:button-card
-        template: cozy_light_tile
-        variables:
-          light_entity: light.backlight_tv
-          cute_name: TV backlight
-          icon_emoji: ✨
-      - type: custom:button-card
-        template: cozy_light_tile
-        variables:
-          light_entity: light.ceiling
-          cute_name: Ceiling
-          icon_emoji: 💡
-      - type: custom:button-card
-        template: cozy_light_tile
-        variables:
-          light_entity: light.ceiling_2
-          cute_name: Ceiling (back)
-          icon_emoji: 💡
-
-  # ═══════════════════════════════════════════════════════════
-  #  BEDROOM — Mike + Kiara
-  # ═══════════════════════════════════════════════════════════
-  - type: custom:mod-card
-    style: |
-      ha-card {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-      }
-    card:
-      type: markdown
-      content: |
-        <div style="
-          font-family: 'Caveat', cursive;
-          font-style: italic;
-          font-size: 22px;
-          color: rgba(255, 220, 200, 0.85);
-          text-align: left;
-          margin-left: 8px;
-        ">
-          🛏 Bedroom
-        </div>
-
-  - type: grid
-    columns: 3
-    square: false
-    cards:
-      - type: custom:button-card
-        template: cozy_light_tile
-        variables:
-          light_entity: light.bedroom
-          cute_name: All bedroom
-          icon_emoji: 🛏
-      - type: custom:button-card
-        template: cozy_light_tile
-        variables:
-          light_entity: light.mike_side_lamp
-          cute_name: Mike's side
-          icon_emoji: 🌙
-      - type: custom:button-card
-        template: cozy_light_tile
-        variables:
-          light_entity: light.kiara_side_lamp
-          cute_name: Kiara's side
-          icon_emoji: 💫
-      - type: custom:button-card
-        template: cozy_light_tile
-        variables:
-          light_entity: light.light_panels_51_66_88
-          cute_name: Light panels
-          icon_emoji: 🎨
-      - type: custom:button-card
-        template: cozy_light_tile
-        variables:
-          light_entity: light.big_lamp
-          cute_name: Big lamp
-          icon_emoji: 💡
+    template: cozy_scene_pill
+    variables:
+      scene_entity: scene.living_room_dreamy_dusk
+      label: Dreamy dusk
+      emoji: 🌅
+      accent: warm
+  - type: custom:button-card
+    template: cozy_scene_pill
+    variables:
+      scene_entity: scene.living_room_nighttime
+      label: Movie night
+      emoji: 🎬
+      accent: neutral
+  - type: custom:button-card
+    template: cozy_scene_pill
+    variables:
+      scene_entity: scene.living_room_energize
+      label: Bright morning
+      emoji: ☀️
+      accent: cool
+- type: horizontal-stack
+  cards:
+  - type: custom:button-card
+    template: cozy_scene_pill
+    variables:
+      scene_entity: scene.bedroom_dreamy_dusk
+      label: Wind down
+      emoji: 🌙
+      accent: rose
+  - type: custom:button-card
+    template: cozy_scene_pill
+    variables:
+      scene_entity: scene.bedroom_nighttime
+      label: Sweet dreams
+      emoji: 💫
+      accent: cool
+  - type: custom:button-card
+    template: cozy_scene_pill
+    variables:
+      scene_entity: scene.bedroom_energize
+      label: Wake up
+      emoji: ☕
+      accent: warm
+  - type: custom:button-card
+    template: cozy_scene_pill
+    variables:
+      scene_entity: scene.game_room_pensive
+      label: Pensive
+      emoji: 📖
+      accent: sage
+- type: custom:mod-card
+  style: "ha-card {\n  background: transparent !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+  card:
+    type: markdown
+    content: "<div style=\"\n  font-family: 'Caveat', cursive;\n  font-style: italic;\n  font-size: 22px;\n  color: rgba(255, 220, 200, 0.85);\n  text-align: left;\n  margin-left: 8px;\n\">\n  \U0001F6CB Living room\n</div>\n"
+- type: grid
+  columns: 3
+  square: false
+  cards:
+  - type: custom:button-card
+    template: cozy_light_tile
+    variables:
+      light_entity: light.living_room_2
+      cute_name: All living room
+      icon_emoji: 🛋
+  - type: custom:button-card
+    template: cozy_light_tile
+    variables:
+      light_entity: light.couch
+      cute_name: Couch
+      icon_emoji: 🛋
+  - type: custom:button-card
+    template: cozy_light_tile
+    variables:
+      light_entity: light.tv
+      cute_name: TV
+      icon_emoji: 📺
+  - type: custom:button-card
+    template: cozy_light_tile
+    variables:
+      light_entity: light.backlight_tv
+      cute_name: TV backlight
+      icon_emoji: ✨
+  - type: custom:button-card
+    template: cozy_light_tile
+    variables:
+      light_entity: light.ceiling
+      cute_name: Ceiling
+      icon_emoji: 💡
+  - type: custom:button-card
+    template: cozy_light_tile
+    variables:
+      light_entity: light.ceiling_2
+      cute_name: Ceiling (back)
+      icon_emoji: 💡
+- type: custom:mod-card
+  style: "ha-card {\n  background: transparent !important;\n  border: none !important;\n  box-shadow: none !important;\n}\n"
+  card:
+    type: markdown
+    content: "<div style=\"\n  font-family: 'Caveat', cursive;\n  font-style: italic;\n  font-size: 22px;\n  color: rgba(255, 220, 200, 0.85);\n  text-align: left;\n  margin-left: 8px;\n\">\n  \U0001F6CF Bedroom\n</div>\n"
+- type: grid
+  columns: 3
+  square: false
+  cards:
+  - type: custom:button-card
+    template: cozy_light_tile
+    variables:
+      light_entity: light.bedroom
+      cute_name: All bedroom
+      icon_emoji: 🛏
+  - type: custom:button-card
+    template: cozy_light_tile
+    variables:
+      light_entity: light.mike_side_lamp
+      cute_name: Mike's side
+      icon_emoji: 🌙
+  - type: custom:button-card
+    template: cozy_light_tile
+    variables:
+      light_entity: light.kiara_side_lamp
+      cute_name: Kiara's side
+      icon_emoji: 💫
+  - type: custom:button-card
+    template: cozy_light_tile
+    variables:
+      light_entity: light.light_panels_51_66_88
+      cute_name: Light panels
+      icon_emoji: 🎨
+  - type: custom:button-card
+    template: cozy_light_tile
+    variables:
+      light_entity: light.big_lamp
+      cute_name: Big lamp
+      icon_emoji: 💡

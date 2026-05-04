@@ -3,7 +3,7 @@
 # ═══════════════════════════════════════════════════════════════════
 #
 # USAGE: paste this entire block under `button_card_templates:` in
-# raw config (alongside sky_system_tesla).
+# raw config (alongside sky_system).
 #
 # Use it on a card by referencing the template + setting variables:
 #

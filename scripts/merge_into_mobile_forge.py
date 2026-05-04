@@ -1,18 +1,21 @@
 #!/usr/bin/env python3
-"""Merge cozy templates + views INTO the existing Mobile Forge YAML.
+"""Merge Wife Approved templates + views INTO the existing Mobile Forge YAML.
 
 Non-destructive: preserves all existing cards on existing views,
-adds the cozy sky_system_tesla backdrop on every view, appends
+adds the Wife Approved sky_system backdrop on every view, appends
 cozy widget rows to Lights/Tesla/Security, and adds 3 new views
 (Music, House, Weather).
 """
+
+from __future__ import annotations
 
 import sys
 from pathlib import Path
 import yaml
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
 DASH_PATH = Path("/opt/ha-vps/homeassistant/dashboards/mobile_forge v5.yaml")
-COZY = Path("/root/dashboard")
+COZY = REPO_ROOT
 
 
 def load_yaml(p: Path) -> dict:
@@ -25,7 +28,8 @@ def load_yaml(p: Path) -> dict:
 # ─────────────────────────────────────────────────────────────────
 def collect_templates() -> dict:
     files = [
-        COZY / "sky_system_tesla.yaml",
+        COZY / "templates" / "sky_system.yaml",
+        COZY / "templates" / "sky_system_tesla.yaml",
         COZY / "templates" / "cozy_light_tile.yaml",
         COZY / "templates" / "cozy_scene_pill.yaml",
         COZY / "templates" / "cozy_camera_tile.yaml",
@@ -50,7 +54,7 @@ def collect_templates() -> dict:
 def backdrop_card() -> dict:
     return {
         "type": "custom:button-card",
-        "template": "sky_system_tesla",
+        "template": "sky_system",
     }
 
 
@@ -107,7 +111,7 @@ def main():
     n_views_before = len(d.get("views", []))
     print(f"      ✓ {n_views_before} existing views loaded")
 
-    print(f"\n[2/5] Collecting cozy templates from /root/dashboard/...")
+    print(f"\n[2/5] Collecting dashboard templates from {COZY}...")
     templates = collect_templates()
     d["button_card_templates"] = templates
     print(f"      ✓ {len(templates)} templates added at root")
@@ -131,7 +135,7 @@ def main():
 
         # Prepend backdrop on every view (idempotent — only if not already there)
         already_has_backdrop = any(
-            c.get("type") == "custom:button-card" and c.get("template") == "sky_system_tesla"
+            c.get("type") == "custom:button-card" and c.get("template") in ("sky_system", "sky_system_tesla")
             for c in cards
         )
         if not already_has_backdrop:

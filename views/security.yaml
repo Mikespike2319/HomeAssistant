@@ -1,117 +1,80 @@
-# Personalized — your real Blink + IP camera + alarm panel
 title: Security
 path: security
 icon: mdi:shield-home
 type: sections
 max_columns: 2
-
 cards:
-
+- type: custom:button-card
+  template: sky_system
+- type: custom:mod-card
+  style: "ha-card {\n  background: transparent !important;\n  border: none !important;\n  box-shadow: none !important;\n  margin-top: 14vh;\n}\n"
+  card:
+    type: markdown
+    content: "<div style=\"\n  font-family: 'Caveat', 'Dancing Script', Georgia, cursive;\n  font-style: italic;\n  font-size: 36px;\n  font-weight: 500;\n  color: rgba(255, 230, 210, 0.92);\n  text-shadow: 0 2px 8px rgba(0,0,0,0.5);\n  text-align: center;\n  letter-spacing: 0.02em;\n\">\n  Keeping watch \U0001F441\n</div>\n"
+- type: custom:button-card
+  template: cozy_alarm_panel
+  variables:
+    alarm_entity: alarm_control_panel.nas_blink_home_security
+- type: horizontal-stack
+  cards:
   - type: custom:button-card
-    template: sky_system_tesla
-
-  - type: custom:mod-card
-    style: |
-      ha-card {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-        margin-top: 14vh;
-      }
-    card:
-      type: markdown
-      content: |
-        <div style="
-          font-family: 'Caveat', 'Dancing Script', Georgia, cursive;
-          font-style: italic;
-          font-size: 36px;
-          font-weight: 500;
-          color: rgba(255, 230, 210, 0.92);
-          text-shadow: 0 2px 8px rgba(0,0,0,0.5);
-          text-align: center;
-          letter-spacing: 0.02em;
-        ">
-          Keeping watch 👁
-        </div>
-
-  # ─── Alarm panel (using your active NAS Blink alarm) ───
-  - type: custom:button-card
-    template: cozy_alarm_panel
+    template: cozy_scene_pill
     variables:
-      alarm_entity: alarm_control_panel.nas_blink_home_security
-
-  - type: horizontal-stack
-    cards:
-      - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          label: Stand down
-          emoji: 🏡
-          accent: sage
-        tap_action:
-          action: call-service
-          service: alarm_control_panel.alarm_disarm
-          target:
-            entity_id: alarm_control_panel.nas_blink_home_security
-      - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          label: Tuck us in
-          emoji: 🛏
-          accent: rose
-        tap_action:
-          action: call-service
-          service: alarm_control_panel.alarm_arm_home
-          target:
-            entity_id: alarm_control_panel.nas_blink_home_security
-      - type: custom:button-card
-        template: cozy_scene_pill
-        variables:
-          label: We're out
-          emoji: 👁
-          accent: warm
-        tap_action:
-          action: call-service
-          service: alarm_control_panel.alarm_arm_away
-          target:
-            entity_id: alarm_control_panel.nas_blink_home_security
-
-  # ─── Cameras ───
-  - type: grid
-    columns: 2
-    square: false
-    cards:
-      - type: custom:button-card
-        template: cozy_camera_tile
-        variables:
-          camera_entity: camera.front_door
-          motion_entity: binary_sensor.nas_blink_front_door_motion
-          cute_name: Front door
-          emoji: 🚪
-      - type: custom:button-card
-        template: cozy_camera_tile
-        variables:
-          camera_entity: camera.192_168_50_214
-          cute_name: Side camera
-          emoji: 📷
-
-  # ─── Recent activity ───
-  - type: custom:mod-card
-    style: |
-      ha-card {
-        background: rgba(20, 17, 24, 0.55) !important;
-        backdrop-filter: blur(14px) saturate(140%);
-        border: 1px solid rgba(255, 235, 215, 0.10) !important;
-        border-radius: 18px !important;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important;
-        color: rgba(255, 245, 230, 0.92);
-      }
-    card:
-      type: logbook
-      title: Recent activity
-      hours_to_show: 12
-      entities:
-        - binary_sensor.nas_blink_front_door_motion
-        - binary_sensor.front_door_motion
-        - alarm_control_panel.nas_blink_home_security
-        - alarm_control_panel.blink_home
+      label: Stand down
+      emoji: 🏡
+      accent: sage
+    tap_action:
+      action: call-service
+      service: alarm_control_panel.alarm_disarm
+      target:
+        entity_id: alarm_control_panel.nas_blink_home_security
+  - type: custom:button-card
+    template: cozy_scene_pill
+    variables:
+      label: Tuck us in
+      emoji: 🛏
+      accent: rose
+    tap_action:
+      action: call-service
+      service: alarm_control_panel.alarm_arm_home
+      target:
+        entity_id: alarm_control_panel.nas_blink_home_security
+  - type: custom:button-card
+    template: cozy_scene_pill
+    variables:
+      label: We're out
+      emoji: 👁
+      accent: warm
+    tap_action:
+      action: call-service
+      service: alarm_control_panel.alarm_arm_away
+      target:
+        entity_id: alarm_control_panel.nas_blink_home_security
+- type: grid
+  columns: 2
+  square: false
+  cards:
+  - type: custom:button-card
+    template: cozy_camera_tile
+    variables:
+      camera_entity: camera.front_door
+      motion_entity: binary_sensor.nas_blink_front_door_motion
+      cute_name: Front door
+      emoji: 🚪
+  - type: custom:button-card
+    template: cozy_camera_tile
+    variables:
+      camera_entity: camera.192_168_50_214
+      cute_name: Side camera
+      emoji: 📷
+- type: custom:mod-card
+  style: "ha-card {\n  background: rgba(20, 17, 24, 0.55) !important;\n  backdrop-filter: blur(14px) saturate(140%);\n  border: 1px solid rgba(255, 235, 215, 0.10) !important;\n  border-radius: 18px !important;\n  box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important;\n  color: rgba(255, 245, 230, 0.92);\n}\n"
+  card:
+    type: logbook
+    title: Recent activity
+    hours_to_show: 12
+    entities:
+    - binary_sensor.nas_blink_front_door_motion
+    - binary_sensor.front_door_motion
+    - alarm_control_panel.nas_blink_home_security
+    - alarm_control_panel.blink_home

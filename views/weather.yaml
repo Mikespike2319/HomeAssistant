@@ -1,182 +1,72 @@
-# ═══════════════════════════════════════════════════════════════════
-#   /weather view — cozy hero + daily/hourly forecast + radar
-# ═══════════════════════════════════════════════════════════════════
-#
-# DEPENDENCIES:
-#   • Templates: cozy_weather_hero, sky_system_tesla
-#   • Weather integration in HA (any: Met.no, OpenWeatherMap, NWS, etc.)
-#   • Optional: weather alert sensor (binary_sensor.weather_alert)
-#
-# CUSTOMIZE:
-#   • Replace weather_entity with YOUR weather entity if not
-#     `weather.forecast_home`. Find via Dev Tools → States → "weather."
-#   • Radar URL: see RADAR section — pick rainviewer or your local
-#     NWS radar station, or remove if you don't want radar.
-# ═══════════════════════════════════════════════════════════════════
-
 title: Weather
 path: weather
 icon: mdi:weather-partly-cloudy
 type: sections
 max_columns: 2
-
 cards:
-
-  # ── Cozy backdrop (sky animations already reflect weather) ──
-  - type: custom:button-card
-    template: sky_system_tesla
-    variables:
-      tesla_prefix: my_model_y
-      wife_name: ''
-      car_name: 'the car'
-
-  # ── Page header ──
-  - type: custom:mod-card
-    style: |
-      ha-card {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-        margin-top: 14vh;
-      }
-    card:
-      type: markdown
-      content: |
-        <div style="
-          font-family: 'Caveat', 'Dancing Script', Georgia, cursive;
-          font-style: italic;
-          font-size: 36px;
-          font-weight: 500;
-          color: rgba(255, 230, 210, 0.92);
-          text-shadow: 0 2px 8px rgba(0,0,0,0.5);
-          text-align: center;
-          letter-spacing: 0.02em;
-        ">
-          What's outside 🌤
-        </div>
-
-  # ═══════════════════════════════════════════════════════════
-  #  COZY WEATHER HERO — current conditions, friendly summary
-  # ═══════════════════════════════════════════════════════════
-  - type: custom:button-card
-    template: cozy_weather_hero
-    variables:
-      weather_entity: weather.forecast_home
-
-  # ═══════════════════════════════════════════════════════════
-  #  HOURLY FORECAST — next 12-24 hours
-  #  Uses HA's built-in weather-forecast card wrapped in cozy chrome
-  # ═══════════════════════════════════════════════════════════
-  - type: custom:mod-card
-    style: |
-      ha-card {
-        background: rgba(20, 17, 24, 0.55) !important;
-        backdrop-filter: blur(14px) saturate(140%);
-        border: 1px solid rgba(255, 235, 215, 0.10) !important;
-        border-radius: 18px !important;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important;
-        padding: 14px !important;
-      }
-      ha-card .header { display: none !important; }
-    card:
-      type: weather-forecast
-      entity: weather.forecast_home
-      forecast_type: hourly
-      show_current: false
-      show_forecast: true
-      name: Next few hours
-
-  # ═══════════════════════════════════════════════════════════
-  #  DAILY FORECAST — next 7 days
-  # ═══════════════════════════════════════════════════════════
-  - type: custom:mod-card
-    style: |
-      ha-card {
-        background: rgba(20, 17, 24, 0.55) !important;
-        backdrop-filter: blur(14px) saturate(140%);
-        border: 1px solid rgba(255, 235, 215, 0.10) !important;
-        border-radius: 18px !important;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important;
-        padding: 14px !important;
-      }
-    card:
-      type: weather-forecast
-      entity: weather.forecast_home
-      forecast_type: daily
-      show_current: false
-      show_forecast: true
-      name: This week
-
-  # ═══════════════════════════════════════════════════════════
-  #  RADAR — animated precipitation
-  #  Uses Rainviewer's free embedded map. Centered roughly on the
-  #  US — adjust lat/lon/zoom to your location for a closer view.
-  # ═══════════════════════════════════════════════════════════
-  - type: custom:mod-card
-    style: |
-      ha-card {
-        background: rgba(20, 17, 24, 0.55) !important;
-        backdrop-filter: blur(14px) saturate(140%);
-        border: 1px solid rgba(255, 235, 215, 0.10) !important;
-        border-radius: 18px !important;
-        overflow: hidden !important;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important;
-      }
-    card:
-      type: iframe
-      title: Radar
-      url: https://www.rainviewer.com/map.html?loc=39.5,-98.35,5&oFa=0&oC=0&oU=0&oCS=1&oF=0&oAP=1&c=3&o=83&lm=1&layer=radar&sm=1&sn=1
-      aspect_ratio: 16x10
-
-  # ═══════════════════════════════════════════════════════════
-  #  WEATHER ALERTS / WARNINGS — if you have any alert sensor
-  # ═══════════════════════════════════════════════════════════
-  - type: conditional
-    conditions:
-      - entity: binary_sensor.weather_alert
-        state: 'on'
-    card:
-      type: custom:mod-card
-      style: |
-        ha-card {
-          background: linear-gradient(135deg, rgba(255,138,106,0.20) 0%, rgba(40,20,15,0.7) 100%) !important;
-          border: 1px solid rgba(255,138,106,0.45) !important;
-          border-radius: 18px !important;
-          box-shadow: 0 6px 24px rgba(255,100,80,0.25) !important;
-        }
-      card:
-        type: entities
-        title: ⚠️ Weather alert
-        entities:
-          - entity: sensor.weather_alert_title
-            name: Alert
-          - entity: sensor.weather_alert_description
-            name: Details
-
-  # ═══════════════════════════════════════════════════════════
-  #  EXTRA SENSORS — air quality, UV, pollen if you have them
-  # ═══════════════════════════════════════════════════════════
-  - type: custom:mod-card
-    style: |
-      ha-card {
-        background: rgba(20, 17, 24, 0.55) !important;
-        backdrop-filter: blur(14px) saturate(140%);
-        border: 1px solid rgba(255, 235, 215, 0.10) !important;
-        border-radius: 18px !important;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important;
-      }
+- type: custom:button-card
+  template: sky_system
+  variables:
+    tesla_prefix: my_model_y
+    wife_name: ''
+    car_name: the car
+- type: custom:mod-card
+  style: "ha-card {\n  background: transparent !important;\n  border: none !important;\n  box-shadow: none !important;\n  margin-top: 14vh;\n}\n"
+  card:
+    type: markdown
+    content: "<div style=\"\n  font-family: 'Caveat', 'Dancing Script', Georgia, cursive;\n  font-style: italic;\n  font-size: 36px;\n  font-weight: 500;\n  color: rgba(255, 230, 210, 0.92);\n  text-shadow: 0 2px 8px rgba(0,0,0,0.5);\n  text-align: center;\n  letter-spacing: 0.02em;\n\">\n  What's outside \U0001F324\n</div>\n"
+- type: custom:button-card
+  template: cozy_weather_hero
+  variables:
+    weather_entity: weather.forecast_home
+- type: custom:mod-card
+  style: "ha-card {\n  background: rgba(20, 17, 24, 0.55) !important;\n  backdrop-filter: blur(14px) saturate(140%);\n  border: 1px solid rgba(255, 235, 215, 0.10) !important;\n  border-radius: 18px !important;\n  box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important;\n  padding: 14px !important;\n}\nha-card .header { display: none !important; }\n"
+  card:
+    type: weather-forecast
+    entity: weather.forecast_home
+    forecast_type: hourly
+    show_current: false
+    show_forecast: true
+    name: Next few hours
+- type: custom:mod-card
+  style: "ha-card {\n  background: rgba(20, 17, 24, 0.55) !important;\n  backdrop-filter: blur(14px) saturate(140%);\n  border: 1px solid rgba(255, 235, 215, 0.10) !important;\n  border-radius: 18px !important;\n  box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important;\n  padding: 14px !important;\n}\n"
+  card:
+    type: weather-forecast
+    entity: weather.forecast_home
+    forecast_type: daily
+    show_current: false
+    show_forecast: true
+    name: This week
+- type: custom:mod-card
+  style: "ha-card {\n  background: rgba(20, 17, 24, 0.55) !important;\n  backdrop-filter: blur(14px) saturate(140%);\n  border: 1px solid rgba(255, 235, 215, 0.10) !important;\n  border-radius: 18px !important;\n  overflow: hidden !important;\n  box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important;\n}\n"
+  card:
+    type: iframe
+    title: Radar
+    url: https://www.rainviewer.com/map.html?loc=39.5,-98.35,5&oFa=0&oC=0&oU=0&oCS=1&oF=0&oAP=1&c=3&o=83&lm=1&layer=radar&sm=1&sn=1
+    aspect_ratio: 16x10
+- type: conditional
+  conditions:
+  - entity: binary_sensor.weather_alert
+    state: 'on'
+  card:
+    type: custom:mod-card
+    style: "ha-card {\n  background: linear-gradient(135deg, rgba(255,138,106,0.20) 0%, rgba(40,20,15,0.7) 100%) !important;\n  border: 1px solid rgba(255,138,106,0.45) !important;\n  border-radius: 18px !important;\n  box-shadow: 0 6px 24px rgba(255,100,80,0.25) !important;\n}\n"
     card:
       type: entities
-      title: Air & sky
+      title: ⚠️ Weather alert
       entities:
-        # Uncomment any you have. Delete the rest.
-        # - sensor.air_quality_index
-        # - sensor.uv_index
-        # - sensor.pollen_count
-        # - sensor.pm25
-        # - sensor.pm10
-        - entity: sun.sun
-          name: Sun
-        - entity: weather.forecast_home
-          name: Conditions
-      state_color: true
+      - entity: sensor.weather_alert_title
+        name: Alert
+      - entity: sensor.weather_alert_description
+        name: Details
+- type: custom:mod-card
+  style: "ha-card {\n  background: rgba(20, 17, 24, 0.55) !important;\n  backdrop-filter: blur(14px) saturate(140%);\n  border: 1px solid rgba(255, 235, 215, 0.10) !important;\n  border-radius: 18px !important;\n  box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important;\n}\n"
+  card:
+    type: entities
+    title: Air & sky
+    entities:
+    - entity: sun.sun
+      name: Sun
+    - entity: weather.forecast_home
+      name: Conditions
+    state_color: true

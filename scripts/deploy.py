@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Deploy the Cozy dashboard to a running HA instance.
+"""Deploy the standalone Cozy dashboard to a running HA instance.
 
 Creates a new dashboard `cozy_home` (URL path: /cozy-home) with all
-11 templates + 6 views from /root/dashboard. Non-destructive — does
+repo templates + 6 views. Non-destructive — does
 not touch existing dashboards.
 """
 
@@ -13,9 +13,10 @@ from pathlib import Path
 
 import yaml
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
 HA_ROOT = Path("/opt/ha-vps/homeassistant")
 STORAGE = HA_ROOT / ".storage"
-COZY = Path("/root/dashboard")
+COZY = REPO_ROOT
 
 DASHBOARD_ID = "cozy_home"
 URL_PATH = "cozy-home"
@@ -40,10 +41,11 @@ def atomic_write_json(path: Path, data: dict) -> None:
 def build_dashboard_config() -> dict:
     """Build the Lovelace dashboard config dict from our YAML files."""
 
-    # Load all 11 templates from sky_system_tesla + templates/
+    # Load templates from the repo.
     print("→ Loading templates...")
     template_files = [
-        COZY / "sky_system_tesla.yaml",
+        COZY / "templates" / "sky_system.yaml",
+        COZY / "templates" / "sky_system_tesla.yaml",
         COZY / "templates" / "cozy_light_tile.yaml",
         COZY / "templates" / "cozy_scene_pill.yaml",
         COZY / "templates" / "cozy_camera_tile.yaml",

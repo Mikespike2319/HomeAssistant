@@ -1,113 +1,36 @@
-# Personalized — Roomba + house thermostat NOT yet connected.
-# This view shows guidance on how to add them.
 title: House
 path: house
 icon: mdi:home-thermometer
 type: sections
 max_columns: 2
-
 cards:
+- type: custom:button-card
+  template: sky_system
+- type: custom:mod-card
+  style: "ha-card {\n  background: transparent !important;\n  border: none !important;\n  box-shadow: none !important;\n  margin-top: 14vh;\n}\n"
+  card:
+    type: markdown
+    content: "<div style=\"\n  font-family: 'Caveat', 'Dancing Script', Georgia, cursive;\n  font-style: italic;\n  font-size: 36px;\n  font-weight: 500;\n  color: rgba(255, 230, 210, 0.92);\n  text-shadow: 0 2px 8px rgba(0,0,0,0.5);\n  text-align: center;\n  letter-spacing: 0.02em;\n\">\n  Around the house \U0001F3E1\n</div>\n"
+- type: custom:mod-card
+  style: "ha-card {\n  background: rgba(20, 17, 24, 0.5) !important;\n  backdrop-filter: blur(14px) saturate(140%);\n  border: 1px dashed rgba(255, 220, 195, 0.30) !important;\n  border-radius: 18px !important;\n  padding: 22px !important;\n}\n"
+  card:
+    type: markdown
+    content: "<div style=\"font-family:'Caveat',cursive; font-style:italic; font-size:24px; color:rgba(255,220,200,0.9);\">\n  \U0001F321 House thermostat\n</div>\n<div style=\"font-family:'Inter',sans-serif; font-size:13px; color:rgba(255,235,215,0.72); margin-top:8px; line-height:1.5;\">\n  Your thermostat is on Alexa, not in Home Assistant yet. To get it here:\n  <br/><br/>\n  <b>Easiest:</b> Settings → Devices & Services → Add Integration → search for your thermostat brand directly (Honeywell, Ecobee, Nest, Sensi, etc.).\n  <br/><br/>\n  <b>Alexa fallback:</b> install the HACS <i>Amazon Devices</i> integration — it pulls thermostat state from Alexa cloud (~30 second lag).\n  <br/><br/>\n  Once it shows up as a <code>climate.*</code> entity, swap it into this tile.\n</div>\n"
+- type: custom:mod-card
+  style: "ha-card {\n  background: rgba(20, 17, 24, 0.5) !important;\n  backdrop-filter: blur(14px) saturate(140%);\n  border: 1px dashed rgba(255, 220, 195, 0.30) !important;\n  border-radius: 18px !important;\n  padding: 22px !important;\n}\n"
+  card:
+    type: markdown
+    content: "<div style=\"font-family:'Caveat',cursive; font-style:italic; font-size:24px; color:rgba(255,220,200,0.9);\">\n  \U0001F916 iRobot Roomba\n</div>\n<div style=\"font-family:'Inter',sans-serif; font-size:13px; color:rgba(255,235,215,0.72); margin-top:8px; line-height:1.5;\">\n  Your Roomba isn't connected to HA yet. To add it:\n  <br/><br/>\n  1. Settings → Devices & Services → Add Integration<br/>\n  2. Search \"iRobot\" or \"Roomba\"<br/>\n  3. Sign in with your iRobot account<br/>\n  4. The vacuum will appear as <code>vacuum.roomba</code> (or similar)\n  <br/><br/>\n  Once connected, this card will turn into a cozy tile with a battery bar, status messages (\"Tidying up the place\", \"Resting at home\"), and one-tap start/pause/dock.\n</div>\n"
+- type: custom:mod-card
+  style: 'ha-card { background: transparent !important; border: none !important; box-shadow: none !important; }
 
-  - type: custom:button-card
-    template: sky_system_tesla
-
-  - type: custom:mod-card
-    style: |
-      ha-card {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-        margin-top: 14vh;
-      }
-    card:
-      type: markdown
-      content: |
-        <div style="
-          font-family: 'Caveat', 'Dancing Script', Georgia, cursive;
-          font-style: italic;
-          font-size: 36px;
-          font-weight: 500;
-          color: rgba(255, 230, 210, 0.92);
-          text-shadow: 0 2px 8px rgba(0,0,0,0.5);
-          text-align: center;
-          letter-spacing: 0.02em;
-        ">
-          Around the house 🏡
-        </div>
-
-  # ═══════════════════════════════════════════════════════════
-  #  THERMOSTAT — not in HA yet (only Tesla cabin climate is)
-  # ═══════════════════════════════════════════════════════════
-  - type: custom:mod-card
-    style: |
-      ha-card {
-        background: rgba(20, 17, 24, 0.5) !important;
-        backdrop-filter: blur(14px) saturate(140%);
-        border: 1px dashed rgba(255, 220, 195, 0.30) !important;
-        border-radius: 18px !important;
-        padding: 22px !important;
-      }
-    card:
-      type: markdown
-      content: |
-        <div style="font-family:'Caveat',cursive; font-style:italic; font-size:24px; color:rgba(255,220,200,0.9);">
-          🌡 House thermostat
-        </div>
-        <div style="font-family:'Inter',sans-serif; font-size:13px; color:rgba(255,235,215,0.72); margin-top:8px; line-height:1.5;">
-          Your thermostat is on Alexa, not in Home Assistant yet. To get it here:
-          <br/><br/>
-          <b>Easiest:</b> Settings → Devices & Services → Add Integration → search for your thermostat brand directly (Honeywell, Ecobee, Nest, Sensi, etc.).
-          <br/><br/>
-          <b>Alexa fallback:</b> install the HACS <i>Amazon Devices</i> integration — it pulls thermostat state from Alexa cloud (~30 second lag).
-          <br/><br/>
-          Once it shows up as a <code>climate.*</code> entity, swap it into this tile.
-        </div>
-
-  # ═══════════════════════════════════════════════════════════
-  #  ROOMBA — also not in HA yet
-  # ═══════════════════════════════════════════════════════════
-  - type: custom:mod-card
-    style: |
-      ha-card {
-        background: rgba(20, 17, 24, 0.5) !important;
-        backdrop-filter: blur(14px) saturate(140%);
-        border: 1px dashed rgba(255, 220, 195, 0.30) !important;
-        border-radius: 18px !important;
-        padding: 22px !important;
-      }
-    card:
-      type: markdown
-      content: |
-        <div style="font-family:'Caveat',cursive; font-style:italic; font-size:24px; color:rgba(255,220,200,0.9);">
-          🤖 iRobot Roomba
-        </div>
-        <div style="font-family:'Inter',sans-serif; font-size:13px; color:rgba(255,235,215,0.72); margin-top:8px; line-height:1.5;">
-          Your Roomba isn't connected to HA yet. To add it:
-          <br/><br/>
-          1. Settings → Devices & Services → Add Integration<br/>
-          2. Search "iRobot" or "Roomba"<br/>
-          3. Sign in with your iRobot account<br/>
-          4. The vacuum will appear as <code>vacuum.roomba</code> (or similar)
-          <br/><br/>
-          Once connected, this card will turn into a cozy tile with a battery bar, status messages ("Tidying up the place", "Resting at home"), and one-tap start/pause/dock.
-        </div>
-
-  # ═══════════════════════════════════════════════════════════
-  #  WHAT YOU DO HAVE — Tesla cabin climate (since it counts)
-  # ═══════════════════════════════════════════════════════════
-  - type: custom:mod-card
-    style: |
-      ha-card { background: transparent !important; border: none !important; box-shadow: none !important; }
-    card:
-      type: markdown
-      content: |
-        <div style="font-family:'Caveat',cursive; font-style:italic; font-size:22px; color:rgba(255,220,200,0.85); margin-left:8px;">
-          🚗 Currently only Tesla cabin climate is in HA
-        </div>
-
-  - type: custom:button-card
-    template: cozy_thermostat_tile
-    variables:
-      climate_entity: climate.el_rocco_climate
-      cute_name: El Rocco cabin
-      emoji: 🚗
+    '
+  card:
+    type: markdown
+    content: "<div style=\"font-family:'Caveat',cursive; font-style:italic; font-size:22px; color:rgba(255,220,200,0.85); margin-left:8px;\">\n  \U0001F697 Currently only Tesla cabin climate is in HA\n</div>\n"
+- type: custom:button-card
+  template: cozy_thermostat_tile
+  variables:
+    climate_entity: climate.el_rocco_climate
+    cute_name: El Rocco cabin
+    emoji: 🚗
