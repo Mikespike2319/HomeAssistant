@@ -33,5 +33,10 @@ __pycache__/
 *.bak
 *.bak-*
 *.cozy-merge-backup-*
-*.before-home-replace-*
+*.before-*
 *.cozy_backups_*
+*.OLD-*
+*.cachebust-*
+
+# Claude Code working files — memory/ and CLAUDE.md ARE tracked, secrets/ never is
+.claude/secrets/
