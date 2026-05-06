@@ -69,16 +69,61 @@ def navbar_card_from(d: dict) -> dict | None:
         for s in v.get("sections", []):
             for c in s.get("cards", []):
                 if c.get("type") == "custom:navbar-card":
-                    return c
+                    return normalize_navbar(c)
     return None
+
+
+def normalize_navbar(card: dict | None) -> dict | None:
+    if not isinstance(card, dict):
+        return None
+    nav = dict(card)
+    nav["type"] = "custom:navbar-card"
+    nav["routes"] = [
+        {"url": "/mobile-forge/home", "icon": "mdi:home"},
+        {"url": "/mobile-forge/lights", "icon": "mdi:lightbulb-group"},
+        {"url": "/mobile-forge/music", "icon": "mdi:music"},
+        {"url": "/mobile-forge/tesla", "icon": "mdi:car-electric"},
+        {"url": "/mobile-forge/security", "icon": "mdi:shield-lock"},
+        {"url": "/mobile-forge/house", "icon": "mdi:home-thermometer"},
+    ]
+    nav["card_mod"] = {
+        "style": (
+            ":host { position: fixed !important; left: 12px !important; right: 12px !important; "
+            "bottom: max(12px, env(safe-area-inset-bottom, 0px)) !important; z-index: 999 !important; }\n"
+            "ha-card { border-radius: 22px !important; border: 1px solid rgba(255,255,255,0.12) !important; "
+            "background: rgba(15,15,18,0.90) !important; backdrop-filter: blur(20px); "
+            "-webkit-backdrop-filter: blur(20px); box-shadow: 0 18px 48px rgba(0,0,0,0.32) !important; "
+            "padding-bottom: env(safe-area-inset-bottom, 0px); overflow: hidden; }\n"
+        )
+    }
+    return nav
+
+
+def nav_spacer_card() -> dict:
+    return {"type": "custom:button-card", "template": "mf_nav_spacer"}
+
+
+def ensure_bottom_chrome(cards: list, navbar_card: dict | None) -> None:
+    cards[:] = [
+        c for c in cards
+        if not (
+            isinstance(c, dict)
+            and (
+                c.get("type") == "custom:navbar-card"
+                or (c.get("type") == "custom:button-card" and c.get("template") == "mf_nav_spacer")
+            )
+        )
+    ]
+    if navbar_card:
+        cards.append(nav_spacer_card())
+        cards.append(normalize_navbar(navbar_card))
 
 
 def build_view(title, path, icon, cozy_view_filename, navbar_card) -> dict:
     """Build a full Mobile-Forge-style view (with sections wrapper)."""
     cozy_cards = load_yaml(COZY / "views" / cozy_view_filename).get("cards", [])
     section_cards = list(cozy_cards)
-    if navbar_card and not any(c.get("type") == "custom:navbar-card" for c in section_cards):
-        section_cards.append(navbar_card)
+    ensure_bottom_chrome(section_cards, navbar_card)
     return {
         "title": title,
         "path": path,
@@ -145,6 +190,8 @@ def main():
             print(f"      ✓ Security: appended {len(extra)} cozy cards")
         else:
             print(f"      • {title_old}: backdrop only (preserved {len(cards)-1} existing cards)")
+
+        ensure_bottom_chrome(cards, navbar)
 
     print(f"\n[4/5] Adding 3 new views (Music, House, Weather)...")
     existing_paths = {v.get("path") for v in d["views"]}

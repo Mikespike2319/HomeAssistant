@@ -257,3 +257,21 @@ button_card_templates:
       custom_fields:
         image:
           - grid-area: image
+
+  mf_nav_spacer:
+    show_icon: false
+    show_name: false
+    show_label: false
+    tap_action:
+      action: none
+    styles:
+      card:
+        - height: 104px
+        - min-height: 104px
+        - padding: 0
+        - background: transparent
+        - box-shadow: none
+        - border: none
+        - pointer-events: none
+        - position: relative
+        - z-index: 1

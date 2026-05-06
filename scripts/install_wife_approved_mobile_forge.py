@@ -278,8 +278,38 @@ def find_navbar(cards: list[Any]) -> Any | None:
             continue
         card_type = str(card.get("type", ""))
         if "navbar-card" in card_type:
-            return copy.deepcopy(card)
+            return normalize_navbar(card)
     return None
+
+
+def normalize_navbar(card: Any | None) -> Any | None:
+    if not isinstance(card, dict):
+        return None
+    nav = copy.deepcopy(card)
+    nav["type"] = "custom:navbar-card"
+    nav["routes"] = [
+        {"url": "/mobile-forge/home", "icon": "mdi:home"},
+        {"url": "/mobile-forge/lights", "icon": "mdi:lightbulb-group"},
+        {"url": "/mobile-forge/music", "icon": "mdi:music"},
+        {"url": "/mobile-forge/tesla", "icon": "mdi:car-electric"},
+        {"url": "/mobile-forge/security", "icon": "mdi:shield-lock"},
+        {"url": "/mobile-forge/house", "icon": "mdi:home-thermometer"},
+    ]
+    nav["card_mod"] = {
+        "style": (
+            ":host { position: fixed !important; left: 12px !important; right: 12px !important; "
+            "bottom: max(12px, env(safe-area-inset-bottom, 0px)) !important; z-index: 999 !important; }\n"
+            "ha-card { border-radius: 22px !important; border: 1px solid rgba(255,255,255,0.12) !important; "
+            "background: rgba(15,15,18,0.90) !important; backdrop-filter: blur(20px); "
+            "-webkit-backdrop-filter: blur(20px); box-shadow: 0 18px 48px rgba(0,0,0,0.32) !important; "
+            "padding-bottom: env(safe-area-inset-bottom, 0px); overflow: hidden; }\n"
+        )
+    }
+    return nav
+
+
+def nav_spacer_card() -> dict[str, Any]:
+    return {"type": "custom:button-card", "template": "mf_nav_spacer"}
 
 
 def home_cards(view: dict[str, Any]) -> list[Any]:
@@ -531,59 +561,132 @@ def make_home_cards(config_dir: Path, navbar: Any | None) -> list[Any]:
         ["sensor.el_rocco_battery", "sensor.el_rocco_battery_level", "sensor.tesla_battery"],
         ["battery"],
         "sensor",
-    )
-    lights = pick_entity(entities, ["light.all_lights", "light.living_room"], ["hue"], "light")
+    ) or "sensor.el_rocco_battery_level"
+    lights = pick_entity(entities, ["light.all_lights", "light.living_room_2", "light.living_room"], ["hue"], "light") or "light.living_room_2"
     security = pick_entity(
         entities,
-        ["alarm_control_panel.blink", "alarm_control_panel.home_alarm", "alarm_control_panel.alarm"],
+        ["alarm_control_panel.nas_blink_home_security", "alarm_control_panel.blink", "alarm_control_panel.home_alarm", "alarm_control_panel.alarm"],
         ["blink"],
         "alarm_control_panel",
-    )
+    ) or "alarm_control_panel.nas_blink_home_security"
     assistant = pick_entity(
         entities,
         ["update.home_assistant_core_update", "sensor.home_assistant_v2_db_size", "sensor.uptime"],
         ["home_assistant"],
         None,
-    )
+    ) or "update.home_assistant_core_update"
     media = pick_entity(entities, ["media_player.living_room", "media_player.bedroom"], ["media_player"], None)
 
     cards: list[Any] = [
         card_background(),
-        {"type": "custom:button-card", "template": "mf_header"},
-        {"type": "custom:button-card", "template": "mf_weather_panel", "entity": "weather.forecast_home"},
+        {
+            "type": "custom:button-card",
+            "template": "mf_page_title",
+            "variables": {
+                "title": "Home",
+                "subtitle": "Animated sky, house status, and quick controls.",
+            },
+        },
+        {
+            "type": "custom:button-card",
+            "template": "mf_hero",
+            "entity": "weather.forecast_home",
+            "variables": {
+                "icon": "mdi:weather-partly-cloudy",
+                "value": '[[[ return Math.round(entity?.attributes?.temperature ?? 56) + "°"; ]]]',
+                "subtitle": (
+                    '[[[ const raw = entity?.state || "clear night"; '
+                    'const condition = raw.replace(/-/g, " "); '
+                    'const humidity = entity?.attributes?.humidity; '
+                    'const wind = entity?.attributes?.wind_speed; '
+                    'return `${condition}${humidity ? " · " + humidity + "% humidity" : ""}${wind ? " · " + Math.round(wind) + " mph wind" : ""}`; ]]]'
+                ),
+                "accent_color": "rgba(255,211,164,0.96)",
+            },
+        },
         {
             "type": "grid",
             "columns": 2,
             "square": False,
             "cards": [
-                glass_tile(tesla_battery, "El Rocco", "mdi:car-electric", "#ffb59e"),
-                glass_tile(lights, "Lights", "mdi:lightbulb-group", "#ffd36e"),
-                glass_tile(security, "Security", "mdi:shield-lock", "#b9d2ff"),
-                glass_tile(assistant, "Sebastian", "mdi:home-assistant", "#bff3d6"),
+                mf_tile(
+                    tesla_battery,
+                    "El Rocco",
+                    "mdi:car-electric",
+                    "48%",
+                    "charging",
+                    "rgba(121,199,255,0.95)",
+                    "/mobile-forge/tesla",
+                    '[[[ const n = Number(entity?.state); return Number.isFinite(n) ? Math.round(n) + "%" : "48%"; ]]]',
+                ),
+                mf_tile(lights, "Lights", "mdi:lightbulb-group", "Ready", "rooms + scenes", "rgba(255,211,164,0.96)", "/mobile-forge/lights"),
+                mf_tile(security, "Security", "mdi:shield-lock", "Armed", "front door clear", "rgba(157,226,182,0.95)", "/mobile-forge/security"),
+                mf_tile(
+                    assistant,
+                    "Sebastian",
+                    "mdi:home-assistant",
+                    "Online",
+                    "assistant ready",
+                    "rgba(121,199,255,0.95)",
+                    "/mobile-forge/house",
+                    '[[[ return entity?.state === "off" ? "Online" : (entity?.state || "Online").replace(/_/g, " "); ]]]',
+                ),
             ],
         },
         {
             "type": "horizontal-stack",
             "cards": [
-                glass_tile(None, "Cozy", "mdi:candle", "#ffe3b1", "Scene"),
-                glass_tile(None, "Movie", "mdi:movie-open", "#d8ccff", "Scene"),
-                glass_tile(None, "Bright", "mdi:white-balance-sunny", "#ffe073", "Scene"),
-                glass_tile(None, "Sleep", "mdi:weather-night", "#cbb7ff", "Scene"),
-            ],
-        },
-        {
-            "type": "grid",
-            "columns": 2,
-            "square": False,
-            "cards": [
-                glass_tile(media, "Media", "mdi:music", "#d1e5ff"),
-                glass_tile("sun.sun", "Sun", "mdi:weather-sunset", "#ffd0a1"),
+                mf_pill("Cozy", "mdi:candle", "rgba(255,211,164,0.96)"),
+                mf_pill("Movie", "mdi:movie-open", "rgba(121,199,255,0.95)"),
+                mf_pill("Bright", "mdi:white-balance-sunny", "rgba(255,211,164,0.96)"),
+                mf_pill("Sleep", "mdi:weather-night", "rgba(243,166,184,0.95)"),
             ],
         },
     ]
     if navbar:
+        cards.append(nav_spacer_card())
         cards.append(navbar)
     return cards
+
+
+def mf_tile(
+    entity: str | None,
+    title: str,
+    icon: str,
+    fallback_value: str,
+    subtitle: str,
+    accent: str,
+    navigation_path: str | None = None,
+    value_expr: str | None = None,
+) -> dict[str, Any]:
+    card: dict[str, Any] = {
+        "type": "custom:button-card",
+        "template": "mf_tile",
+        "variables": {
+            "icon": icon,
+            "title": title,
+            "value": value_expr or f'[[[ return entity?.state && entity.state !== "unavailable" ? entity.state.replace(/_/g, " ") : "{fallback_value}"; ]]]',
+            "subtitle": subtitle,
+            "accent_color": accent,
+        },
+    }
+    if entity:
+        card["entity"] = entity
+    if navigation_path:
+        card["tap_action"] = {"action": "navigate", "navigation_path": navigation_path}
+    return card
+
+
+def mf_pill(label: str, icon: str, accent: str) -> dict[str, Any]:
+    return {
+        "type": "custom:button-card",
+        "template": "mf_pill",
+        "variables": {
+            "icon": icon,
+            "label": label,
+            "accent_color": accent,
+        },
+    }
 
 
 def ensure_classic_view(dashboard: dict[str, Any], old_home: dict[str, Any], old_cards: list[Any]) -> None:

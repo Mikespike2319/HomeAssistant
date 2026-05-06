@@ -212,10 +212,14 @@ function miniStat(value, label) {
 }
 
 function setView(name) {
+  if (!views[name]) name = "home";
   const copy = pageCopy[name];
   title.textContent = copy[0];
   subtitle.textContent = copy[1];
   root.innerHTML = views[name];
+  if (window.location.hash.slice(1) !== name) {
+    history.replaceState(null, "", `#${name}`);
+  }
   window.scrollTo({ top: 0, behavior: "instant" });
   document.querySelectorAll(".nav").forEach((button) => {
     button.classList.toggle("active", button.dataset.view === name);
@@ -225,7 +229,9 @@ function setView(name) {
 document.querySelectorAll(".nav").forEach((button) => {
   const [iconName, label] = navCopy[button.dataset.view];
   button.innerHTML = `${icon(iconName)}<span>${label}</span>`;
-  button.addEventListener("click", () => setView(button.dataset.view));
+    button.addEventListener("click", () => setView(button.dataset.view));
 });
 
-setView("home");
+window.addEventListener("hashchange", () => setView(window.location.hash.slice(1) || "home"));
+
+setView(window.location.hash.slice(1) || "home");
