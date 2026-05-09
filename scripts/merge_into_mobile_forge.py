@@ -55,7 +55,13 @@ def view_cards(filename: str, skip_first_n: int = 2) -> list:
     """Load a cozy view yaml, return its cards array, optionally
     skipping the first N (backdrop + header)."""
     v = load_yaml(COZY / "views" / filename)
-    cards = v.get("cards", [])
+    if isinstance(v.get("cards"), list):
+        cards = v["cards"]
+    else:
+        cards = []
+        for section in v.get("sections", []):
+            if isinstance(section, dict) and isinstance(section.get("cards"), list):
+                cards.extend(section["cards"])
     return cards[skip_first_n:]
 
 
@@ -81,7 +87,7 @@ def normalize_navbar(card: dict | None) -> dict | None:
     nav["routes"] = [
         {"url": "/mobile-forge/home", "icon": "mdi:home"},
         {"url": "/mobile-forge/lights", "icon": "mdi:lightbulb-group"},
-        {"url": "/mobile-forge/music", "icon": "mdi:music"},
+        {"url": "/mobile-forge/media", "icon": "mdi:television-play"},
         {"url": "/mobile-forge/tesla", "icon": "mdi:car-electric"},
         {"url": "/mobile-forge/security", "icon": "mdi:shield-lock"},
         {"url": "/mobile-forge/house", "icon": "mdi:home-thermometer"},
@@ -173,11 +179,16 @@ def main():
         if not already_has_backdrop:
             cards.insert(0, bd)
 
-        # Per-view extra cozy content
+    # Per-view extra cozy content
         if path == "lights":
             extra = view_cards("lights.yaml", skip_first_n=2)
             cards.extend(extra)
             print(f"      ✓ Lights: appended {len(extra)} cozy cards")
+        elif path == "media":
+            extra = view_cards("media.yaml", skip_first_n=2)
+            cards.extend(extra)
+            v["icon"] = "mdi:television-play"
+            print(f"      ✓ Media: appended {len(extra)} media cards")
         elif path == "tesla":
             v["title"] = "El Rocco"  # rename to match the car
             v["icon"] = "mdi:car-electric"
@@ -197,6 +208,9 @@ def main():
     existing_paths = {v.get("path") for v in d["views"]}
 
     new_views = []
+    if "media" not in existing_paths:
+        new_views.append(build_view("Media", "media", "mdi:television-play",
+                                     "media.yaml", navbar))
     if "music" not in existing_paths:
         new_views.append(build_view("Music", "music", "mdi:music",
                                      "music.yaml", navbar))

@@ -290,7 +290,7 @@ def normalize_navbar(card: Any | None) -> Any | None:
     nav["routes"] = [
         {"url": "/mobile-forge/home", "icon": "mdi:home"},
         {"url": "/mobile-forge/lights", "icon": "mdi:lightbulb-group"},
-        {"url": "/mobile-forge/music", "icon": "mdi:music"},
+        {"url": "/mobile-forge/media", "icon": "mdi:television-play"},
         {"url": "/mobile-forge/tesla", "icon": "mdi:car-electric"},
         {"url": "/mobile-forge/security", "icon": "mdi:shield-lock"},
         {"url": "/mobile-forge/house", "icon": "mdi:home-thermometer"},
@@ -335,6 +335,55 @@ def set_home_cards(view: dict[str, Any], cards: list[Any]) -> None:
             "cards": cards,
         }
     ]
+
+
+def normalize_view_cards(view: dict[str, Any]) -> list[Any]:
+    if isinstance(view.get("cards"), list):
+        return view["cards"]
+    if isinstance(view.get("sections"), list):
+        for section in view["sections"]:
+            if isinstance(section, dict) and isinstance(section.get("cards"), list):
+                return section["cards"]
+    view["type"] = "sections"
+    view["max_columns"] = 1
+    view["dense_section_placement"] = True
+    view["sections"] = [{"type": "grid", "cards": []}]
+    return view["sections"][0]["cards"]
+
+
+def with_bottom_chrome(cards: list[Any], navbar: Any | None) -> list[Any]:
+    clean = [
+        card for card in cards
+        if not (
+            isinstance(card, dict)
+            and (
+                card.get("type") == "custom:navbar-card"
+                or (card.get("type") == "custom:button-card" and card.get("template") == "mf_nav_spacer")
+            )
+        )
+    ]
+    if navbar:
+        clean.append(nav_spacer_card())
+        clean.append(copy.deepcopy(navbar))
+    return clean
+
+
+def sync_repo_view(dashboard: dict[str, Any], view_path: str, navbar: Any | None) -> None:
+    source_file = REPO_ROOT / "views" / f"{view_path}.yaml"
+    if not source_file.exists():
+        raise SystemExit(f"Repo view is missing: {source_file}")
+    source_view = load_yaml(source_file)
+    cards = normalize_view_cards(source_view)
+    cards[:] = with_bottom_chrome(cards, navbar)
+
+    views = dashboard.setdefault("views", [])
+    for index, view in enumerate(views):
+        if isinstance(view, dict) and view.get("path") == view_path:
+            views[index] = source_view
+            return
+
+    settings_index = next((i for i, view in enumerate(views) if isinstance(view, dict) and view.get("path") == "settings"), len(views))
+    views.insert(settings_index, source_view)
 
 
 def button_template_styles(height: str = "72px") -> dict[str, Any]:
@@ -761,7 +810,7 @@ def main() -> int:
 
     old_home = copy.deepcopy(home)
     old_cards = copy.deepcopy(home_cards(home))
-    navbar = find_navbar(old_cards)
+    navbar = find_navbar(old_cards) or normalize_navbar({"type": "custom:navbar-card"})
     old_count = len(old_cards)
     old_mtime = None
     changed_object = Path(source["file"] if source["mode"] == "yaml" else source["storage_file"])
@@ -783,6 +832,7 @@ def main() -> int:
     install_templates(dashboard, sky_template)
     new_cards = make_home_cards(config_dir, navbar)
     set_home_cards(home, new_cards)
+    sync_repo_view(dashboard, "media", navbar)
     ensure_classic_view(dashboard, old_home, old_cards)
 
     check = assert_integrity(dashboard)

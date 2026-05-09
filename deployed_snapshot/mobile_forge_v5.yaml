@@ -130,8 +130,8 @@ views:
         icon: mdi:home
       - url: /mobile-forge/lights
         icon: mdi:lightbulb-group
-      - url: /mobile-forge/music
-        icon: mdi:music
+      - url: /mobile-forge/media
+        icon: mdi:television-play
       - url: /mobile-forge/tesla
         icon: mdi:car-electric
       - url: /mobile-forge/security
@@ -354,8 +354,8 @@ views:
         icon: mdi:home
       - url: /mobile-forge/lights
         icon: mdi:lightbulb-group
-      - url: /mobile-forge/music
-        icon: mdi:music
+      - url: /mobile-forge/media
+        icon: mdi:television-play
       - url: /mobile-forge/tesla
         icon: mdi:car-electric
       - url: /mobile-forge/security
@@ -373,77 +373,139 @@ views:
           '
 - title: Media
   path: media
-  icon: mdi:music
+  icon: mdi:television-play
   type: sections
   max_columns: 1
-  card_mod:
-    style: "{% set wp = states('input_select.forge_wallpaper') %} :host {\n  {% if wp not in ['None', 'unavailable', 'unknown']\
-      \ %}\n  background-image: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.72)),\n                    url('/local/wallpapers/{{\
-      \ wp | lower }}.jpg') !important;\n  background-size: cover !important;\n  background-position: center center !important;\n\
-      \  background-attachment: fixed !important;\n  {% endif %}\n}\n\n:host { padding-bottom: max(96px, calc(env(safe-area-inset-bottom,\
-      \ 0px) + 80px)) !important; padding-top: env(safe-area-inset-top, 0px) !important; }"
+  dense_section_placement: true
   sections:
   - type: grid
     cards:
     - type: custom:button-card
       template: sky_system
-    - type: custom:mushroom-title-card
-      title: Media
-      card_mod:
-        style: 'ha-card { --title-font-size: 22px !important; padding-top: env(safe-area-inset-top, 0px); }'
-    - type: custom:mini-media-player
-      entity: media_player.spotify_michael_sanchez
-      name: Spotify
-      artwork: cover
-      hide:
-        power: true
-        icon: true
-      card_mod:
-        style: 'ha-card { border-radius: 16px; }'
-    - type: custom:mini-media-player
-      entity: media_player.michael_s_2nd_echo_dot
-      name: Echo Dot
-      hide:
-        power: true
-        artwork: true
-      card_mod:
-        style: 'ha-card { border-radius: 16px; }'
-    - type: custom:mini-media-player
-      entity: media_player.michael_s_echo
-      name: Echo
-      hide:
-        power: true
-        artwork: true
-      card_mod:
-        style: 'ha-card { border-radius: 16px; }'
-    - type: custom:mini-media-player
-      entity: media_player.lg_webos_tv_6651
-      name: LG TV
-      hide:
-        power: false
-        artwork: true
-      card_mod:
-        style: 'ha-card { border-radius: 16px; }'
-    - type: custom:mini-media-player
-      entity: media_player.luna_s_firetvstick
-      name: Fire TV
-      hide:
-        power: false
-        artwork: true
-      card_mod:
-        style: 'ha-card { border-radius: 16px; }'
-    - type: custom:mini-media-player
+    - type: custom:button-card
+      template: mf_page_title
+      variables:
+        title: Media
+        subtitle: Screens, Sonos, and room playback.
+    - type: custom:button-card
+      template: mf_media_now
       entity: media_player.bed_room_tv
-      name: Bedroom TV
-      hide:
-        power: false
-        artwork: true
-      card_mod:
-        style: 'ha-card { border-radius: 16px; }'
-    - type: custom:mushroom-template-card
-      primary: ''
-      card_mod:
-        style: ha-card { background:none; border:none; box-shadow:none; height:70px; }
+      variables:
+        title: Bedroom TV
+        room: Bedroom TV
+    - type: horizontal-stack
+      cards:
+      - type: custom:button-card
+        template: mf_pill
+        variables:
+          icon: mdi:play
+          label: Resume
+          accent_color: rgba(255,211,164,0.96)
+        tap_action:
+          action: call-service
+          service: media_player.media_play_pause
+          target:
+            entity_id: media_player.bed_room_tv
+      - type: custom:button-card
+        template: mf_pill
+        variables:
+          icon: mdi:cast
+          label: Cast
+          accent_color: rgba(121,199,255,0.95)
+        tap_action:
+          action: more-info
+        entity: media_player.bed_room_tv
+      - type: custom:button-card
+        template: mf_pill
+        variables:
+          icon: mdi:volume-mute
+          label: Mute
+          accent_color: rgba(243,166,184,0.95)
+        tap_action:
+          action: call-service
+          service: media_player.volume_mute
+          target:
+            entity_id: media_player.bed_room_tv
+          data:
+            is_volume_muted: true
+    - type: custom:button-card
+      template: mf_section_label
+      variables:
+        icon: mdi:television
+        label: Screens
+        accent_color: rgba(121,199,255,0.95)
+    - type: custom:button-card
+      template: mf_device_row
+      entity: media_player.bed_room_tv
+      variables:
+        icon: mdi:television-play
+        title: Bedroom TV
+        subtitle: '[[[ return (entity?.attributes?.source || entity?.attributes?.app_name || "YouTube") + " · " + Math.round((entity?.attributes?.volume_level
+          ?? 0.18) * 100) + " volume"; ]]]'
+        accent_color: rgba(255,211,164,0.96)
+    - type: custom:button-card
+      template: mf_device_row
+      entity: media_player.lg_webos_tv_ua7700pub
+      variables:
+        icon: mdi:television
+        title: Living Room TV
+        subtitle: LG webOS · ready
+        accent_color: rgba(121,199,255,0.95)
+    - type: custom:button-card
+      template: mf_device_row
+      entity: media_player.luna_s_firetvstick
+      variables:
+        icon: mdi:cast
+        title: Fire TV
+        subtitle: Bedroom route
+        accent_color: rgba(157,226,182,0.95)
+    - type: custom:button-card
+      template: mf_section_label
+      variables:
+        icon: mdi:music
+        label: Audio
+        accent_color: rgba(157,226,182,0.95)
+    - type: grid
+      columns: 2
+      square: false
+      cards:
+      - type: custom:button-card
+        template: mf_tile
+        entity: media_player.den
+        variables:
+          icon: mdi:speaker-wireless
+          title: Sonos Den
+          value: '[[[ return entity?.state === "playing" ? "Playing" : entity?.state === "unavailable" ? "Add in HA" : "Ready";
+            ]]]'
+          subtitle: Era 100
+          accent_color: rgba(157,226,182,0.95)
+      - type: custom:button-card
+        template: mf_tile
+        entity: media_player.spotify_michael_sanchez
+        variables:
+          icon: mdi:music-circle-outline
+          title: Spotify
+          value: '[[[ return entity?.state === "playing" ? "Playing" : "Ready"; ]]]'
+          subtitle: Mike's Spotify
+          accent_color: rgba(157,226,182,0.95)
+      - type: custom:button-card
+        template: mf_tile
+        entity: media_player.michael_s_2nd_echo_dot
+        variables:
+          icon: mdi:volume-high
+          title: Echo Dot
+          value: '[[[ return entity?.state === "playing" ? "Playing" : "Idle"; ]]]'
+          subtitle: Local speaker
+          accent_color: rgba(121,199,255,0.95)
+      - type: custom:button-card
+        template: mf_tile
+        entity: media_player.spotify_michael_sanchez
+        variables:
+          icon: mdi:pause
+          title: All media
+          value: Quiet
+          subtitle: No active group
+          accent_color: rgba(243,166,184,0.95)
     - type: custom:button-card
       template: mf_nav_spacer
     - type: custom:navbar-card
@@ -452,8 +514,8 @@ views:
         icon: mdi:home
       - url: /mobile-forge/lights
         icon: mdi:lightbulb-group
-      - url: /mobile-forge/music
-        icon: mdi:music
+      - url: /mobile-forge/media
+        icon: mdi:television-play
       - url: /mobile-forge/tesla
         icon: mdi:car-electric
       - url: /mobile-forge/security
@@ -698,8 +760,8 @@ views:
         icon: mdi:home
       - url: /mobile-forge/lights
         icon: mdi:lightbulb-group
-      - url: /mobile-forge/music
-        icon: mdi:music
+      - url: /mobile-forge/media
+        icon: mdi:television-play
       - url: /mobile-forge/tesla
         icon: mdi:car-electric
       - url: /mobile-forge/security
@@ -824,8 +886,8 @@ views:
         icon: mdi:home
       - url: /mobile-forge/lights
         icon: mdi:lightbulb-group
-      - url: /mobile-forge/music
-        icon: mdi:music
+      - url: /mobile-forge/media
+        icon: mdi:television-play
       - url: /mobile-forge/tesla
         icon: mdi:car-electric
       - url: /mobile-forge/security
@@ -943,8 +1005,8 @@ views:
         icon: mdi:home
       - url: /mobile-forge/lights
         icon: mdi:lightbulb-group
-      - url: /mobile-forge/music
-        icon: mdi:music
+      - url: /mobile-forge/media
+        icon: mdi:television-play
       - url: /mobile-forge/tesla
         icon: mdi:car-electric
       - url: /mobile-forge/security
@@ -1075,8 +1137,8 @@ views:
         icon: mdi:home
       - url: /mobile-forge/lights
         icon: mdi:lightbulb-group
-      - url: /mobile-forge/music
-        icon: mdi:music
+      - url: /mobile-forge/media
+        icon: mdi:television-play
       - url: /mobile-forge/tesla
         icon: mdi:car-electric
       - url: /mobile-forge/security
@@ -1197,8 +1259,8 @@ views:
         icon: mdi:home
       - url: /mobile-forge/lights
         icon: mdi:lightbulb-group
-      - url: /mobile-forge/music
-        icon: mdi:music
+      - url: /mobile-forge/media
+        icon: mdi:television-play
       - url: /mobile-forge/tesla
         icon: mdi:car-electric
       - url: /mobile-forge/security
@@ -1309,8 +1371,8 @@ views:
         icon: mdi:home
       - url: /mobile-forge/lights
         icon: mdi:lightbulb-group
-      - url: /mobile-forge/music
-        icon: mdi:music
+      - url: /mobile-forge/media
+        icon: mdi:television-play
       - url: /mobile-forge/tesla
         icon: mdi:car-electric
       - url: /mobile-forge/security
@@ -1763,8 +1825,8 @@ views:
         icon: mdi:home
       - url: /mobile-forge/lights
         icon: mdi:lightbulb-group
-      - url: /mobile-forge/music
-        icon: mdi:music
+      - url: /mobile-forge/media
+        icon: mdi:television-play
       - url: /mobile-forge/tesla
         icon: mdi:car-electric
       - url: /mobile-forge/security
@@ -1848,8 +1910,8 @@ views:
         icon: mdi:home
       - url: /mobile-forge/lights
         icon: mdi:lightbulb-group
-      - url: /mobile-forge/music
-        icon: mdi:music
+      - url: /mobile-forge/media
+        icon: mdi:television-play
       - url: /mobile-forge/tesla
         icon: mdi:car-electric
       - url: /mobile-forge/security
@@ -3540,3 +3602,124 @@ button_card_templates:
         - 'grid-area: label'
         - 'justify-self: start'
         - 'align-self: center'
+  mf_media_now:
+    show_icon: false
+    show_name: false
+    show_label: false
+    entity: media_player.bed_room_tv
+    tap_action:
+      action: more-info
+    custom_fields:
+      screen: "[[[\n  const e = entity || states[variables.entity] || {};\n  const attrs = e.attributes || {};\n  const state\
+        \ = e.state || \"idle\";\n  const source = attrs.source || attrs.app_name || \"YouTube\";\n  const title = attrs.media_title\
+        \ || attrs.friendly_name || variables.title || \"Bedroom TV\";\n  const room = variables.room || \"Bedroom TV\";\n\
+        \  const pct = Math.max(0, Math.min(100, Number(attrs.media_position || 0) / Math.max(1, Number(attrs.media_duration\
+        \ || 1)) * 100));\n  const width = Number.isFinite(pct) && pct > 0 ? pct : 42;\n  const label = state === \"playing\"\
+        \ ? \"Playing in bedroom\" : state === \"paused\" ? \"Paused\" : \"Ready\";\n  return `\n    <div style=\"min-height:196px;padding:14px;position:relative;display:grid;align-items:stretch;background:radial-gradient(circle\
+        \ at 72% 12%,rgba(121,199,255,.18),transparent 9rem),linear-gradient(180deg,rgba(23,28,38,.72),rgba(12,14,18,.68));\"\
+        >\n      <div style=\"position:absolute;inset:20px 34px 64px;border-radius:32px;background:radial-gradient(circle,rgba(121,199,255,.22),transparent\
+        \ 68%);filter:blur(28px);\"></div>\n      <div style=\"position:relative;min-height:168px;padding:16px;border-radius:19px;border:1px\
+        \ solid rgba(255,255,255,.13);background:linear-gradient(135deg,rgba(121,199,255,.16),transparent 42%),radial-gradient(circle\
+        \ at 82% 18%,rgba(255,211,164,.12),transparent 28%),#10151d;box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 22px\
+        \ 42px rgba(0,0,0,.32);display:grid;align-content:end;gap:8px;\">\n        <div style=\"position:absolute;top:14px;left:14px;right:14px;display:flex;justify-content:space-between;color:rgba(255,246,235,.56);font-size:10px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;\"\
+        >\n          <span>${room}</span><span>${source}</span>\n        </div>\n        <div style=\"font-size:28px;line-height:30px;font-weight:850;color:rgba(255,246,235,.96);\"\
+        >${title}</div>\n        <div style=\"color:rgba(255,235,215,.62);font-size:13px;line-height:17px;font-weight:650;\"\
+        >${label}</div>\n        <div style=\"height:5px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.12);\"\
+        >\n          <div style=\"height:100%;width:${width}%;border-radius:999px;background:linear-gradient(90deg,#ffd3a4,#79c7ff);\"\
+        ></div>\n        </div>\n      </div>\n    </div>\n  `;\n]]]\n"
+      meta: "[[[\n  const e = entity || states[variables.entity] || {};\n  const attrs = e.attributes || {};\n  const source\
+        \ = attrs.source || attrs.app_name || \"YouTube\";\n  const volume = attrs.volume_level !== undefined ? Math.round(Number(attrs.volume_level)\
+        \ * 100) : 18;\n  const state = e.state === \"playing\" ? \"Now playing\" : e.state === \"paused\" ? \"Paused\" :\
+        \ \"Ready\";\n  const title = attrs.friendly_name || variables.title || \"Bedroom TV\";\n  const detail = `${source}\
+        \ · ${volume} volume`;\n  return `\n    <div style=\"padding:12px 16px 14px;display:flex;align-items:center;justify-content:space-between;gap:14px;\"\
+        >\n      <div style=\"min-width:0;\">\n        <div style=\"color:#79c7ff;font-size:11px;line-height:14px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;\"\
+        >${state}</div>\n        <div style=\"margin-top:3px;font-size:23px;line-height:27px;font-weight:850;color:rgba(255,246,235,.96);\"\
+        >${title}</div>\n        <div style=\"color:rgba(255,235,215,.62);font-size:13px;line-height:18px;\">${detail}</div>\n\
+        \      </div>\n      <div style=\"display:flex;gap:8px;\">\n        <span style=\"width:38px;height:38px;border-radius:15px;display:grid;place-items:center;border:1px\
+        \ solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);\"><ha-icon icon=\"mdi:power\" style=\"width:18px;height:18px;color:#f3a6b8;\"\
+        ></ha-icon></span>\n        <span style=\"width:38px;height:38px;border-radius:15px;display:grid;place-items:center;border:1px\
+        \ solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);\"><ha-icon icon=\"mdi:pause\" style=\"width:18px;height:18px;color:#ffd3a4;\"\
+        ></ha-icon></span>\n        <span style=\"width:38px;height:38px;border-radius:15px;display:grid;place-items:center;border:1px\
+        \ solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);\"><ha-icon icon=\"mdi:volume-high\" style=\"width:18px;height:18px;color:#79c7ff;\"\
+        ></ha-icon></span>\n      </div>\n    </div>\n  `;\n]]]\n"
+    styles:
+      card:
+      - padding: 0
+      - border-radius: 18px
+      - border: 1px solid rgba(255,235,215,0.13)
+      - background: linear-gradient(150deg, rgba(35,31,42,0.76), rgba(22,20,28,0.72))
+      - box-shadow: 0 18px 48px rgba(0,0,0,0.24)
+      - backdrop-filter: blur(20px) saturate(1.16)
+      - overflow: hidden
+      - position: relative
+      - z-index: 2
+      grid:
+      - grid-template-areas: '"screen" "meta"'
+      custom_fields:
+        screen:
+        - grid-area: screen
+        meta:
+        - grid-area: meta
+  mf_device_row:
+    show_icon: true
+    show_name: true
+    show_label: true
+    show_state: false
+    icon: '[[[ return variables.icon || "mdi:television"; ]]]'
+    name: '[[[ return variables.title || entity?.attributes?.friendly_name || ""; ]]]'
+    label: '[[[ return variables.subtitle || ""; ]]]'
+    custom_fields:
+      state: "[[[\n  if (variables.value) return variables.value;\n  if (!entity || entity.state === \"unavailable\") return\
+        \ \"Offline\";\n  if (entity.state === \"playing\") return \"Playing\";\n  if (entity.state === \"paused\") return\
+        \ \"Paused\";\n  if (entity.state === \"standby\") return \"Standby\";\n  if (entity.state === \"off\") return \"\
+        Standby\";\n  return entity.state.replace(/_/g, \" \");\n]]]\n"
+    styles:
+      card:
+      - min-height: 72px
+      - padding: 12px
+      - border-radius: 18px
+      - border: 1px solid rgba(255,235,215,0.13)
+      - background: '[[[ return entity?.state === "playing" ? "linear-gradient(150deg, rgba(70,51,39,0.72), rgba(22,20,28,0.70))"
+          : "linear-gradient(150deg, rgba(35,31,42,0.76), rgba(22,20,28,0.72))"; ]]]'
+      - box-shadow: 0 18px 48px rgba(0,0,0,0.24)
+      - backdrop-filter: blur(20px) saturate(1.16)
+      - position: relative
+      - z-index: 2
+      grid:
+      - grid-template-areas: '"i n state" "i l state"'
+      - grid-template-columns: 42px 1fr auto
+      - grid-template-rows: min-content min-content
+      - column-gap: 12px
+      - align-items: center
+      img_cell:
+      - grid-area: i
+      - width: 42px
+      - height: 42px
+      - border-radius: 15px
+      - background: rgba(255,255,255,0.07)
+      icon:
+      - width: 18px
+      - color: '[[[ return variables.accent_color || "rgba(121,199,255,0.95)"; ]]]'
+      name:
+      - grid-area: n
+      - justify-self: start
+      - color: rgba(255,246,235,0.94)
+      - font-size: 14px
+      - line-height: 18px
+      - font-weight: 850
+      - white-space: normal
+      - text-align: left
+      label:
+      - grid-area: l
+      - justify-self: start
+      - color: rgba(255,235,215,0.62)
+      - font-size: 12px
+      - line-height: 16px
+      - font-weight: 650
+      custom_fields:
+        state:
+        - grid-area: state
+        - color: rgba(255,246,235,0.84)
+        - font-size: 12px
+        - line-height: 16px
+        - font-weight: 850

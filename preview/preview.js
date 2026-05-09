@@ -14,6 +14,12 @@ const iconPaths = {
   robot: '<rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 8V4"/><path d="M8.5 13h.01"/><path d="M15.5 13h.01"/><path d="M9 17h6"/>',
   sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m4.9 19.1 1.4-1.4"/><path d="m17.7 6.3 1.4-1.4"/>',
   film: '<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 5v14"/><path d="M16 5v14"/><path d="M4 9h4"/><path d="M16 9h4"/><path d="M4 15h4"/><path d="M16 15h4"/>',
+  tv: '<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M8 21h8"/><path d="M12 18v3"/>',
+  cast: '<path d="M4 7V5h16v14h-3"/><path d="M4 15a6 6 0 0 1 6 6"/><path d="M4 11a10 10 0 0 1 10 10"/><path d="M4 19.5v.5"/>',
+  volume: '<path d="M11 5 6 9H3v6h3l5 4Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/>',
+  play: '<path d="M8 5v14l11-7Z"/>',
+  power: '<path d="M12 2v10"/><path d="M18.4 6.6a9 9 0 1 1-12.8 0"/>',
+  remote: '<rect x="8" y="2" width="8" height="20" rx="4"/><circle cx="12" cy="7" r="1"/><path d="M10.5 12h3"/><path d="M12 10.5v3"/><path d="M10.5 17h3"/>',
   bed: '<path d="M4 18V7"/><path d="M20 18v-5a3 3 0 0 0-3-3H9v8"/><path d="M4 13h5"/><path d="M4 18h16"/>',
   coffee: '<path d="M6 8h10v5a5 5 0 0 1-5 5H9a3 3 0 0 1-3-3Z"/><path d="M16 9h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M6 21h12"/>',
   pause: '<path d="M8 5v14"/><path d="M16 5v14"/>',
@@ -30,7 +36,7 @@ const iconPaths = {
 const pageCopy = {
   home: ["Home", "Quiet night, house steady, El Rocco charging."],
   lights: ["Lights", "Rooms, scenes, and every glow in one rhythm."],
-  music: ["Music", "Sonos, Spotify, TVs, and room audio."],
+  media: ["Media", "Screens, Sonos, and room playback."],
   tesla: ["El Rocco", "Charge, climate, locks, and trip status."],
   security: ["Security", "Cameras, alarm state, and quick house modes."],
   house: ["House", "Roomba, cabin climate, and home devices."]
@@ -39,7 +45,7 @@ const pageCopy = {
 const navCopy = {
   home: ["home", "Home"],
   lights: ["light", "Lights"],
-  music: ["music", "Music"],
+  media: ["tv", "Media"],
   tesla: ["car", "Car"],
   security: ["shield", "Security"]
   ,house: ["vacuum", "House"]
@@ -95,22 +101,48 @@ const views = {
       ${light("Big lamp", "100%", "glowing")}
     </section>
   `,
-  music: `
-    <article class="card hero">
-      <div class="glyph">${icon("music", "icon-green")}</div>
-      <div>
-        <div class="metric">Den</div>
-        <div class="caption">Sonos Era 100 · 192.168.50.51 · ready to add in HA</div>
+  media: `
+    <article class="card media-now">
+      <div class="media-screen">
+        <div class="screen-glow"></div>
+        <div class="screen-frame">
+          <div class="screen-topline"><span>BEDROOM TV</span><span>YOUTUBE</span></div>
+          <div class="screen-title">Ambient playlist</div>
+          <div class="screen-subtitle">Playing in bedroom</div>
+          <div class="media-progress"><span style="width:42%"></span></div>
+        </div>
+      </div>
+      <div class="media-now-meta">
+        <div>
+          <div class="media-kicker">Now playing</div>
+          <div class="media-title">Bedroom TV</div>
+          <div class="caption">YouTube · 42% through · volume 18</div>
+        </div>
+        <div class="remote-strip">
+          ${roundControl("power", "icon-rose")}
+          ${roundControl("pause", "icon-warm")}
+          ${roundControl("volume", "icon-blue")}
+        </div>
       </div>
     </article>
+    <section class="media-remote card">
+      <button>${icon("play", "icon-warm")} Resume</button>
+      <button>${icon("cast", "icon-blue")} Cast</button>
+      <button>${icon("mute", "icon-rose")} Mute</button>
+    </section>
+    <div class="section-label">${icon("tv", "icon-blue")} Screens</div>
+    <section class="device-stack">
+      ${deviceRow("tv", "Bedroom TV", "Playing", "YouTube · 18 volume", "live", "icon-warm")}
+      ${deviceRow("tv", "Living Room TV", "Standby", "LG webOS · ready", "", "icon-blue")}
+      ${deviceRow("cast", "Google Cast", "Available", "Bedroom route", "", "icon-green")}
+    </section>
+    <div class="section-label">${icon("music", "icon-green")} Audio</div>
     <section class="row">
       ${tile("music", "Sonos Den", "Ready", "Era 100", "icon-green")}
       ${tile("music", "Spotify", "Ready", "Mike's Spotify", "icon-green")}
-      ${tile("music", "Echo Dot", "Idle", "Local speaker", "icon-blue")}
-      ${tile("film", "Bedroom TV", "Playing", "YouTube", "icon-warm")}
-      ${tile("film", "LG TV", "Unavailable", "Living room", "icon-blue")}
+      ${tile("volume", "Echo Dot", "Idle", "Local speaker", "icon-blue")}
+      ${tile("pause", "All media", "Quiet", "No active group", "icon-rose")}
     </section>
-    <div class="pill-row">${pill("pause", "Pause everything", "icon-warm")}${pill("mute", "Mute everything", "icon-rose")}</div>
   `,
   tesla: `
     <article class="card car-image-card">
@@ -201,6 +233,18 @@ function light(name, value, note) {
 
 function pill(iconName, text, iconClass = "icon-warm") {
   return `<span class="pill">${icon(iconName, iconClass)}${text}</span>`;
+}
+
+function roundControl(iconName, iconClass = "icon-blue") {
+  return `<span class="round-control">${icon(iconName, iconClass)}</span>`;
+}
+
+function deviceRow(iconName, name, value, note, statusClass = "", iconClass = "icon-blue") {
+  return `<article class="card device-row ${statusClass}">
+    <div class="device-icon">${icon(iconName, iconClass)}</div>
+    <div class="device-main"><strong>${name}</strong><span>${note}</span></div>
+    <div class="device-state">${value}</div>
+  </article>`;
 }
 
 function line(label, value) {
