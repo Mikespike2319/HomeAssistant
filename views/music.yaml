@@ -12,15 +12,186 @@ sections:
   - type: custom:button-card
     template: mf_page_title
     variables:
-      title: Music
-      subtitle: Sonos, Spotify, TVs, and room audio.
+      title: Media
+      subtitle: TVs, Sonos, Spotify, and room audio.
   - type: custom:button-card
     template: mf_hero
     entity: media_player.den
     variables:
       icon: mdi:speaker-wireless
       value: Den
-      subtitle: Sonos Era 100 · 192.168.50.51 · ready after HA integration
+      subtitle: Sonos Era 100 · primary listening
+      accent_color: rgba(157,226,182,0.95)
+
+  # ── TVs ──
+  - type: custom:button-card
+    template: mf_section_label
+    variables:
+      icon: mdi:television-classic
+      label: TVs
+      accent_color: rgba(255,211,164,0.96)
+  # Rich media-player cards — show app, title, artwork, and native power/volume/source
+  - type: custom:mini-media-player
+    entity: media_player.bed_room_tv
+    name: Bedroom LG · 65" UA7700PUB
+    artwork: cover
+    info: scroll
+    source: icon
+    hide:
+      power_state: false
+      volume: false
+      source: false
+      controls: false
+    tap_action:
+      action: more-info
+    card_mod:
+      style: |
+        ha-card {
+          border-radius: 18px;
+          border: 1px solid rgba(255,235,215,0.13);
+          background: linear-gradient(150deg, rgba(35,31,42,0.76), rgba(22,20,28,0.72));
+          box-shadow: 0 18px 48px rgba(0,0,0,0.24);
+          backdrop-filter: blur(20px) saturate(1.16);
+        }
+  - type: custom:mini-media-player
+    entity: media_player.32q3k_2
+    name: Kitchen TCL · 32Q3K Android TV
+    artwork: cover
+    info: scroll
+    source: icon
+    hide:
+      power_state: false
+      volume: false
+      source: false
+      controls: false
+    tap_action:
+      action: more-info
+    card_mod:
+      style: |
+        ha-card {
+          border-radius: 18px;
+          border: 1px solid rgba(255,235,215,0.13);
+          background: linear-gradient(150deg, rgba(35,31,42,0.76), rgba(22,20,28,0.72));
+          box-shadow: 0 18px 48px rgba(0,0,0,0.24);
+          backdrop-filter: blur(20px) saturate(1.16);
+        }
+  - type: custom:mini-media-player
+    entity: media_player.luna_s_firetvstick
+    name: Living Room · Fire TV Stick
+    artwork: cover
+    info: scroll
+    hide:
+      power_state: false
+      volume: false
+      source: true
+      controls: false
+    tap_action:
+      action: more-info
+    card_mod:
+      style: |
+        ha-card {
+          border-radius: 18px;
+          border: 1px solid rgba(255,235,215,0.13);
+          background: linear-gradient(150deg, rgba(35,31,42,0.76), rgba(22,20,28,0.72));
+          box-shadow: 0 18px 48px rgba(0,0,0,0.24);
+          backdrop-filter: blur(20px) saturate(1.16);
+        }
+
+  # Quick-launch app pills for the bedroom LG (webOS supports select_source)
+  - type: horizontal-stack
+    cards:
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:youtube
+        label: YouTube
+        accent_color: rgba(243,166,184,0.95)
+      tap_action:
+        action: call-service
+        service: media_player.select_source
+        target:
+          entity_id: media_player.bed_room_tv
+        data:
+          source: YouTube
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:netflix
+        label: Netflix
+        accent_color: rgba(243,166,184,0.95)
+      tap_action:
+        action: call-service
+        service: media_player.select_source
+        target:
+          entity_id: media_player.bed_room_tv
+        data:
+          source: Netflix
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:disc-player
+        label: Disney+
+        accent_color: rgba(255,211,164,0.96)
+      tap_action:
+        action: call-service
+        service: media_player.select_source
+        target:
+          entity_id: media_player.bed_room_tv
+        data:
+          source: Disney+
+  - type: horizontal-stack
+    cards:
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:power
+        label: All TVs off
+        accent_color: rgba(243,166,184,0.95)
+      tap_action:
+        action: call-service
+        service: media_player.turn_off
+        target:
+          entity_id:
+          - media_player.bed_room_tv
+          - media_player.32q3k_2
+          - media_player.luna_s_firetvstick
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:volume-mute
+        label: Mute TVs
+        accent_color: rgba(255,211,164,0.96)
+      tap_action:
+        action: call-service
+        service: media_player.volume_mute
+        target:
+          entity_id:
+          - media_player.bed_room_tv
+          - media_player.32q3k_2
+          - media_player.luna_s_firetvstick
+        data:
+          is_volume_muted: true
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:pause
+        label: Pause TVs
+        accent_color: rgba(121,199,255,0.95)
+      tap_action:
+        action: call-service
+        service: media_player.media_pause
+        target:
+          entity_id:
+          - media_player.bed_room_tv
+          - media_player.32q3k_2
+          - media_player.luna_s_firetvstick
+
+  # ── Speakers ──
+  - type: custom:button-card
+    template: mf_section_label
+    variables:
+      icon: mdi:speaker-multiple
+      label: Speakers
       accent_color: rgba(157,226,182,0.95)
   - type: grid
     columns: 2
@@ -34,6 +205,15 @@ sections:
         title: Sonos Den
         value: '[[[ return entity?.state === "playing" ? "Playing" : entity?.state === "unavailable" ? "Add in HA" : "Ready"; ]]]'
         subtitle: Era 100
+        accent_color: rgba(157,226,182,0.95)
+    - type: custom:button-card
+      template: mf_tile
+      entity: media_player.roam_2
+      variables:
+        icon: mdi:speaker-bluetooth
+        title: Sonos Roam
+        value: '[[[ return entity?.state === "playing" ? "Playing" : entity?.state === "unavailable" ? "Off" : "Ready"; ]]]'
+        subtitle: Portable
         accent_color: rgba(157,226,182,0.95)
     - type: custom:button-card
       template: mf_tile
@@ -53,24 +233,6 @@ sections:
         value: '[[[ return entity?.state === "playing" ? "Playing" : "Idle"; ]]]'
         subtitle: Local speaker
         accent_color: rgba(121,199,255,0.95)
-    - type: custom:button-card
-      template: mf_tile
-      entity: media_player.lg_webos_tv_6651
-      variables:
-        icon: mdi:youtube-tv
-        title: Bedroom TV
-        value: '[[[ return entity?.state === "playing" ? "Playing" : entity?.state || "Ready"; ]]]'
-        subtitle: YouTube
-        accent_color: rgba(255,211,164,0.96)
-    - type: custom:button-card
-      template: mf_tile
-      entity: media_player.lg_webos_tv_ua7700pub
-      variables:
-        icon: mdi:television
-        title: LG TV
-        value: '[[[ return entity?.state || "Unavailable"; ]]]'
-        subtitle: Living room
-        accent_color: rgba(121,199,255,0.95)
   - type: horizontal-stack
     cards:
     - type: custom:button-card
@@ -85,9 +247,12 @@ sections:
         target:
           entity_id:
           - media_player.den
+          - media_player.roam_2
           - media_player.spotify_michael_sanchez
           - media_player.michael_s_2nd_echo_dot
-          - media_player.lg_webos_tv_6651
+          - media_player.bed_room_tv
+          - media_player.32q3k_2
+          - media_player.luna_s_firetvstick
     - type: custom:button-card
       template: mf_pill
       variables:
@@ -100,7 +265,31 @@ sections:
         target:
           entity_id:
           - media_player.den
+          - media_player.roam_2
           - media_player.michael_s_2nd_echo_dot
-          - media_player.lg_webos_tv_6651
+          - media_player.bed_room_tv
+          - media_player.32q3k_2
+          - media_player.luna_s_firetvstick
         data:
           is_volume_muted: true
+
+  - type: custom:navbar-card
+    routes:
+    - url: /mobile-forge/home
+      icon: mdi:home
+    - url: /mobile-forge/lights
+      icon: mdi:lightbulb
+    - url: /mobile-forge/music
+      icon: mdi:music
+    - url: /mobile-forge/tesla
+      icon: mdi:car-electric
+    - url: /mobile-forge/security
+      icon: mdi:shield-lock
+    - url: /mobile-forge/sebastian
+      icon: mdi:robot-outline
+    - url: /mobile-forge/settings
+      icon: mdi:cog
+    card_mod:
+      style: |
+        :host { position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; z-index: 999 !important; }
+        ha-card { border-radius: 0 !important; border-top: 1px solid rgba(255,255,255,0.06); background: rgba(22,22,26,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding-bottom: env(safe-area-inset-bottom, 0px); }

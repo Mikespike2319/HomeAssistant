@@ -39,3 +39,35 @@ Add details when the next iPhone-viewport regression hits — what changed, how 
 ## Music tab regressing after deploy
 
 Add details next time it happens — likely cause is `views/music.yaml` not being merged into the active dashboard during deploy.
+
+Also note: deployed dashboard's navbar links to `/mobile-forge/media`, but every view's `path` is `music`. The link is broken in every view's bottom nav. The repo `views/music.yaml` (2026-05-09) ships the corrected `/mobile-forge/music` route — sweep the other views' navbars when next touched.
+
+---
+
+## TVs can't be turned on (LG Bedroom + others)
+
+**Symptom:** `media_player.turn_on` on `media_player.bed_room_tv` does nothing once the TV is fully off. `turn_off` works.
+
+**Root cause:** The webostv config entry has only `host` + `client_secret`, no MAC. webOS over IP cannot wake a TV from full standby — the integration needs Wake-on-LAN. WOL packet must reach the TV's subnet (192.168.50.0/24), which is reachable via the `wg0` WireGuard tunnel from this VPS.
+
+**Fix path:**
+1. Get the LG TV's wired MAC from the TV menu: Settings → All Settings → General → About this TV.
+2. Add the `wake_on_lan:` integration to `configuration.yaml`.
+3. Create a script `script.bedroom_tv_wake` that calls `wake_on_lan.send_magic_packet` with `mac: <MAC>` and `broadcast_address: 192.168.50.255`.
+4. In HA UI: Settings → Devices → LG webOS TV UA7700PUB → Configure → set "TV power on action" to call `script.bedroom_tv_wake`.
+5. On the TV itself: enable Settings → General → Mobile TV On (LG calls this "Mobile TV on"/"Wake on LAN") and connect via Ethernet for reliability.
+6. Verify the WireGuard tunnel forwards UDP/9 broadcast to 192.168.50.255 — if not, magic packet won't reach the TV; alternative is running a small WOL relay on a host inside the home LAN.
+
+**Fire TV (`media_player.luna_s_firetvstick`) cannot turn_on at all via `alexa_media`.** To control power, either: (a) replace with the `androidtv` integration pointing at the Fire TV's IP (it's an Android device), or (b) use HDMI-CEC from the bedroom LG when both are on the same TV's HDMI chain.
+
+**Kitchen TCL (`media_player.32q3k_2`) `androidtv_remote`** has host + MAC configured and supports turn_on/turn_off natively. If it still doesn't power on, confirm the TV has "Network standby"/"Wake on LAN over Wi-Fi" enabled in its system settings.
+
+---
+
+## Only YouTube media title shows on the TV tile
+
+**Symptom:** Dashboard tile shows "Playing" when YouTube is on the LG, blank/state-only otherwise.
+
+**Root cause:** Most webOS apps don't report `media_title` to the integration. They only report `app_id`/`app_name`. The previous `mf_tile` template only displayed `entity.state`, so no app/title surfaced.
+
+**Fix:** Use `custom:mini-media-player` (already in `/hacsfiles/mini-media-player/` and registered in `lovelace_resources`) — it displays `app_name`, `media_title`, artwork, and renders native controls/source. See current `views/music.yaml` for the styled config (card_mod glass treatment to match the Mobile Forge look).
