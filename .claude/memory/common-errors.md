@@ -71,3 +71,43 @@ Also note: deployed dashboard's navbar links to `/mobile-forge/media`, but every
 **Root cause:** Most webOS apps don't report `media_title` to the integration. They only report `app_id`/`app_name`. The previous `mf_tile` template only displayed `entity.state`, so no app/title surfaced.
 
 **Fix:** Use `custom:mini-media-player` (already in `/hacsfiles/mini-media-player/` and registered in `lovelace_resources`) — it displays `app_name`, `media_title`, artwork, and renders native controls/source. See current `views/music.yaml` for the styled config (card_mod glass treatment to match the Mobile Forge look).
+
+---
+
+## Lights panel pointed at dead Govee entities (2026-05-15)
+
+**Symptom:** "All living room", "Mike's side", "Kiara's side" tiles did nothing.
+
+**Root cause:** Tiles hardcoded the Govee IDs (`light.living_room_2`,
+`light.mike_side_lamp`, `light.kiara_side_lamp`) which are all `unavailable`
+— the Govee integration/devices are offline. The real lights were the Hue
+group `light.living_room` and two new Hue lamps that came in with the ugly
+default IDs `light.hue_color_lamp_2/3` and were absent from the panel.
+
+**Fix applied:** Renamed the two Hue lamps in the registry to
+`light.kiara_lamp` / `light.mike_lamp`, rewired `views/lights.yaml` to the
+live Hue entities, added `mf_light_tile` (tap=toggle, hold=more-info for full
+Hue color/brightness). See `device-map.md` for the full mapping and the list
+of automations/scripts/home-summary that **still** reference the dead Govee
+IDs and need the same reconciliation.
+
+**Registry rename procedure (durable):** entity_id edits in
+`.storage/core.entity_registry` must be done with HA **stopped**
+(`docker stop homeassistant` → edit JSON → `docker start`). Editing while
+running gets clobbered when HA writes the registry on shutdown. Always back
+up to `.before-<reason>-<TS>` first.
+
+---
+
+## `sed -i` footgun — emptied views/lights.yaml
+
+**Symptom:** A `sed -i 's/.../.../' views/lights.yaml` left the file 0 bytes
+(`md5 == d41d8cd9...` = empty file).
+
+**Root cause:** The Bash tool resets cwd to `/root` between calls. A relative
+path (`views/lights.yaml`) + an in-place stream edit went wrong and truncated
+the file. Recovered with `git checkout -- views/lights.yaml`.
+
+**Rule:** For edits to repo files use the Edit/Write tools, not `sed -i`.
+If shell editing is unavoidable, use **absolute paths** and back up first.
+The repo being under git is the only reason this was a non-event.
