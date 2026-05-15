@@ -138,6 +138,19 @@ button_card_templates:
           - line-height: 32px
           - font-weight: 300
 
+  # Light-only variant of mf_tile: tap = instant toggle,
+  # hold / double-tap = native more-info dialog (full Hue
+  # brightness + color + scene control). Do NOT use the bare
+  # mf_tile toggle behaviour on sensors/cameras/locks.
+  mf_light_tile:
+    template: mf_tile
+    tap_action:
+      action: toggle
+    hold_action:
+      action: more-info
+    double_tap_action:
+      action: more-info
+
   mf_pill:
     show_icon: true
     show_name: true
