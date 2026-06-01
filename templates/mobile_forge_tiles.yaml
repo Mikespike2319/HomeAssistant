@@ -7,7 +7,7 @@ button_card_templates:
     label: '[[[ return variables.subtitle || ""; ]]]'
     styles:
       card:
-        - padding: 18px 4px 8px
+        - padding: 22px 4px 10px
         - background: transparent
         - box-shadow: none
         - border: none
@@ -15,14 +15,14 @@ button_card_templates:
         - z-index: 2
       name:
         - justify-self: start
-        - color: rgba(255,246,235,0.96)
-        - font-size: 30px
-        - line-height: 34px
-        - font-weight: 800
+        - color: rgba(255,248,231,0.96)
+        - font-size: 34px
+        - line-height: 38px
+        - font-weight: 850
         - letter-spacing: 0
       label:
         - justify-self: start
-        - color: rgba(255,235,215,0.62)
+        - color: rgba(235,220,190,0.66)
         - font-size: 14px
         - line-height: 19px
         - font-weight: 650
@@ -38,12 +38,12 @@ button_card_templates:
       value: '[[[ return variables.value || (entity ? entity.state : ""); ]]]'
     styles:
       card:
-        - min-height: 144px
-        - padding: 20px
-        - border-radius: 18px
-        - border: 1px solid rgba(255,235,215,0.13)
-        - background: linear-gradient(150deg, rgba(35,31,42,0.76), rgba(22,20,28,0.72))
-        - box-shadow: 0 18px 48px rgba(0,0,0,0.24)
+        - min-height: 158px
+        - padding: 18px
+        - border-radius: 20px
+        - border: 1px solid rgba(238,222,190,0.26)
+        - background: radial-gradient(circle at 12% 18%, rgba(241,194,122,0.16), transparent 9rem), radial-gradient(circle at 88% 70%, rgba(156,201,162,0.12), transparent 12rem), linear-gradient(150deg, rgba(48,41,32,0.80), rgba(20,28,24,0.76))
+        - box-shadow: 0 22px 56px rgba(2,7,7,0.42), inset 0 1px 0 rgba(255,248,231,0.06)
         - backdrop-filter: blur(20px) saturate(1.16)
         - position: relative
         - z-index: 2
@@ -55,18 +55,18 @@ button_card_templates:
         - align-items: center
       icon:
         - width: 42px
-        - color: '[[[ return variables.accent_color || "rgba(255,211,164,0.96)"; ]]]'
+        - color: '[[[ return variables.accent_color || "rgba(241,194,122,0.96)"; ]]]'
       img_cell:
         - grid-area: i
         - width: 74px
         - height: 74px
-        - border-radius: 22px
-        - background: rgba(255,226,162,0.08)
-        - box-shadow: inset 0 0 0 1px rgba(255,226,162,0.12), 0 18px 38px rgba(0,0,0,0.22)
+        - border-radius: 24px
+        - background: radial-gradient(circle at 34% 24%, rgba(255,248,231,0.18), transparent 50%), rgba(241,194,122,0.10)
+        - box-shadow: inset 0 0 0 1px rgba(241,194,122,0.18), 0 18px 38px rgba(0,0,0,0.24)
       label:
         - grid-area: l
         - justify-self: start
-        - color: rgba(255,235,215,0.62)
+        - color: rgba(235,220,190,0.66)
         - font-size: 13px
         - line-height: 18px
         - font-weight: 650
@@ -74,10 +74,10 @@ button_card_templates:
         value:
           - grid-area: value
           - justify-self: start
-          - color: rgba(255,246,235,0.96)
+          - color: rgba(255,248,231,0.96)
           - font-size: 48px
           - line-height: 50px
-          - font-weight: 300
+          - font-weight: 350
 
   mf_tile:
     show_icon: true
@@ -93,10 +93,10 @@ button_card_templates:
       card:
         - min-height: 106px
         - padding: 14px
-        - border-radius: 18px
-        - border: 1px solid rgba(255,235,215,0.13)
-        - background: linear-gradient(150deg, rgba(35,31,42,0.76), rgba(22,20,28,0.72))
-        - box-shadow: 0 18px 48px rgba(0,0,0,0.24)
+        - border-radius: 20px
+        - border: 1px solid rgba(238,222,190,0.16)
+        - background: linear-gradient(145deg, rgba(255,248,231,0.055), transparent 38%), linear-gradient(150deg, rgba(38,35,30,0.78), rgba(24,28,25,0.74))
+        - box-shadow: 0 22px 56px rgba(2,7,7,0.42), inset 0 1px 0 rgba(255,248,231,0.06)
         - backdrop-filter: blur(20px) saturate(1.16)
         - position: relative
         - z-index: 2
@@ -109,14 +109,14 @@ button_card_templates:
         - align-items: start
       icon:
         - width: 18px
-        - color: '[[[ return variables.accent_color || "rgba(121,199,255,0.95)"; ]]]'
+        - color: '[[[ return variables.accent_color || "rgba(136,199,216,0.95)"; ]]]'
       img_cell:
         - justify-self: start
         - align-self: center
       name:
         - justify-self: start
         - align-self: center
-        - color: rgba(255,246,235,0.94)
+        - color: rgba(255,248,231,0.94)
         - font-size: 14px
         - line-height: 18px
         - font-weight: 800
@@ -124,7 +124,7 @@ button_card_templates:
         - text-align: left
       label:
         - justify-self: start
-        - color: rgba(255,235,215,0.62)
+        - color: rgba(235,220,190,0.66)
         - font-size: 13px
         - line-height: 17px
         - font-weight: 650
@@ -133,10 +133,10 @@ button_card_templates:
           - grid-area: value
           - justify-self: start
           - align-self: end
-          - color: rgba(255,246,235,0.96)
+          - color: rgba(255,248,231,0.96)
           - font-size: 30px
           - line-height: 32px
-          - font-weight: 300
+          - font-weight: 360
 
   # Light-only variant of mf_tile: tap = instant toggle,
   # hold / double-tap = native more-info dialog (full Hue
@@ -171,10 +171,10 @@ button_card_templates:
       card:
         - min-height: 40px
         - padding: 0 14px
-        - border-radius: 999px
-        - border: 1px solid rgba(255,235,215,0.13)
-        - background: rgba(23,22,28,0.7)
-        - box-shadow: none
+        - border-radius: 15px
+        - border: 1px solid rgba(238,222,190,0.16)
+        - background: rgba(18,22,19,0.72)
+        - box-shadow: inset 0 1px 0 rgba(255,248,231,0.045)
         - position: relative
         - z-index: 2
       grid:
@@ -184,10 +184,10 @@ button_card_templates:
         - align-items: center
       icon:
         - width: 16px
-        - color: '[[[ return variables.accent_color || "rgba(255,211,164,0.96)"; ]]]'
+        - color: '[[[ return variables.accent_color || "rgba(241,194,122,0.96)"; ]]]'
       name:
         - justify-self: start
-        - color: rgba(255,246,235,0.86)
+        - color: rgba(255,248,231,0.88)
         - font-size: 13px
         - line-height: 15px
         - font-weight: 800
@@ -202,8 +202,8 @@ button_card_templates:
         - min-height: 44px
         - padding: 0 14px
         - border-radius: 14px
-        - border: 1px solid rgba(255,255,255,0.08)
-        - background: rgba(11,12,15,0.54)
+        - border: 1px solid rgba(238,222,190,0.12)
+        - background: rgba(9,13,12,0.62)
         - box-shadow: none
         - position: relative
         - z-index: 2
@@ -214,10 +214,10 @@ button_card_templates:
         - align-items: center
       icon:
         - width: 18px
-        - color: '[[[ return variables.accent_color || "rgba(121,199,255,0.95)"; ]]]'
+        - color: '[[[ return variables.accent_color || "rgba(136,199,216,0.95)"; ]]]'
       name:
         - justify-self: start
-        - color: rgba(255,246,235,0.86)
+        - color: rgba(255,248,231,0.88)
         - font-size: 16px
         - line-height: 18px
         - font-weight: 850
@@ -229,13 +229,13 @@ button_card_templates:
     custom_fields:
       image: |
         [[[
-          const src = variables.image || "/local/mobile-forge/model-y-juniper.png";
+          const src = variables.image || "/local/mobile-forge/model-y-juniper-transparent.png";
           return `
             <img src="${src}" alt="Tesla Model Y Juniper" style="
               width:100%;
               height:244px;
               display:block;
-              object-fit:cover;
+              object-fit:contain;
               object-position:center;
               filter:saturate(0.94) contrast(1.02);
             ">
@@ -251,7 +251,7 @@ button_card_templates:
               border-radius:15px;
               border:1px solid rgba(255,255,255,0.16);
               background:rgba(13,15,19,0.78);
-              color:rgba(255,246,235,0.94);
+              color:rgba(255,248,231,0.94);
               font-weight:900;
               font-size:13px;
               line-height:1;
@@ -259,7 +259,7 @@ button_card_templates:
               box-shadow:0 12px 28px rgba(0,0,0,0.28);
               pointer-events:none;
             ">
-              <ha-icon icon="mdi:car-electric" style="width:17px;height:17px;color:rgba(121,199,255,0.95);"></ha-icon>
+              <ha-icon icon="mdi:car-electric" style="width:17px;height:17px;color:rgba(136,199,216,0.95);"></ha-icon>
               <span>Model Y Juniper</span>
             </div>
           `;
@@ -269,8 +269,8 @@ button_card_templates:
         - height: 244px
         - padding: 0
         - border-radius: 18px
-        - border: 1px solid rgba(255,235,215,0.13)
-        - background: linear-gradient(150deg, rgba(35,31,42,0.76), rgba(22,20,28,0.72))
+        - border: 1px solid rgba(238,222,190,0.16)
+        - background: linear-gradient(150deg, rgba(38,35,30,0.78), rgba(24,28,25,0.74))
         - box-shadow: 0 18px 48px rgba(0,0,0,0.24)
         - backdrop-filter: blur(20px) saturate(1.16)
         - overflow: hidden
@@ -345,8 +345,8 @@ button_card_templates:
       card:
         - padding: 0
         - border-radius: 18px
-        - border: 1px solid rgba(255,235,215,0.13)
-        - background: linear-gradient(150deg, rgba(35,31,42,0.76), rgba(22,20,28,0.72))
+        - border: 1px solid rgba(238,222,190,0.16)
+        - background: linear-gradient(150deg, rgba(38,35,30,0.78), rgba(24,28,25,0.74))
         - box-shadow: 0 18px 48px rgba(0,0,0,0.24)
         - backdrop-filter: blur(20px) saturate(1.16)
         - overflow: hidden
@@ -384,8 +384,8 @@ button_card_templates:
         - min-height: 72px
         - padding: 12px
         - border-radius: 18px
-        - border: 1px solid rgba(255,235,215,0.13)
-        - background: '[[[ return entity?.state === "playing" ? "linear-gradient(150deg, rgba(70,51,39,0.72), rgba(22,20,28,0.70))" : "linear-gradient(150deg, rgba(35,31,42,0.76), rgba(22,20,28,0.72))"; ]]]'
+        - border: 1px solid rgba(238,222,190,0.16)
+        - background: '[[[ return entity?.state === "playing" ? "linear-gradient(150deg, rgba(70,51,39,0.72), rgba(22,20,28,0.70))" : "linear-gradient(150deg, rgba(38,35,30,0.78), rgba(24,28,25,0.74))"; ]]]'
         - box-shadow: 0 18px 48px rgba(0,0,0,0.24)
         - backdrop-filter: blur(20px) saturate(1.16)
         - position: relative
@@ -404,11 +404,11 @@ button_card_templates:
         - background: rgba(255,255,255,0.07)
       icon:
         - width: 18px
-        - color: '[[[ return variables.accent_color || "rgba(121,199,255,0.95)"; ]]]'
+        - color: '[[[ return variables.accent_color || "rgba(136,199,216,0.95)"; ]]]'
       name:
         - grid-area: n
         - justify-self: start
-        - color: rgba(255,246,235,0.94)
+        - color: rgba(255,248,231,0.94)
         - font-size: 14px
         - line-height: 18px
         - font-weight: 850
@@ -417,14 +417,14 @@ button_card_templates:
       label:
         - grid-area: l
         - justify-self: start
-        - color: rgba(255,235,215,0.62)
+        - color: rgba(235,220,190,0.66)
         - font-size: 12px
         - line-height: 16px
         - font-weight: 650
       custom_fields:
         state:
           - grid-area: state
-          - color: rgba(255,246,235,0.84)
+          - color: rgba(255,248,231,0.84)
           - font-size: 12px
           - line-height: 16px
           - font-weight: 850

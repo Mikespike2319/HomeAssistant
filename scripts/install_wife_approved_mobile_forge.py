@@ -632,8 +632,8 @@ def make_home_cards(config_dir: Path, navbar: Any | None) -> list[Any]:
             "type": "custom:button-card",
             "template": "mf_page_title",
             "variables": {
-                "title": "Home",
-                "subtitle": "Animated sky, house status, and quick controls.",
+                "title": "Hearth console",
+                "subtitle": "Quiet night, house steady, El Rocco sipping power.",
             },
         },
         {
@@ -648,9 +648,9 @@ def make_home_cards(config_dir: Path, navbar: Any | None) -> list[Any]:
                     'const condition = raw.replace(/-/g, " "); '
                     'const humidity = entity?.attributes?.humidity; '
                     'const wind = entity?.attributes?.wind_speed; '
-                    'return `${condition}${humidity ? " · " + humidity + "% humidity" : ""}${wind ? " · " + Math.round(wind) + " mph wind" : ""}`; ]]]'
+                    'return `${condition}${humidity ? " · " + humidity + "% humidity" : ""}${wind ? " · " + Math.round(wind) + " mph breeze" : ""}`; ]]]'
                 ),
-                "accent_color": "rgba(255,211,164,0.96)",
+                "accent_color": "rgba(241,194,122,0.96)",
             },
         },
         {
@@ -664,19 +664,19 @@ def make_home_cards(config_dir: Path, navbar: Any | None) -> list[Any]:
                     "mdi:car-electric",
                     "48%",
                     "charging",
-                    "rgba(121,199,255,0.95)",
+                    "rgba(136,199,216,0.95)",
                     "/mobile-forge/tesla",
                     '[[[ const n = Number(entity?.state); return Number.isFinite(n) ? Math.round(n) + "%" : "48%"; ]]]',
                 ),
-                mf_tile(lights, "Lights", "mdi:lightbulb-group", "Ready", "rooms + scenes", "rgba(255,211,164,0.96)", "/mobile-forge/lights"),
-                mf_tile(security, "Security", "mdi:shield-lock", "Armed", "front door clear", "rgba(157,226,182,0.95)", "/mobile-forge/security"),
+                mf_tile(lights, "Glow", "mdi:lightbulb-group", "Ready", "lanterns + scenes", "rgba(241,194,122,0.96)", "/mobile-forge/lights"),
+                mf_tile(security, "Watch", "mdi:shield-lock", "Armed", "front door clear", "rgba(156,201,162,0.95)", "/mobile-forge/security"),
                 mf_tile(
                     assistant,
                     "Sebastian",
                     "mdi:home-assistant",
                     "Online",
-                    "assistant ready",
-                    "rgba(121,199,255,0.95)",
+                    "local helper ready",
+                    "rgba(184,166,232,0.95)",
                     "/mobile-forge/house",
                     '[[[ return entity?.state === "off" ? "Online" : (entity?.state || "Online").replace(/_/g, " "); ]]]',
                 ),
@@ -685,10 +685,10 @@ def make_home_cards(config_dir: Path, navbar: Any | None) -> list[Any]:
         {
             "type": "horizontal-stack",
             "cards": [
-                mf_pill("Cozy", "mdi:candle", "rgba(255,211,164,0.96)"),
-                mf_pill("Movie", "mdi:movie-open", "rgba(121,199,255,0.95)"),
-                mf_pill("Bright", "mdi:white-balance-sunny", "rgba(255,211,164,0.96)"),
-                mf_pill("Sleep", "mdi:weather-night", "rgba(243,166,184,0.95)"),
+                mf_pill("Hearth glow", "mdi:candle", "rgba(241,194,122,0.96)"),
+                mf_pill("Movie den", "mdi:movie-open", "rgba(136,199,216,0.95)"),
+                mf_pill("Morning bright", "mdi:white-balance-sunny", "rgba(241,194,122,0.96)"),
+                mf_pill("Sleep cabin", "mdi:weather-night", "rgba(217,154,169,0.95)"),
             ],
         },
     ]

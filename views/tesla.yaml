@@ -17,7 +17,7 @@ sections:
   - type: custom:button-card
     template: mf_model_y_juniper
   - type: grid
-    columns: 3
+    columns: 2
     square: false
     cards:
     - type: custom:button-card
@@ -28,7 +28,7 @@ sections:
         title: Battery
         value: '[[[ return (entity?.state || "48") + "%"; ]]]'
         subtitle: charging
-        accent_color: rgba(255,211,164,0.96)
+        accent_color: rgba(241,194,122,0.96)
     - type: custom:button-card
       template: mf_tile
       entity: sensor.el_rocco_battery_range
@@ -37,7 +37,7 @@ sections:
         title: Range
         value: '[[[ return Math.round(Number(entity?.state || 145)) + " mi"; ]]]'
         subtitle: ready
-        accent_color: rgba(121,199,255,0.95)
+        accent_color: rgba(136,199,216,0.95)
     - type: custom:button-card
       template: mf_tile
       entity: lock.el_rocco_lock
@@ -46,9 +46,9 @@ sections:
         title: Lock
         value: '[[[ return entity?.state === "locked" ? "Locked" : entity?.state || "Unknown"; ]]]'
         subtitle: secure
-        accent_color: rgba(157,226,182,0.95)
+        accent_color: rgba(156,201,162,0.95)
   - type: grid
-    columns: 3
+    columns: 2
     square: false
     cards:
     - type: custom:button-card
@@ -75,7 +75,7 @@ sections:
         title: Charge
         value: '[[[ return (entity?.state || "7") + " kW"; ]]]'
         subtitle: '[[[ return states["sensor.el_rocco_time_to_full_charge"]?.state ? states["sensor.el_rocco_time_to_full_charge"].state + " left" : "6 hr left"; ]]]'
-        accent_color: rgba(255,211,164,0.96)
+        accent_color: rgba(241,194,122,0.96)
     - type: custom:button-card
       template: mf_tile
       entity: cover.el_rocco_frunk
@@ -84,7 +84,7 @@ sections:
         title: Frunk
         value: '[[[ return entity?.state === "closed" ? "Closed" : entity?.state || "Ready"; ]]]'
         subtitle: ready
-        accent_color: rgba(255,211,164,0.96)
+        accent_color: rgba(241,194,122,0.96)
     - type: custom:button-card
       template: mf_tile
       entity: cover.el_rocco_trunk
@@ -93,7 +93,7 @@ sections:
         title: Trunk
         value: '[[[ return entity?.state === "closed" ? "Closed" : entity?.state || "Ready"; ]]]'
         subtitle: ready
-        accent_color: rgba(255,211,164,0.96)
+        accent_color: rgba(241,194,122,0.96)
     - type: custom:button-card
       template: mf_tile
       entity: cover.el_rocco_charge_port_door
@@ -109,7 +109,7 @@ sections:
       variables:
         icon: mdi:thermometer-chevron-up
         label: Pre-heat
-        accent_color: rgba(255,211,164,0.96)
+        accent_color: rgba(241,194,122,0.96)
       tap_action:
         action: call-service
         service: climate.set_temperature
@@ -122,7 +122,7 @@ sections:
       variables:
         icon: mdi:snowflake
         label: Pre-cool
-        accent_color: rgba(121,199,255,0.95)
+        accent_color: rgba(136,199,216,0.95)
       tap_action:
         action: call-service
         service: climate.set_temperature
@@ -135,7 +135,7 @@ sections:
       variables:
         icon: mdi:star-four-points-outline
         label: Flash
-        accent_color: rgba(255,211,164,0.96)
+        accent_color: rgba(241,194,122,0.96)
       tap_action:
         action: call-service
         service: button.press
@@ -148,7 +148,7 @@ sections:
       variables:
         icon: mdi:white-balance-sunny
         label: Wake
-        accent_color: rgba(255,211,164,0.96)
+        accent_color: rgba(241,194,122,0.96)
       tap_action:
         action: call-service
         service: button.press
@@ -159,7 +159,7 @@ sections:
       variables:
         icon: mdi:horn
         label: Horn
-        accent_color: rgba(243,166,184,0.95)
+        accent_color: rgba(217,154,169,0.95)
       tap_action:
         action: call-service
         service: button.press
@@ -170,7 +170,7 @@ sections:
       variables:
         icon: mdi:car-door
         label: Vent
-        accent_color: rgba(121,199,255,0.95)
+        accent_color: rgba(136,199,216,0.95)
       tap_action:
         action: call-service
         service: cover.open_cover
@@ -181,7 +181,7 @@ sections:
     variables:
       icon: mdi:list-status
       label: Cabin + updates
-      accent_color: rgba(121,199,255,0.95)
+      accent_color: rgba(136,199,216,0.95)
   - type: grid
     columns: 2
     square: false
