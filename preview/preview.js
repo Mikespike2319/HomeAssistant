@@ -34,12 +34,12 @@ const iconPaths = {
 };
 
 const pageCopy = {
-  home: ["Home", "Quiet night, house steady, El Rocco charging."],
-  lights: ["Lights", "Rooms, scenes, and every glow in one rhythm."],
-  media: ["Media", "Screens, Sonos, and room playback."],
+  home: ["Hearth console", "Quiet night, house steady, El Rocco sipping power."],
+  lights: ["Glow rooms", "Cottage warmth with clean scene control."],
+  media: ["Signal room", "Screens, Sonos, and room playback."],
   tesla: ["El Rocco", "Charge, climate, locks, and trip status."],
-  security: ["Security", "Cameras, alarm state, and quick house modes."],
-  house: ["House", "Roomba, cabin climate, and home devices."]
+  security: ["Watchtower", "Cameras, alarm state, and quick house modes."],
+  house: ["House systems", "Sebastian, cabin climate, and home devices."]
 };
 
 const navCopy = {
@@ -53,24 +53,32 @@ const navCopy = {
 
 const views = {
   home: `
+    <div class="status-ribbon">
+      <strong>Night mode · HA online · cabin linked</strong>
+      <div class="status-dots">
+        <span class="dot">${icon("shield")}</span>
+        <span class="dot">${icon("robot")}</span>
+        <span class="dot">${icon("bolt")}</span>
+      </div>
+    </div>
     <article class="card hero">
       <div class="glyph">${icon("moon")}</div>
       <div>
         <div class="metric">56°</div>
-        <div class="caption">Crisp clear night · 64% humidity · 4 mph wind</div>
+        <div class="caption">Crisp clear night · porch calm · 4 mph wind</div>
       </div>
     </article>
     <section class="row">
-      ${tile("car", "El Rocco", "48%", "145 mi · charging", "icon-blue")}
-      ${tile("light", "Lights", "2 on", "Bedroom glowing", "icon-warm")}
-      ${tile("shield", "Security", "Armed", "Front door clear", "icon-green")}
-      ${tile("robot", "Sebastian", "Online", "Ready", "icon-blue")}
+      ${tile("car", "El Rocco", "48%", "145 mi · charging", "icon-blue", "live")}
+      ${tile("light", "Glow", "2 on", "Bedroom lanterns", "icon-warm")}
+      ${tile("shield", "Watch", "Armed", "Front door clear", "icon-green")}
+      ${tile("robot", "Sebastian", "Online", "Local helper ready", "icon-violet")}
     </section>
     <div class="pill-row">
-      ${pill("light", "Cozy", "icon-warm")}
-      ${pill("film", "Movie", "icon-blue")}
-      ${pill("sun", "Bright", "icon-warm")}
-      ${pill("moon", "Sleep", "icon-rose")}
+      ${pill("light", "Hearth glow", "icon-warm")}
+      ${pill("film", "Movie den", "icon-blue")}
+      ${pill("sun", "Morning bright", "icon-warm")}
+      ${pill("moon", "Sleep cabin", "icon-rose")}
     </div>
   `,
   lights: `
@@ -146,7 +154,7 @@ const views = {
   `,
   tesla: `
     <article class="card car-image-card">
-      <img src="../assets/model-y-juniper.png" alt="Tesla Model Y Juniper">
+      <img src="../assets/model-y-juniper-transparent.png" alt="Tesla Model Y Juniper">
       <div class="car-badge">${icon("car", "icon-blue")} Model Y Juniper</div>
     </article>
     <section class="car-stats">
@@ -223,8 +231,8 @@ function icon(name, className = "") {
   return `<svg class="icon ${className}" viewBox="0 0 24 24" aria-hidden="true">${iconPaths[name]}</svg>`;
 }
 
-function tile(iconName, name, value, note, iconClass = "icon-warm") {
-  return `<article class="card tile"><div class="iconline">${icon(iconName, iconClass)}<strong>${name}</strong></div><div><div class="big">${value}</div><div class="caption">${note}</div></div></article>`;
+function tile(iconName, name, value, note, iconClass = "icon-warm", className = "") {
+  return `<article class="card tile ${className}"><div class="iconline">${icon(iconName, iconClass)}<strong>${name}</strong></div><div><div class="big">${value}</div><div class="caption">${note}</div></div></article>`;
 }
 
 function light(name, value, note) {

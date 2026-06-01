@@ -13,7 +13,7 @@ sections:
     template: mf_page_title
     variables:
       title: Security
-      subtitle: Cameras, alarm state, and quick house modes.
+      subtitle: Watchtower calm, quick modes, and door state.
   - type: custom:button-card
     template: mf_hero
     entity: alarm_control_panel.blink_michael_trinidad
@@ -21,7 +21,7 @@ sections:
       icon: mdi:shield-check-outline
       value: '[[[ return entity?.state === "armed_away" ? "Armed" : entity?.state === "disarmed" ? "Clear" : entity?.state || "Ready"; ]]]'
       subtitle: Front door clear · car locked · sentry on
-      accent_color: rgba(157,226,182,0.95)
+      accent_color: rgba(156,201,162,0.95)
   - type: horizontal-stack
     cards:
     - type: custom:button-card
@@ -29,7 +29,7 @@ sections:
       variables:
         icon: mdi:home-outline
         label: Stand down
-        accent_color: rgba(157,226,182,0.95)
+        accent_color: rgba(156,201,162,0.95)
       tap_action:
         action: call-service
         service: alarm_control_panel.alarm_disarm
@@ -40,7 +40,7 @@ sections:
       variables:
         icon: mdi:bed-king-outline
         label: Tuck us in
-        accent_color: rgba(243,166,184,0.95)
+        accent_color: rgba(217,154,169,0.95)
       tap_action:
         action: call-service
         service: alarm_control_panel.alarm_arm_home
@@ -51,7 +51,7 @@ sections:
       variables:
         icon: mdi:eye-outline
         label: We're out
-        accent_color: rgba(121,199,255,0.95)
+        accent_color: rgba(136,199,216,0.95)
       tap_action:
         action: call-service
         service: alarm_control_panel.alarm_arm_away
@@ -69,7 +69,7 @@ sections:
         title: Front door
         value: '[[[ return entity?.state === "on" ? "Motion" : "Clear"; ]]]'
         subtitle: Blink
-        accent_color: rgba(157,226,182,0.95)
+        accent_color: rgba(156,201,162,0.95)
     - type: custom:button-card
       template: mf_tile
       entity: camera.blink_front_door
@@ -78,13 +78,13 @@ sections:
         title: Side camera
         value: Ready
         subtitle: Driveway
-        accent_color: rgba(121,199,255,0.95)
+        accent_color: rgba(136,199,216,0.95)
   - type: custom:button-card
     template: mf_section_label
     variables:
       icon: mdi:list-status
       label: Recent state
-      accent_color: rgba(121,199,255,0.95)
+      accent_color: rgba(136,199,216,0.95)
   - type: grid
     columns: 1
     square: false
@@ -97,4 +97,4 @@ sections:
         title: El Rocco
         value: '[[[ return entity?.state === "locked" ? "Locked" : entity?.state || "Unknown"; ]]]'
         subtitle: Sentry linked from car page
-        accent_color: rgba(121,199,255,0.95)
+        accent_color: rgba(136,199,216,0.95)

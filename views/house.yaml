@@ -13,7 +13,7 @@ sections:
     template: mf_page_title
     variables:
       title: House
-      subtitle: Roomba, cabin climate, and home devices.
+      subtitle: Sebastian, cabin climate, and home devices.
   - type: custom:button-card
     template: mf_hero
     entity: vacuum.roomba
@@ -21,7 +21,7 @@ sections:
       icon: mdi:robot-vacuum
       value: '[[[ return entity?.state === "unavailable" || !entity ? "Ready" : entity.state.replace("_", " "); ]]]'
       subtitle: Roomba not online yet · El Rocco cabin climate available
-      accent_color: rgba(121,199,255,0.95)
+      accent_color: rgba(136,199,216,0.95)
   - type: grid
     columns: 2
     square: false
@@ -34,7 +34,7 @@ sections:
         title: Roomba
         value: '[[[ return entity?.state === "unavailable" || !entity ? "Offline" : entity.state.replace("_", " "); ]]]'
         subtitle: Power on dock to add
-        accent_color: rgba(121,199,255,0.95)
+        accent_color: rgba(136,199,216,0.95)
     - type: custom:button-card
       template: mf_tile
       entity: climate.el_rocco_climate
@@ -51,7 +51,7 @@ sections:
         title: Hue bridge
         value: 14 lights
         subtitle: Already integrated
-        accent_color: rgba(255,211,164,0.96)
+        accent_color: rgba(241,194,122,0.96)
     - type: custom:button-card
       template: mf_tile
       variables:
@@ -59,7 +59,7 @@ sections:
         title: Sebastian
         value: Online
         subtitle: Assistant ready
-        accent_color: rgba(157,226,182,0.95)
+        accent_color: rgba(156,201,162,0.95)
   - type: horizontal-stack
     cards:
     - type: custom:button-card
@@ -67,7 +67,7 @@ sections:
       variables:
         icon: mdi:home-import-outline
         label: Dock
-        accent_color: rgba(157,226,182,0.95)
+        accent_color: rgba(156,201,162,0.95)
       tap_action:
         action: call-service
         service: vacuum.return_to_base
@@ -78,7 +78,7 @@ sections:
       variables:
         icon: mdi:star-four-points-outline
         label: Clean kitchen
-        accent_color: rgba(255,211,164,0.96)
+        accent_color: rgba(241,194,122,0.96)
       tap_action:
         action: call-service
         service: vacuum.start
@@ -89,7 +89,7 @@ sections:
       variables:
         icon: mdi:pause
         label: Pause
-        accent_color: rgba(243,166,184,0.95)
+        accent_color: rgba(217,154,169,0.95)
       tap_action:
         action: call-service
         service: vacuum.pause

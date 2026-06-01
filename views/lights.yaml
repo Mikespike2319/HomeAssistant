@@ -13,7 +13,7 @@ sections:
     template: mf_page_title
     variables:
       title: Lights
-      subtitle: Rooms, scenes, and every glow in one rhythm.
+      subtitle: Cottage warmth with clean scene control.
   - type: horizontal-stack
     cards:
     - type: custom:button-card
@@ -21,7 +21,7 @@ sections:
       variables:
         icon: mdi:weather-sunset
         label: Dreamy dusk
-        accent_color: rgba(255,211,164,0.96)
+        accent_color: rgba(241,194,122,0.96)
       tap_action:
         action: call-service
         service: scene.turn_on
@@ -32,7 +32,7 @@ sections:
       variables:
         icon: mdi:movie-open-outline
         label: Movie night
-        accent_color: rgba(121,199,255,0.95)
+        accent_color: rgba(136,199,216,0.95)
       tap_action:
         action: call-service
         service: scene.turn_on
@@ -45,7 +45,7 @@ sections:
       variables:
         icon: mdi:white-balance-sunny
         label: Bright morning
-        accent_color: rgba(255,211,164,0.96)
+        accent_color: rgba(241,194,122,0.96)
       tap_action:
         action: call-service
         service: scene.turn_on
@@ -56,7 +56,7 @@ sections:
       variables:
         icon: mdi:moon-waning-crescent
         label: Wind down
-        accent_color: rgba(243,166,184,0.95)
+        accent_color: rgba(217,154,169,0.95)
       tap_action:
         action: call-service
         service: scene.turn_on
@@ -69,7 +69,7 @@ sections:
       variables:
         icon: mdi:star-four-points-outline
         label: Sweet dreams
-        accent_color: rgba(121,199,255,0.95)
+        accent_color: rgba(136,199,216,0.95)
       tap_action:
         action: call-service
         service: scene.turn_on
@@ -80,7 +80,7 @@ sections:
       variables:
         icon: mdi:coffee-outline
         label: Wake up
-        accent_color: rgba(255,211,164,0.96)
+        accent_color: rgba(241,194,122,0.96)
       tap_action:
         action: call-service
         service: scene.turn_on
@@ -91,9 +91,9 @@ sections:
     variables:
       icon: mdi:sofa-outline
       label: Living room
-      accent_color: rgba(121,199,255,0.95)
+      accent_color: rgba(136,199,216,0.95)
   - type: grid
-    columns: 3
+    columns: 2
     square: false
     cards:
     - type: custom:button-card
@@ -149,9 +149,9 @@ sections:
     variables:
       icon: mdi:bed-king-outline
       label: Bedroom
-      accent_color: rgba(243,166,184,0.95)
+      accent_color: rgba(217,154,169,0.95)
   - type: grid
-    columns: 3
+    columns: 2
     square: false
     cards:
     - type: custom:button-card
@@ -162,7 +162,7 @@ sections:
         title: All bedroom
         value: '[[[ return entity?.state === "on" ? Math.round(entity.attributes?.brightness / 2.55) + "%" : "off"; ]]]'
         subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
-        accent_color: rgba(255,211,164,0.96)
+        accent_color: rgba(241,194,122,0.96)
     - type: custom:button-card
       template: mf_tile
       entity: light.mike_side_lamp
@@ -195,4 +195,4 @@ sections:
         title: Big lamp
         value: '[[[ return entity?.state === "on" ? Math.round(entity.attributes?.brightness / 2.55) + "%" : "off"; ]]]'
         subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
-        accent_color: rgba(255,211,164,0.96)
+        accent_color: rgba(241,194,122,0.96)

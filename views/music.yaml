@@ -21,7 +21,7 @@ sections:
       icon: mdi:speaker-wireless
       value: Den
       subtitle: Sonos Era 100 · 192.168.50.51 · ready after HA integration
-      accent_color: rgba(157,226,182,0.95)
+      accent_color: rgba(156,201,162,0.95)
   - type: grid
     columns: 2
     square: false
@@ -34,7 +34,7 @@ sections:
         title: Sonos Den
         value: '[[[ return entity?.state === "playing" ? "Playing" : entity?.state === "unavailable" ? "Add in HA" : "Ready"; ]]]'
         subtitle: Era 100
-        accent_color: rgba(157,226,182,0.95)
+        accent_color: rgba(156,201,162,0.95)
     - type: custom:button-card
       template: mf_tile
       entity: media_player.spotify_michael_sanchez
@@ -43,7 +43,7 @@ sections:
         title: Spotify
         value: '[[[ return entity?.state === "playing" ? "Playing" : "Ready"; ]]]'
         subtitle: Mike's Spotify
-        accent_color: rgba(157,226,182,0.95)
+        accent_color: rgba(156,201,162,0.95)
     - type: custom:button-card
       template: mf_tile
       entity: media_player.michael_s_2nd_echo_dot
@@ -52,7 +52,7 @@ sections:
         title: Echo Dot
         value: '[[[ return entity?.state === "playing" ? "Playing" : "Idle"; ]]]'
         subtitle: Local speaker
-        accent_color: rgba(121,199,255,0.95)
+        accent_color: rgba(136,199,216,0.95)
     - type: custom:button-card
       template: mf_tile
       entity: media_player.lg_webos_tv_6651
@@ -61,7 +61,7 @@ sections:
         title: Bedroom TV
         value: '[[[ return entity?.state === "playing" ? "Playing" : entity?.state || "Ready"; ]]]'
         subtitle: YouTube
-        accent_color: rgba(255,211,164,0.96)
+        accent_color: rgba(241,194,122,0.96)
     - type: custom:button-card
       template: mf_tile
       entity: media_player.lg_webos_tv_ua7700pub
@@ -70,7 +70,7 @@ sections:
         title: LG TV
         value: '[[[ return entity?.state || "Unavailable"; ]]]'
         subtitle: Living room
-        accent_color: rgba(121,199,255,0.95)
+        accent_color: rgba(136,199,216,0.95)
   - type: horizontal-stack
     cards:
     - type: custom:button-card
@@ -78,7 +78,7 @@ sections:
       variables:
         icon: mdi:pause
         label: Pause everything
-        accent_color: rgba(255,211,164,0.96)
+        accent_color: rgba(241,194,122,0.96)
       tap_action:
         action: call-service
         service: media_player.media_pause
@@ -93,7 +93,7 @@ sections:
       variables:
         icon: mdi:volume-mute
         label: Mute everything
-        accent_color: rgba(243,166,184,0.95)
+        accent_color: rgba(217,154,169,0.95)
       tap_action:
         action: call-service
         service: media_player.volume_mute
