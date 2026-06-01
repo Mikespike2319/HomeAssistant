@@ -1,0 +1,133 @@
+title: Media
+path: media
+icon: mdi:television-play
+type: sections
+max_columns: 1
+dense_section_placement: true
+sections:
+- type: grid
+  cards:
+  - type: custom:button-card
+    template: sky_system
+  - type: custom:button-card
+    template: mf_page_title
+    variables:
+      title: Media
+      subtitle: Screens, Sonos, and room playback.
+  - type: custom:button-card
+    template: mf_media_now
+    entity: media_player.bed_room_tv
+    variables:
+      title: Bedroom TV
+      room: Bedroom TV
+  - type: horizontal-stack
+    cards:
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:play
+        label: Resume
+        accent_color: rgba(255,211,164,0.96)
+      tap_action:
+        action: call-service
+        service: media_player.media_play_pause
+        target:
+          entity_id: media_player.bed_room_tv
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:cast
+        label: Cast
+        accent_color: rgba(121,199,255,0.95)
+      tap_action:
+        action: more-info
+      entity: media_player.bed_room_tv
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:volume-mute
+        label: Mute
+        accent_color: rgba(243,166,184,0.95)
+      tap_action:
+        action: call-service
+        service: media_player.volume_mute
+        target:
+          entity_id: media_player.bed_room_tv
+        data:
+          is_volume_muted: true
+  - type: custom:button-card
+    template: mf_section_label
+    variables:
+      icon: mdi:television
+      label: Screens
+      accent_color: rgba(121,199,255,0.95)
+  - type: custom:button-card
+    template: mf_device_row
+    entity: media_player.bed_room_tv
+    variables:
+      icon: mdi:television-play
+      title: Bedroom TV
+      subtitle: '[[[ return (entity?.attributes?.source || entity?.attributes?.app_name || "YouTube") + " · " + Math.round((entity?.attributes?.volume_level ?? 0.18) * 100) + " volume"; ]]]'
+      accent_color: rgba(255,211,164,0.96)
+  - type: custom:button-card
+    template: mf_device_row
+    entity: media_player.lg_webos_tv_ua7700pub
+    variables:
+      icon: mdi:television
+      title: Living Room TV
+      subtitle: LG webOS · ready
+      accent_color: rgba(121,199,255,0.95)
+  - type: custom:button-card
+    template: mf_device_row
+    entity: media_player.luna_s_firetvstick
+    variables:
+      icon: mdi:cast
+      title: Fire TV
+      subtitle: Bedroom route
+      accent_color: rgba(157,226,182,0.95)
+  - type: custom:button-card
+    template: mf_section_label
+    variables:
+      icon: mdi:music
+      label: Audio
+      accent_color: rgba(157,226,182,0.95)
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+    - type: custom:button-card
+      template: mf_tile
+      entity: media_player.den
+      variables:
+        icon: mdi:speaker-wireless
+        title: Sonos Den
+        value: '[[[ return entity?.state === "playing" ? "Playing" : entity?.state === "unavailable" ? "Add in HA" : "Ready"; ]]]'
+        subtitle: Era 100
+        accent_color: rgba(157,226,182,0.95)
+    - type: custom:button-card
+      template: mf_tile
+      entity: media_player.spotify_michael_sanchez
+      variables:
+        icon: mdi:music-circle-outline
+        title: Spotify
+        value: '[[[ return entity?.state === "playing" ? "Playing" : "Ready"; ]]]'
+        subtitle: Mike's Spotify
+        accent_color: rgba(157,226,182,0.95)
+    - type: custom:button-card
+      template: mf_tile
+      entity: media_player.michael_s_2nd_echo_dot
+      variables:
+        icon: mdi:volume-high
+        title: Echo Dot
+        value: '[[[ return entity?.state === "playing" ? "Playing" : "Idle"; ]]]'
+        subtitle: Local speaker
+        accent_color: rgba(121,199,255,0.95)
+    - type: custom:button-card
+      template: mf_tile
+      entity: media_player.spotify_michael_sanchez
+      variables:
+        icon: mdi:pause
+        title: All media
+        value: Quiet
+        subtitle: No active group
+        accent_color: rgba(243,166,184,0.95)

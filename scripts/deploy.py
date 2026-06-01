@@ -59,6 +59,7 @@ def build_dashboard_config() -> dict:
     view_files = [
         COZY / "views" / "lights.yaml",
         COZY / "views" / "security.yaml",
+        COZY / "views" / "media.yaml",
         COZY / "views" / "music.yaml",
         COZY / "views" / "house.yaml",
         COZY / "views" / "weather.yaml",

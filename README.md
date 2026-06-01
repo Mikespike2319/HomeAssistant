@@ -2,7 +2,8 @@
 
 Cozy / Wife Approved style Home Assistant dashboard for the Mobile
 Forge dashboard. Animated `sky_system` backdrop + Tesla "El Rocco"
-integration + Hue lights + Blink security + weather hero.
+integration + Hue lights + Blink security + weather hero + TV-first
+Media controls.
 
 ## Layout
 
@@ -10,7 +11,7 @@ integration + Hue lights + Blink security + weather hero.
 |------|------|
 | `deployed_snapshot/` | Snapshot of the live `mobile_forge v5.yaml` dashboard |
 | `templates/` | All button-card templates (`sky_system`, `sky_system_tesla`, `cozy_*`) |
-| `views/` | Individual view source files (Lights, Music, Weather, etc.) |
+| `views/` | Individual view source files (Lights, Media, Music, Weather, etc.) |
 | `assets/` | AI render prompts for Tesla Model Y 2026 art |
 | `scripts/` | Python helpers: deploy, merge, replace_home |
 
@@ -23,7 +24,8 @@ integration + Hue lights + Blink security + weather hero.
 
 ## Apply changes after editing
 
-Safest one-shot installer on the VPS:
+Safest one-shot installer on the VPS. This updates the active Home view
+and syncs the redesigned Media view into `/mobile-forge/media`:
 
 ```bash
 python3 scripts/install_wife_approved_mobile_forge.py --config-dir /opt/ha-vps/homeassistant
