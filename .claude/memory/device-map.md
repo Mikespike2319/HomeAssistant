@@ -28,14 +28,33 @@ mike=`78d329fb-81c0-4e6f-b72f-672cd051e962`.
 
 | `light.light_panels_51_66_88` | Light Panels 51:66:88 | NL22 | Bedroom | the actual "Light panels" |
 
-### Govee — ALL UNAVAILABLE as of 2026-05-15 (integration/devices offline)
+### Govee — partial recovery as of 2026-06-01 (integration healthy, polling cloud)
 
-| entity_id | was used as | replaced by |
-|---|---|---|
-| `light.living_room_2` | "All living room" tile | `light.living_room` (Hue) |
-| `light.mike_side_lamp` | "Mike's side" tile | `light.mike_lamp` (Hue) |
-| `light.kiara_side_lamp` | "Kiara's side" tile | `light.kiara_lamp` (Hue) |
-| `light.big_lamp` | "Big lamp" tile | none — tile kept, shows "offline" until Govee returns |
+Integration `custom_components.govee` (cloud API, `govee_api_laggat`) is loaded
+and actively polling — confirmed via the recorder DB + live log. All 4 devices
+and entities are still registered (none disabled). Status from a 2026-06-01
+scan (recorder DB `home-assistant_v2.db`, read-only):
+
+| entity_id | model | live state (2026-06-01) | was used as | replaced by |
+|---|---|---|---|---|
+| `light.big_lamp` | H6008 | **on / online** — BACK (was offline 05-15) | "Big lamp" tile | tile kept, now live |
+| `light.living_room_2` | H615C | unavailable since 05-30 22:32 | "All living room" tile | `light.living_room` (Hue) |
+| `light.mike_side_lamp` | H6008 | unavailable since 05-30 22:32 | "Mike's side" tile | `light.mike_lamp` (Hue) |
+| `light.kiara_side_lamp` | H6008 | unavailable since 05-30 22:32 | "Kiara's side" tile | `light.kiara_lamp` (Hue) |
+
+The 3 unavailable lamps all flipped at the same timestamp (05-30 22:32) — an
+HA restart/integration reload after which only Big Lamp reconnected at the
+Govee cloud. They're offline device-side, not an HA detection failure.
+
+**colorTem bug + fix (2026-06-01):** Govee H6008 advertises `color_temp`
+support but its `colorTem.range` is inverted (integration bug) — HA's native
+more-info color-temp slider throws `API-Error 400 colorTem 6667`. Scenes/
+scripts already dodge this with `hs_color`. The dashboard's `mf_light_tile`
+opened native more-info on hold/double-tap, so Big Lamp's tile triggered it.
+Fix: added `mf_govee_tile` template (`templates/mobile_forge_tiles.yaml`)
+that extends `mf_light_tile` but sets `hold_action`/`double_tap_action` to
+`none`; Big Lamp's tile (`views/lights.yaml`) now uses it. Tap still toggles;
+adjust Govee brightness/color via scenes or the Govee app.
 
 **Naming trap:** `light.living_room` (Hue group) and `light.living_room_2`
 (dead Govee strip) both have friendly_name "Living room". Always check the

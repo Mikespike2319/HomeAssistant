@@ -151,6 +151,17 @@ button_card_templates:
     double_tap_action:
       action: more-info
 
+  # Govee variant: tap still toggles, but the native more-info dialog is
+  # disabled because Govee's color_temp_kelvin range is inverted (integration
+  # bug) — dragging the slider throws "API-Error 400 colorTem". Adjust Govee
+  # brightness/color via scenes (hs_color) or the Govee app instead.
+  mf_govee_tile:
+    template: mf_light_tile
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none
+
   mf_pill:
     show_icon: true
     show_name: true

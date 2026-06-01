@@ -191,7 +191,7 @@ sections:
         value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
         subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
     - type: custom:button-card
-      template: mf_light_tile
+      template: mf_govee_tile
       entity: light.big_lamp
       variables:
         icon: mdi:floor-lamp-outline
