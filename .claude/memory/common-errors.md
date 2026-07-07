@@ -111,3 +111,66 @@ the file. Recovered with `git checkout -- views/lights.yaml`.
 **Rule:** For edits to repo files use the Edit/Write tools, not `sed -i`.
 If shell editing is unavoidable, use **absolute paths** and back up first.
 The repo being under git is the only reason this was a non-event.
+
+---
+
+## Multicast/discovery integrations don't work over the WireGuard tunnel (2026-07-07)
+
+**Symptom:** Sonos, Cast, and similar zeroconf/SSDP/mDNS-discovered
+integrations show devices as missing or `unavailable` even though the
+devices are confirmed up and answering on their ports (Sonos `:1400`, Cast
+`:8009`) from the VPS.
+
+**Root cause:** HA runs on this VPS and reaches the home LAN
+(`192.168.50.0/24`) over a WireGuard tunnel (`wg0`). Multicast traffic
+(SSDP/mDNS/zeroconf) does not traverse `wg0` — WireGuard only routes
+unicast IP. Every discovery-based integration therefore sees nothing on its
+own; it needs to be pointed at static IPs instead of relying on discovery.
+
+**Fix pattern:**
+- **Sonos:** `configuration.yaml` → `sonos: media_player: hosts: [...]` with
+  the actual speaker IPs. One reachable speaker is enough to learn the whole
+  Sonos household's zone-group topology (other speakers get added even if
+  not listed), but at least one static IP per otherwise-unreachable room is
+  needed to seed it.
+- **Cast:** not exposed as YAML config — has to be edited directly in
+  `.storage/core.config_entries`, the `cast` domain entry's
+  `data.known_hosts` list, with the container **stopped** first (HA rewrites
+  `.storage` on shutdown, so live edits get clobbered — same rule as the
+  entity-registry rename procedure above). Restart to pick it up.
+- **webOS/other TVs:** the config entry just needs the right `host` (IP) to
+  begin with — no separate discovery step to work around.
+
+Sonos will still log `Subscription to <ip> failed, attempting to poll
+directly` — that's expected and not fatal: UPnP eventing needs a callback
+URL reachable *from* the speaker back *to* HA, which also can't cross the
+tunnel, so the integration falls back to polling. Ignore that warning.
+
+---
+
+## Govee cloud integration 429 kills all Govee entities at once (2026-07-07)
+
+**Symptom:** All Govee entities (including hardware that's genuinely online)
+go `unavailable` at the same instant, and the log fills with
+`govee_api_laggat`/`custom_components.govee` warnings — this grew
+`home-assistant.log.1` to 1.2GB.
+
+**Root cause:** `.storage/core.config_entries` → `govee` entry →
+`data.delay` (seconds between poll cycles) was `10`. With 4 devices that
+blows through Govee cloud's 10,000-requests/24h quota, and a
+`API-Error 429: rate limited!` response kills the **entire config entry**
+at setup — not just one device. All entities going `unavailable` with the
+*identical* `last_updated` timestamp is the tell that distinguishes this
+from real dead hardware (which fails independently, at different times).
+
+**Fix:** raise `data.delay` to `60`. Keeps 4 devices safely under the daily
+quota. The integration self-recovers once the 24h rate-limit window resets
+— don't mistake "still 429ing right after the fix" for the fix not working,
+check back after the quota window rolls over.
+
+**Also add to `configuration.yaml` `logger:`** to stop the log spam
+regardless of quota state: `custom_components.govee: critical`,
+`govee_api_laggat: critical`. (`blinkpy: critical` and
+`homeassistant.components.blink: error` are the equivalent for the Blink
+noise — `error` intentionally still surfaces genuine coordinator errors,
+only `blinkpy`'s own noisier logger is fully silenced.)
