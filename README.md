@@ -1,9 +1,9 @@
-# Mike & Kiara — Home Assistant config
+# HearthOS — Mike & Kiara's Home Assistant
 
-Cozy / Wife Approved style Home Assistant dashboard for the Mobile
-Forge dashboard. Animated `sky_system` backdrop + Tesla "El Rocco"
-integration + Hue lights + Blink security + weather hero + TV-first
-Media controls.
+A mobile-first Home Assistant command deck for the Mobile Forge dashboard.
+HearthOS combines a CSS-only animated aurora, state-aware glass controls,
+Tesla "El Rocco" telemetry, Hue lighting, Blink security, weather, and
+TV-first media controls. It has no remote background-image dependency.
 
 ## Layout
 
@@ -24,18 +24,16 @@ Media controls.
 
 ## Apply changes after editing
 
-Safest one-shot installer on the VPS. This updates the active Home view
-and syncs the redesigned Media view into `/mobile-forge/media`:
+Safest one-shot installer on the VPS. This updates the active Home view and
+syncs the redesigned Lights, Media, Tesla, Security, House, and Weather views:
 
 ```bash
+python3 scripts/install_wife_approved_mobile_forge.py --config-dir /opt/ha-vps/homeassistant --dry-run
 python3 scripts/install_wife_approved_mobile_forge.py --config-dir /opt/ha-vps/homeassistant
-docker restart homeassistant
 ```
 
-After manually editing the active YAML on the VPS:
-```bash
-docker restart homeassistant
-```
+After deploying Lovelace-only changes, refresh the dashboard or reload
+Lovelace resources. A Home Assistant container restart is not required.
 
 ## Important
 
@@ -46,8 +44,6 @@ type: custom:button-card
 template: sky_system
 ```
 
-`sky_system_tesla` remains available for Tesla-heavy pages, but the Reddit
-Wife Approved animated weather background is now kept under the original
-`sky_system` template name. The template z-indexes are lifted above the
-Home Assistant page background so the sky is actually visible instead of
-rendering behind the app shell.
+`sky_system_tesla` remains available for experiments, but production views use
+the asset-free `sky_system` template. It reacts to day/night and storm state,
+honors reduced-motion preferences, and stays behind interactive cards.

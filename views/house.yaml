@@ -12,8 +12,9 @@ sections:
   - type: custom:button-card
     template: mf_page_title
     variables:
-      title: House
-      subtitle: Sebastian, cabin climate, and home devices.
+      eyebrow: SYSTEMS · DEVICES
+      title: House systems
+      subtitle: Sebastian, cleaning, climate, and infrastructure.
   - type: custom:button-card
     template: mf_hero
     entity: vacuum.roomba
@@ -45,7 +46,7 @@ sections:
         subtitle: El Rocco
     - type: custom:button-card
       template: mf_tile
-      entity: light.living_room_2
+      entity: light.living_room
       variables:
         icon: mdi:bridge
         title: Hue bridge

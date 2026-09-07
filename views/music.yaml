@@ -126,17 +126,15 @@ sections:
       icon: mdi:home
     - url: /mobile-forge/lights
       icon: mdi:lightbulb
-    - url: /mobile-forge/music
-      icon: mdi:music
+    - url: /mobile-forge/media
+      icon: mdi:television-play
     - url: /mobile-forge/tesla
       icon: mdi:car-electric
     - url: /mobile-forge/security
       icon: mdi:shield-lock
-    - url: /mobile-forge/sebastian
-      icon: mdi:robot-outline
-    - url: /mobile-forge/settings
-      icon: mdi:cog
+    - url: /mobile-forge/house
+      icon: mdi:home-thermometer
     card_mod:
       style: |
-        :host { position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; z-index: 999 !important; }
-        ha-card { border-radius: 0 !important; border-top: 1px solid rgba(255,255,255,0.06); background: rgba(22,22,26,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+        :host { position: fixed !important; left: 12px !important; right: 12px !important; bottom: max(12px, env(safe-area-inset-bottom, 0px)) !important; z-index: 999 !important; }
+        ha-card { border-radius: 24px !important; border: 1px solid rgba(137,210,255,0.17) !important; background: linear-gradient(135deg, rgba(10,18,31,0.94), rgba(5,10,19,0.91)) !important; backdrop-filter: blur(24px) saturate(1.2); -webkit-backdrop-filter: blur(24px) saturate(1.2); box-shadow: 0 20px 54px rgba(1,4,12,0.48), inset 0 1px 0 rgba(255,255,255,.06) !important; padding-bottom: env(safe-area-inset-bottom, 0px); overflow: hidden; }

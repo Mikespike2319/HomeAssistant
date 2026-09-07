@@ -20,7 +20,7 @@ config root `/opt/ha-vps/homeassistant/`, active dashboard
 - **Prefer reload over restart.** Lovelace/dashboard YAML reloads via the UI or `service: lovelace.reload_resources`. Templates and view changes only need a frontend refresh. Restart `homeassistant` container only when configuration.yaml itself changed.
 - **Mobile-first.** The dashboard is consumed primarily on iOS via the HA Companion app. Don't introduce custom cards that break the iOS companion unless tested visually.
 - **Never expose HA, MCP, tokens, or webhooks to the public internet.** Traefik is here for routing — anything HA-adjacent must stay on `localhost` or the internal Docker network.
-- **Active home view starts with `type: custom:button-card` + `template: sky_system`.** Anything else means someone overwrote it. The Reddit "Wife Approved" animated background lives in `templates/sky_system.yaml`; `sky_system_tesla.yaml` is the Tesla-heavy variant.
+- **Active home view starts with `type: custom:button-card` + `template: sky_system`.** Anything else means someone overwrote it. The CSS-only HearthOS aurora background lives in `templates/sky_system.yaml`; `sky_system_tesla.yaml` is a legacy Tesla-heavy variant.
 - **The dashboard repo at `/root/HomeAssistant/` is the source of truth.** Edits go here first, then deploy via `scripts/install_wife_approved_mobile_forge.py` or the targeted scripts in `INSTALL/`. Never edit `/opt/ha-vps/homeassistant/dashboards/mobile_forge v5.yaml` directly without mirroring the change back into the repo.
 
 ## Workflow before making changes

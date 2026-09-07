@@ -18,6 +18,28 @@ Append to this file when a fix teaches us something durable.
 
 **Full list of expected paths:** see `templates/sky_system.yaml` `templates/sky_system_tesla.yaml` (run `grep -oE '/local/[A-Za-z0-9._/?-]+'` to enumerate).
 
+**Resolved for the primary dashboard (HearthOS redesign):**
+`templates/sky_system.yaml` is now CSS-only and no longer references the
+missing sky, cloud, lamp, tree, fence, or background files. The Tesla card's
+single repo-owned image is still deployed to `/local/mobile-forge/` by the
+installer. `sky_system_tesla.yaml` is legacy/experimental and may still contain
+old `/local/` references; production views do not use it.
+
+---
+
+## Installer updated only Home + Media
+
+**Symptom:** changes to Lights, Tesla, Security, House, or Weather appeared in
+the repo preview but never reached the active dashboard after running the
+one-shot installer.
+
+**Root cause:** `install_wife_approved_mobile_forge.py` called
+`sync_repo_view()` only for `media`.
+
+**Fix:** the installer now syncs every production view: `lights`, `media`,
+`tesla`, `security`, `house`, and `weather`. Keep the sync list aligned with
+the six navigation routes plus the weather drill-down.
+
 ---
 
 ## Mobile Forge home view replaced by stock view after a deploy

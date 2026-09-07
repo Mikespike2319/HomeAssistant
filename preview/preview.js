@@ -1,4 +1,5 @@
 const root = document.getElementById("view-root");
+const eyebrow = document.getElementById("page-eyebrow");
 const title = document.getElementById("page-title");
 const subtitle = document.getElementById("page-subtitle");
 
@@ -34,12 +35,12 @@ const iconPaths = {
 };
 
 const pageCopy = {
-  home: ["Hearth console", "Quiet night, house steady, El Rocco sipping power."],
-  lights: ["Glow rooms", "Cottage warmth with clean scene control."],
-  media: ["Signal room", "Screens, Sonos, and room playback."],
-  tesla: ["El Rocco", "Charge, climate, locks, and trip status."],
-  security: ["Watchtower", "Cameras, alarm state, and quick house modes."],
-  house: ["House systems", "Sebastian, cabin climate, and home devices."]
+  home: ["MOBILE FORGE · COMMAND DECK", "HearthOS", "The house, car, and routines in one calm view."],
+  lights: ["LIGHTING · SCENES", "Glow rooms", "Every light, mood, and room at a glance."],
+  media: ["MEDIA · NOW PLAYING", "Signal room", "Screens, Sonos, and room playback in one place."],
+  tesla: ["EL ROCCO · VEHICLE", "El Rocco", "Charge, climate, security, and range telemetry."],
+  security: ["SECURITY · PERIMETER", "Watchtower", "Cameras, alarm modes, and entry state."],
+  house: ["SYSTEMS · DEVICES", "House systems", "Sebastian, cleaning, climate, and infrastructure."]
 };
 
 const navCopy = {
@@ -54,7 +55,7 @@ const navCopy = {
 const views = {
   home: `
     <div class="status-ribbon">
-      <strong>Night mode · HA online · cabin linked</strong>
+      <strong>House clear · car locked · core current</strong>
       <div class="status-dots">
         <span class="dot">${icon("shield")}</span>
         <span class="dot">${icon("robot")}</span>
@@ -266,8 +267,9 @@ function miniStat(value, label) {
 function setView(name) {
   if (!views[name]) name = "home";
   const copy = pageCopy[name];
-  title.textContent = copy[0];
-  subtitle.textContent = copy[1];
+  eyebrow.textContent = copy[0];
+  title.textContent = copy[1];
+  subtitle.textContent = copy[2];
   root.innerHTML = views[name];
   if (window.location.hash.slice(1) !== name) {
     history.replaceState(null, "", `#${name}`);

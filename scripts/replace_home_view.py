@@ -137,7 +137,7 @@ def build_new_home(navbar_card):
             "square": False,
             "cards": [
                 {"type": "custom:button-card", "template": "cozy_light_tile",
-                 "variables": {"light_entity": "light.living_room_2", "cute_name": "Living room", "icon_emoji": "🛋"}},
+                 "variables": {"light_entity": "light.living_room", "cute_name": "Living room", "icon_emoji": "🛋"}},
                 {"type": "custom:button-card", "template": "cozy_light_tile",
                  "variables": {"light_entity": "light.bedroom", "cute_name": "Bedroom", "icon_emoji": "🛏"}},
                 {"type": "custom:button-card", "template": "cozy_light_tile",
