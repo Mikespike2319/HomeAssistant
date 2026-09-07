@@ -12,8 +12,9 @@ sections:
   - type: custom:button-card
     template: mf_page_title
     variables:
-      title: Media
-      subtitle: Signal room for screens, Sonos, and room playback.
+      eyebrow: MEDIA · NOW PLAYING
+      title: Signal room
+      subtitle: Screens, Sonos, and room playback in one place.
   - type: custom:button-card
     template: mf_media_now
     entity: media_player.bed_room_tv

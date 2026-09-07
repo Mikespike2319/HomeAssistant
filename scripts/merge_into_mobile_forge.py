@@ -96,9 +96,9 @@ def normalize_navbar(card: dict | None) -> dict | None:
         "style": (
             ":host { position: fixed !important; left: 12px !important; right: 12px !important; "
             "bottom: max(12px, env(safe-area-inset-bottom, 0px)) !important; z-index: 999 !important; }\n"
-            "ha-card { border-radius: 22px !important; border: 1px solid rgba(255,255,255,0.12) !important; "
-            "background: rgba(15,15,18,0.90) !important; backdrop-filter: blur(20px); "
-            "-webkit-backdrop-filter: blur(20px); box-shadow: 0 18px 48px rgba(0,0,0,0.32) !important; "
+            "ha-card { border-radius: 24px !important; border: 1px solid rgba(137,210,255,0.17) !important; "
+            "background: linear-gradient(135deg, rgba(10,18,31,0.94), rgba(5,10,19,0.91)) !important; backdrop-filter: blur(24px) saturate(1.2); "
+            "-webkit-backdrop-filter: blur(24px) saturate(1.2); box-shadow: 0 20px 54px rgba(1,4,12,0.48), inset 0 1px 0 rgba(255,255,255,.06) !important; "
             "padding-bottom: env(safe-area-inset-bottom, 0px); overflow: hidden; }\n"
         )
     }

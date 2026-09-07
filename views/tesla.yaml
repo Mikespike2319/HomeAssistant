@@ -12,8 +12,9 @@ sections:
   - type: custom:button-card
     template: mf_page_title
     variables:
+      eyebrow: EL ROCCO · VEHICLE
       title: El Rocco
-      subtitle: Charge, climate, locks, and trip status.
+      subtitle: Charge, climate, security, and range telemetry.
   - type: custom:button-card
     template: mf_model_y_juniper
   - type: grid

@@ -12,8 +12,9 @@ sections:
   - type: custom:button-card
     template: mf_page_title
     variables:
-      title: Lights
-      subtitle: Cottage warmth with clean scene control.
+      eyebrow: LIGHTING · SCENES
+      title: Glow rooms
+      subtitle: Every light, mood, and room at a glance.
   - type: horizontal-stack
     cards:
     - type: custom:button-card

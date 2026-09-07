@@ -12,8 +12,9 @@ sections:
   - type: custom:button-card
     template: mf_page_title
     variables:
-      title: Security
-      subtitle: Watchtower calm, quick modes, and door state.
+      eyebrow: SECURITY · PERIMETER
+      title: Watchtower
+      subtitle: Cameras, alarm modes, and entry state.
   - type: custom:button-card
     template: mf_hero
     entity: alarm_control_panel.blink_michael_trinidad
