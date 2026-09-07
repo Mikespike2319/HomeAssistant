@@ -16,6 +16,8 @@ sections:
       title: Signal room
       subtitle: Screens, Sonos, and room playback in one place.
   - type: custom:button-card
+    template: mf_media_status
+  - type: custom:button-card
     template: mf_media_now
     entity: media_player.bed_room_tv
     variables:
@@ -26,9 +28,20 @@ sections:
     - type: custom:button-card
       template: mf_pill
       variables:
-        icon: mdi:play
-        label: Resume
-        accent_color: rgba(241,194,122,0.96)
+        icon: mdi:skip-previous
+        label: Previous
+        accent_color: rgba(155,134,255,0.96)
+      tap_action:
+        action: call-service
+        service: media_player.media_previous_track
+        target:
+          entity_id: media_player.bed_room_tv
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:play-pause
+        label: Play / pause
+        accent_color: rgba(107,226,255,0.96)
       tap_action:
         action: call-service
         service: media_player.media_play_pause
@@ -37,25 +50,52 @@ sections:
     - type: custom:button-card
       template: mf_pill
       variables:
-        icon: mdi:cast
-        label: Cast
-        accent_color: rgba(136,199,216,0.95)
+        icon: mdi:skip-next
+        label: Next
+        accent_color: rgba(255,207,120,0.96)
       tap_action:
-        action: more-info
-      entity: media_player.bed_room_tv
+        action: call-service
+        service: media_player.media_next_track
+        target:
+          entity_id: media_player.bed_room_tv
+  - type: horizontal-stack
+    cards:
     - type: custom:button-card
       template: mf_pill
       variables:
+        icon: mdi:volume-minus
+        label: Quieter
+        accent_color: rgba(155,134,255,0.96)
+      tap_action:
+        action: call-service
+        service: media_player.volume_down
+        target:
+          entity_id: media_player.bed_room_tv
+    - type: custom:button-card
+      template: mf_pill
+      entity: media_player.bed_room_tv
+      variables:
         icon: mdi:volume-mute
-        label: Mute
-        accent_color: rgba(217,154,169,0.95)
+        label: '[[[ return entity?.attributes?.is_volume_muted ? "Unmute" : "Mute"; ]]]'
+        accent_color: rgba(255,132,155,0.96)
       tap_action:
         action: call-service
         service: media_player.volume_mute
         target:
           entity_id: media_player.bed_room_tv
         data:
-          is_volume_muted: true
+          is_volume_muted: '[[[ return !(entity?.attributes?.is_volume_muted ?? false); ]]]'
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:volume-plus
+        label: Louder
+        accent_color: rgba(107,226,255,0.96)
+      tap_action:
+        action: call-service
+        service: media_player.volume_up
+        target:
+          entity_id: media_player.bed_room_tv
   - type: custom:button-card
     template: mf_section_label
     variables:
@@ -78,6 +118,14 @@ sections:
       title: Living Room TV
       subtitle: LG webOS · ready
       accent_color: rgba(136,199,216,0.95)
+  - type: custom:button-card
+    template: mf_device_row
+    entity: media_player.32q3k_2
+    variables:
+      icon: mdi:television
+      title: Kitchen TV
+      subtitle: TCL · Android TV
+      accent_color: rgba(155,134,255,0.96)
   - type: custom:button-card
     template: mf_device_row
     entity: media_player.luna_s_firetvstick
@@ -107,6 +155,15 @@ sections:
         accent_color: rgba(156,201,162,0.95)
     - type: custom:button-card
       template: mf_tile
+      entity: media_player.roam_2
+      variables:
+        icon: mdi:speaker-bluetooth
+        title: Sonos Roam
+        value: '[[[ return entity?.state === "playing" ? "Playing" : entity?.state === "unavailable" ? "Offline" : "Ready"; ]]]'
+        subtitle: Portable
+        accent_color: rgba(155,134,255,0.96)
+    - type: custom:button-card
+      template: mf_tile
       entity: media_player.spotify_michael_sanchez
       variables:
         icon: mdi:music-circle-outline
@@ -123,12 +180,47 @@ sections:
         value: '[[[ return entity?.state === "playing" ? "Playing" : "Idle"; ]]]'
         subtitle: Local speaker
         accent_color: rgba(136,199,216,0.95)
+  - type: custom:button-card
+    template: mf_section_label
+    variables:
+      icon: mdi:home-sound-out-outline
+      label: Whole-home actions
+      accent_color: rgba(255,207,120,0.96)
+  - type: horizontal-stack
+    cards:
     - type: custom:button-card
-      template: mf_tile
-      entity: media_player.spotify_michael_sanchez
+      template: mf_pill
       variables:
-        icon: mdi:pause
-        title: All media
-        value: Quiet
-        subtitle: No active group
-        accent_color: rgba(217,154,169,0.95)
+        icon: mdi:pause-circle-outline
+        label: Pause everywhere
+        accent_color: rgba(255,207,120,0.96)
+      tap_action:
+        action: call-service
+        service: media_player.media_pause
+        target:
+          entity_id:
+          - media_player.bed_room_tv
+          - media_player.lg_webos_tv_ua7700pub
+          - media_player.32q3k_2
+          - media_player.luna_s_firetvstick
+          - media_player.den
+          - media_player.roam_2
+          - media_player.spotify_michael_sanchez
+          - media_player.michael_s_2nd_echo_dot
+    - type: custom:button-card
+      template: mf_pill
+      variables:
+        icon: mdi:power-standby
+        label: Screens off
+        accent_color: rgba(255,132,155,0.96)
+      tap_action:
+        action: call-service
+        service: media_player.turn_off
+        confirmation:
+          text: Power off every screen?
+        target:
+          entity_id:
+          - media_player.bed_room_tv
+          - media_player.lg_webos_tv_ua7700pub
+          - media_player.32q3k_2
+          - media_player.luna_s_firetvstick

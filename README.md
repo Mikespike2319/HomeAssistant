@@ -14,6 +14,7 @@ TV-first media controls. It has no remote background-image dependency.
 | `views/` | Individual view source files (Lights, Media, Music, Weather, etc.) |
 | `assets/` | AI render prompts for Tesla Model Y 2026 art |
 | `scripts/` | Python helpers: deploy, merge, replace_home |
+| `MEDIA.md` | Media entity inventory, controls, and known limitations |
 
 ## Live deploy paths
 

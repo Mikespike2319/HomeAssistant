@@ -19,6 +19,8 @@ const iconPaths = {
   cast: '<path d="M4 7V5h16v14h-3"/><path d="M4 15a6 6 0 0 1 6 6"/><path d="M4 11a10 10 0 0 1 10 10"/><path d="M4 19.5v.5"/>',
   volume: '<path d="M11 5 6 9H3v6h3l5 4Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/>',
   play: '<path d="M8 5v14l11-7Z"/>',
+  previous: '<path d="M6 5v14"/><path d="m18 6-9 6 9 6Z"/>',
+  next: '<path d="M18 5v14"/><path d="m6 6 9 6-9 6Z"/>',
   power: '<path d="M12 2v10"/><path d="M18.4 6.6a9 9 0 1 1-12.8 0"/>',
   remote: '<rect x="8" y="2" width="8" height="20" rx="4"/><circle cx="12" cy="7" r="1"/><path d="M10.5 12h3"/><path d="M12 10.5v3"/><path d="M10.5 17h3"/>',
   bed: '<path d="M4 18V7"/><path d="M20 18v-5a3 3 0 0 0-3-3H9v8"/><path d="M4 13h5"/><path d="M4 18h16"/>',
@@ -111,6 +113,10 @@ const views = {
     </section>
   `,
   media: `
+    <div class="status-ribbon">
+      <strong>Bedroom TV playing · 1 zone active</strong>
+      <div class="status-dots"><span class="dot">1</span></div>
+    </div>
     <article class="card media-now">
       <div class="media-screen">
         <div class="screen-glow"></div>
@@ -135,23 +141,32 @@ const views = {
       </div>
     </article>
     <section class="media-remote card">
-      <button>${icon("play", "icon-warm")} Resume</button>
-      <button>${icon("cast", "icon-blue")} Cast</button>
+      <button>${icon("previous", "icon-violet")} Previous</button>
+      <button>${icon("pause", "icon-blue")} Play / pause</button>
+      <button>${icon("next", "icon-warm")} Next</button>
+      <button>${icon("volume", "icon-violet")} Quieter</button>
       <button>${icon("mute", "icon-rose")} Mute</button>
+      <button>${icon("volume", "icon-blue")} Louder</button>
     </section>
     <div class="section-label">${icon("tv", "icon-blue")} Screens</div>
     <section class="device-stack">
       ${deviceRow("tv", "Bedroom TV", "Playing", "YouTube · 18 volume", "live", "icon-warm")}
       ${deviceRow("tv", "Living Room TV", "Standby", "LG webOS · ready", "", "icon-blue")}
-      ${deviceRow("cast", "Google Cast", "Available", "Bedroom route", "", "icon-green")}
+      ${deviceRow("tv", "Kitchen TV", "Available", "TCL · Android TV", "", "icon-violet")}
+      ${deviceRow("cast", "Fire TV", "Available", "Bedroom route", "", "icon-green")}
     </section>
     <div class="section-label">${icon("music", "icon-green")} Audio</div>
     <section class="row">
       ${tile("music", "Sonos Den", "Ready", "Era 100", "icon-green")}
+      ${tile("music", "Sonos Roam", "Ready", "Portable", "icon-violet")}
       ${tile("music", "Spotify", "Ready", "Mike's Spotify", "icon-green")}
       ${tile("volume", "Echo Dot", "Idle", "Local speaker", "icon-blue")}
-      ${tile("pause", "All media", "Quiet", "No active group", "icon-rose")}
     </section>
+    <div class="section-label">${icon("volume", "icon-warm")} Whole-home actions</div>
+    <div class="pill-row">
+      ${pill("pause", "Pause everywhere", "icon-warm")}
+      ${pill("power", "Screens off", "icon-rose")}
+    </div>
   `,
   tesla: `
     <article class="card car-image-card">
