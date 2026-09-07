@@ -7,12 +7,12 @@ redesigned view wholesale so re-running is idempotent (no card duplication).
 What it does:
   - button_card_templates <- the full repo template set (superset of live;
     includes sky_system, mf_nav_spacer, mf_govee_tile, etc.)
-  - Replaces views: lights, media, music, house, tesla, security with their
-    modular redesigned definitions from repo views/*.yaml.
+  - Replaces views: lights, media, music, house, tesla, security, weather with
+    their modular redesigned definitions from repo views/*.yaml.
   - Re-injects the navbar + nav_spacer chrome (modular views omit it) using the
     canonical navbar already present in the live dashboard.
   - Preserves the live view's wallpaper card_mod when the modular view lacks it.
-  - Leaves home, sebastian, forge-classic, settings, weather untouched.
+  - Leaves home, sebastian, forge-classic, settings untouched.
 
 Writes atomically (temp -> rename) and validates the result before swapping.
 """
@@ -34,6 +34,7 @@ REDESIGNED = {
     "house": "house.yaml",
     "tesla": "tesla.yaml",
     "security": "security.yaml",
+    "weather": "weather.yaml",
 }
 
 NAVBAR_ROUTES = [
