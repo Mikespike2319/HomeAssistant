@@ -206,7 +206,11 @@ button_card_templates:
           }
           .cozy-hud .pill .icon { font-size: 13px; opacity: 0.9; }
 
-          @media (orientation: landscape) {
+          @media (prefers-reduced-motion: reduce) {
+              *, *::before, *::after { animation: none !important; transition: none !important; }
+              .lightning-bolt { display: none !important; }
+            }
+            @media (orientation: landscape) {
             #tree_layer, #sky_atmosphere, #weather_overlay,
             #car_layer, #sky_layer, #lamp_layer, #driveway_layer,
             #wet_driveway, #celestial_body, #greeting_layer,
@@ -225,7 +229,7 @@ button_card_templates:
       # ── -10: warm midnight background (not pure black) ──
       background_base: |
         [[[
-          const isDay = states['sun.sun'].state === 'above_horizon';
+          const isDay = (states['sun.sun'] || {state: 'unknown', attributes: {elevation: 0}}).state === 'above_horizon';
           const grad = isDay
             ? `radial-gradient(ellipse at 50% 100%,
                 rgba(255, 220, 195, 0.06) 0%,
@@ -244,10 +248,10 @@ button_card_templates:
       # ── -6: clouds (day) / stars (night) — UNCHANGED ──
       sky_layer: |
         [[[
-          const sun = states['sun.sun'];
+          const sun = (states['sun.sun'] || {state: 'unknown', attributes: {elevation: 0}});
           const ele = sun.attributes.elevation;
           const isDay = sun.state == 'above_horizon';
-          const weather = states['weather.forecast_home'].state.toLowerCase();
+          const weather = (states['weather.forecast_home']?.state || 'unknown').toLowerCase();
 
           if (isDay && (weather.includes('sunny') || weather.includes('clear'))) {
             return `<div></div>`;
@@ -272,7 +276,7 @@ button_card_templates:
       # ── -5: sun/moon arc — UNCHANGED ──
       celestial_body: |
         [[[
-          const isDay = states['sun.sun'].attributes.elevation > -1.0;
+          const isDay = (states['sun.sun'] || {state: 'unknown', attributes: {elevation: 0}}).attributes.elevation > -1.0;
           if (isDay) {
             return `
               <div style="position:relative; width:220px; height:220px;">
@@ -337,14 +341,14 @@ button_card_templates:
           else if (month === 12) image = "/local/bottom_overlays/New/trees/trees-christmas.png";
           else if ((month === 1) || (month === 2) || (month === 3 && day <= 1)) image = "/local/bottom_overlays/New/trees/trees-snow2.png";
           let filter = "brightness(1.05) sepia(0.18) saturate(1.6)";
-          if (states['sun.sun'].state != 'above_horizon') filter = "brightness(0.9) sepia(0.25) saturate(1.3) contrast(0.95)";
+          if ((states['sun.sun'] || {state: 'unknown', attributes: {elevation: 0}}).state != 'above_horizon') filter = "brightness(0.9) sepia(0.25) saturate(1.3) contrast(0.95)";
           return `<img src="${image}" style="width:100%; height:100%; object-fit:cover; filter:${filter}; transition: filter 5s ease-in-out;">`;
         ]]]
 
       # ── -3: weather particles — UNCHANGED ──
       weather_overlay: |
         [[[
-          const state = states['weather.forecast_home'].state.toLowerCase();
+          const state = (states['weather.forecast_home']?.state || 'unknown').toLowerCase();
           let content = '';
           if (['snow','sleet','hail','snowy','ice'].some(t => state.includes(t))) {
             content += '<div class="snowflakes">';
@@ -369,7 +373,7 @@ button_card_templates:
             content += `<div style="position:fixed; width:100vw; height:100vh; background: rgba(200,200,220,0.2); backdrop-filter: blur(1px); z-index:8;"></div>`;
           }
           if (['cloudy','overcast','partlycloudy'].some(t => state.includes(t))
-              && states['sun.sun'].state !== 'above_horizon') {
+              && (states['sun.sun'] || {state: 'unknown', attributes: {elevation: 0}}).state !== 'above_horizon') {
             content += `<img src="/local/sky/clouds-real.png?v=2"
               style="position:fixed; top:0; left:0; width:130vw; height:80vh; object-fit:cover;
                      opacity:0.35; filter: brightness(0.6) contrast(0.85) saturate(0.6) hue-rotate(-5deg);
@@ -431,14 +435,14 @@ button_card_templates:
       car_layer: |
         [[[
           const prefix = variables.tesla_prefix;
-          const isDay = states['sun.sun'].state === 'above_horizon';
+          const isDay = (states['sun.sun'] || {state: 'unknown', attributes: {elevation: 0}}).state === 'above_horizon';
           const get = (eid) => states[eid] ? states[eid].state : null;
           // Probes BOTH tesla_custom variants (older _charger, newer _charge_cable)
           const tryGet = (...eids) => { for (const e of eids) { const v = get(e); if (v !== null) return v; } return null; };
 
           const isCharging = tryGet(`binary_sensor.${prefix}_charger`, `binary_sensor.${prefix}_charge_cable`) === 'on'
                            || get(`sensor.${prefix}_charging`) === 'Charging';
-          const weather = states['weather.forecast_home'].state.toLowerCase();
+          const weather = (states['weather.forecast_home']?.state || 'unknown').toLowerCase();
           const isWet = ['rain','pouring','drizzle','thunderstorm'].some(t => weather.includes(t));
           const isSnowy = ['snow','sleet','snowy'].some(t => weather.includes(t));
 
@@ -498,7 +502,7 @@ button_card_templates:
       # ── 0: cozy lamp on the LEFT (kept from original; warm anchor) ──
       lamp_layer: |
         [[[
-          const isDay = states['sun.sun'].state === 'above_horizon';
+          const isDay = (states['sun.sun'] || {state: 'unknown', attributes: {elevation: 0}}).state === 'above_horizon';
           const now = new Date();
           const month = now.getMonth() + 1;
           const day = now.getDate();
@@ -545,7 +549,7 @@ button_card_templates:
       # ─────────────────────────────────────────────────────────
       wet_driveway: |
         [[[
-          const weather = states['weather.forecast_home'].state.toLowerCase();
+          const weather = (states['weather.forecast_home']?.state || 'unknown').toLowerCase();
           const isWet = ['rain','pouring','drizzle','thunderstorm'].some(t => weather.includes(t));
           if (!isWet) return '';
           const isHeavy = weather.includes('pouring') || weather.includes('thunderstorm');
@@ -775,7 +779,7 @@ button_card_templates:
           - transition: background 5s ease-in-out
           - background: |
               [[[
-                const sun = states['sun.sun'];
+                const sun = (states['sun.sun'] || {state: 'unknown', attributes: {elevation: 0}});
                 const ele = sun.attributes.elevation;
                 const isDay = sun.state === 'above_horizon';
                 const lerp = (a,b,t) => a + (b-a)*t;
@@ -830,12 +834,12 @@ button_card_templates:
           - transition: all 2s ease-in-out
           - z-index: 4
           - width: |
-              [[[ return states['sun.sun'].state == 'above_horizon' ? '110px' : '100px'; ]]]
+              [[[ return (states['sun.sun'] || {state: 'unknown', attributes: {elevation: 0}}).state == 'above_horizon' ? '110px' : '100px'; ]]]
           - height: |
-              [[[ return states['sun.sun'].state == 'above_horizon' ? '90px' : '80px'; ]]]
+              [[[ return (states['sun.sun'] || {state: 'unknown', attributes: {elevation: 0}}).state == 'above_horizon' ? '90px' : '80px'; ]]]
           - filter: |
               [[[
-                const isDay = states['sun.sun'].state == 'above_horizon';
+                const isDay = (states['sun.sun'] || {state: 'unknown', attributes: {elevation: 0}}).state == 'above_horizon';
                 const brightness = isDay
                   ? "brightness(0.85) sepia(0.15) saturate(0.95) contrast(0.85) opacity(0.85)"
                   : "brightness(0.85) saturate(0.75) opacity(0.9)";
@@ -846,8 +850,8 @@ button_card_templates:
               ]]]
           - bottom: |
               [[[
-                const ele = states['sun.sun'].attributes.elevation;
-                const isDay = states['sun.sun'].state === 'above_horizon';
+                const ele = (states['sun.sun'] || {state: 'unknown', attributes: {elevation: 0}}).attributes.elevation;
+                const isDay = (states['sun.sun'] || {state: 'unknown', attributes: {elevation: 0}}).state === 'above_horizon';
                 let pct = isDay
                   ? Math.max(0, Math.min(ele/60, 1))
                   : Math.max(0, Math.min(Math.abs(ele)/35, 1));
@@ -856,10 +860,10 @@ button_card_templates:
           - left: |
               [[[
                 const now = Date.now();
-                const nextSunrise = new Date(states['sun.sun'].attributes.next_rising).getTime();
-                const nextSunset  = new Date(states['sun.sun'].attributes.next_setting).getTime();
+                const nextSunrise = new Date((states['sun.sun'] || {state: 'unknown', attributes: {elevation: 0}}).attributes.next_rising).getTime();
+                const nextSunset  = new Date((states['sun.sun'] || {state: 'unknown', attributes: {elevation: 0}}).attributes.next_setting).getTime();
                 let progress;
-                if (states['sun.sun'].state === 'above_horizon') {
+                if ((states['sun.sun'] || {state: 'unknown', attributes: {elevation: 0}}).state === 'above_horizon') {
                   const todaySunrise = nextSunrise - 24*60*60*1000;
                   progress = (now - todaySunrise) / (nextSunset - todaySunrise);
                 } else {
@@ -880,7 +884,7 @@ button_card_templates:
           - height: 26vh
           - z-index: |
               [[[
-                const state = states['weather.forecast_home'].state.toLowerCase();
+                const state = (states['weather.forecast_home']?.state || 'unknown').toLowerCase();
                 const isFoggy = ['fog','mist','smoke','haze','dust','cloudy','partlycloudy'].some(t => state.includes(t));
                 return isFoggy ? 7 : 5;
               ]]]

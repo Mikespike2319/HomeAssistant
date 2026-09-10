@@ -827,3 +827,26 @@ h1 {
     flex-direction: column;
   }
 }
+
+/* Match the dashboard's restrained motion; this preview uses sample data. */
+.card, .nav, .pill {
+  transition: transform 160ms cubic-bezier(.23,1,.32,1);
+}
+.nav:focus-visible, .pill:focus-visible {
+  outline: 2px solid #f1c27a;
+  outline-offset: 3px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .nav:hover, .pill:hover { transform: translateY(-2px); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .card { animation: hearth-arrive 240ms cubic-bezier(.23,1,.32,1) both; }
+  .nav:active:not(:focus-visible), .pill:active:not(:focus-visible) { transform: scale(.98); }
+  @keyframes hearth-arrive {
+    from { opacity: .5; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

@@ -104,6 +104,15 @@ def find_storage_item(config_dir: Path) -> dict[str, Any] | None:
     return None
 
 
+class DiscoveryLoader(yaml.SafeLoader):
+    """Read dashboard registration while tolerating unrelated HA tagged values."""
+
+
+DiscoveryLoader.add_multi_constructor(
+    "!", lambda loader, tag, node: loader.construct_scalar(node)
+)
+
+
 def discover_active_source(config_dir: Path) -> dict[str, Any]:
     configuration = config_dir / "configuration.yaml"
     source: dict[str, Any] = {
@@ -116,7 +125,7 @@ def discover_active_source(config_dir: Path) -> dict[str, Any]:
     }
 
     if configuration.exists():
-        cfg = load_yaml(configuration)
+        cfg = yaml.load(configuration.read_text(encoding="utf-8"), Loader=DiscoveryLoader) or {}
         dashboards = ((cfg.get("lovelace") or {}).get("dashboards") or {})
         entry = dashboards.get(TARGET_DASHBOARD_PATH)
         if entry:
@@ -504,7 +513,7 @@ def install_templates(dashboard: dict[str, Any], sky_template: dict[str, Any]) -
               const condition = raw.replace(/-/g, ' ').replace(/\\b\\w/g, c => c.toUpperCase());
               const humidity = entity.attributes.humidity;
               const wind = entity.attributes.wind_speed;
-              return `${condition}${humidity ? ' - ' + humidity + '% humidity' : ''}${wind ? ' - ' + Math.round(wind) + ' wind' : ''}`;
+              return `${condition}${humidity != null ? ' - ' + humidity + '% humidity' : ''}${wind ? ' - ' + Math.round(wind) + ' wind' : ''}`;
             ]]]""",
         },
         "styles": {
@@ -608,10 +617,10 @@ def make_home_cards(config_dir: Path, navbar: Any | None) -> list[Any]:
     tesla_battery = pick_entity(
         entities,
         ["sensor.el_rocco_battery", "sensor.el_rocco_battery_level", "sensor.tesla_battery"],
-        ["battery"],
+        ["el_rocco", "battery"],
         "sensor",
     ) or "sensor.el_rocco_battery_level"
-    lights = pick_entity(entities, ["light.all_lights", "light.living_room_2", "light.living_room"], ["hue"], "light") or "light.living_room_2"
+    lights = pick_entity(entities, ["light.living_room", "light.all_lights"], ["hue"], "light") or "light.living_room"
     security = pick_entity(
         entities,
         ["alarm_control_panel.nas_blink_home_security", "alarm_control_panel.blink", "alarm_control_panel.home_alarm", "alarm_control_panel.alarm"],
@@ -620,9 +629,9 @@ def make_home_cards(config_dir: Path, navbar: Any | None) -> list[Any]:
     ) or "alarm_control_panel.nas_blink_home_security"
     assistant = pick_entity(
         entities,
-        ["update.home_assistant_core_update", "sensor.home_assistant_v2_db_size", "sensor.uptime"],
-        ["home_assistant"],
-        None,
+        ["update.home_assistant_core_update"],
+        ["home_assistant", "core"],
+        "update",
     ) or "update.home_assistant_core_update"
     media = pick_entity(entities, ["media_player.living_room", "media_player.bedroom"], ["media_player"], None)
 
@@ -632,8 +641,8 @@ def make_home_cards(config_dir: Path, navbar: Any | None) -> list[Any]:
             "type": "custom:button-card",
             "template": "mf_page_title",
             "variables": {
-                "title": "Hearth console",
-                "subtitle": "Quiet night, house steady, El Rocco sipping power.",
+                "title": "Welcome home",
+                "subtitle": "Mike & Kiara · Make yourself at home",
             },
         },
         {
@@ -642,13 +651,13 @@ def make_home_cards(config_dir: Path, navbar: Any | None) -> list[Any]:
             "entity": "weather.forecast_home",
             "variables": {
                 "icon": "mdi:weather-partly-cloudy",
-                "value": '[[[ return Math.round(entity?.attributes?.temperature ?? 56) + "°"; ]]]',
+                "value": '[[[ return entity && !["unavailable", "unknown"].includes(entity.state) && Number.isFinite(entity.attributes?.temperature) ? Math.round(entity.attributes.temperature) + "°" : "No reading"; ]]]',
                 "subtitle": (
-                    '[[[ const raw = entity?.state || "clear night"; '
+                    '[[[ const raw = entity?.state || "Not connected"; '
                     'const condition = raw.replace(/-/g, " "); '
                     'const humidity = entity?.attributes?.humidity; '
                     'const wind = entity?.attributes?.wind_speed; '
-                    'return `${condition}${humidity ? " · " + humidity + "% humidity" : ""}${wind ? " · " + Math.round(wind) + " mph breeze" : ""}`; ]]]'
+                    'return `${condition}${humidity != null ? " · " + humidity + "% humidity" : ""}${wind != null ? " · " + Math.round(wind) + " " + (entity?.attributes?.wind_speed_unit || "") + " wind" : ""}`; ]]]'
                 ),
                 "accent_color": "rgba(241,194,122,0.96)",
             },
@@ -662,33 +671,33 @@ def make_home_cards(config_dir: Path, navbar: Any | None) -> list[Any]:
                     tesla_battery,
                     "El Rocco",
                     "mdi:car-electric",
-                    "48%",
-                    "charging",
+                    "battery level",
                     "rgba(136,199,216,0.95)",
                     "/mobile-forge/tesla",
-                    '[[[ const n = Number(entity?.state); return Number.isFinite(n) ? Math.round(n) + "%" : "48%"; ]]]',
+                    '[[[ const n = Number(entity?.state); return entity && entity.state !== "" && Number.isFinite(n) ? Math.round(n) + "%" : "Not available"; ]]]',
                 ),
-                mf_tile(lights, "Glow", "mdi:lightbulb-group", "Ready", "lanterns + scenes", "rgba(241,194,122,0.96)", "/mobile-forge/lights"),
-                mf_tile(security, "Watch", "mdi:shield-lock", "Armed", "front door clear", "rgba(156,201,162,0.95)", "/mobile-forge/security"),
+                mf_tile(lights, "Glow", "mdi:lightbulb-group", "lanterns + scenes", "rgba(241,194,122,0.96)", "/mobile-forge/lights"),
+                mf_tile(security, "Watch", "mdi:shield-lock", "alarm status", "rgba(156,201,162,0.95)", "/mobile-forge/security"),
                 mf_tile(
                     assistant,
-                    "Sebastian",
+                    "Home Assistant",
                     "mdi:home-assistant",
-                    "Online",
-                    "local helper ready",
+                    "core update status",
                     "rgba(184,166,232,0.95)",
                     "/mobile-forge/house",
-                    '[[[ return entity?.state === "off" ? "Online" : (entity?.state || "Online").replace(/_/g, " "); ]]]',
+                    '[[[ return !entity ? "Not connected" : entity.state === "off" ? "Up to date" : entity.state === "on" ? "Update available" : entity.state.replace(/_/g, " "); ]]]',
                 ),
             ],
         },
         {
-            "type": "horizontal-stack",
+            "type": "grid",
+            "columns": 2,
+            "square": False,
             "cards": [
-                mf_pill("Hearth glow", "mdi:candle", "rgba(241,194,122,0.96)"),
-                mf_pill("Movie den", "mdi:movie-open", "rgba(136,199,216,0.95)"),
-                mf_pill("Morning bright", "mdi:white-balance-sunny", "rgba(241,194,122,0.96)"),
-                mf_pill("Sleep cabin", "mdi:weather-night", "rgba(217,154,169,0.95)"),
+                mf_pill("Hearth glow", "mdi:candle", "rgba(241,194,122,0.96)", "scene.living_room_dreamy_dusk"),
+                mf_pill("Movie den", "mdi:movie-open", "rgba(136,199,216,0.95)", "scene.living_room_nighttime"),
+                mf_pill("Morning bright", "mdi:white-balance-sunny", "rgba(241,194,122,0.96)", "scene.living_room_energize"),
+                mf_pill("Sleep cabin", "mdi:weather-night", "rgba(217,154,169,0.95)", "scene.bedroom_nighttime"),
             ],
         },
     ]
@@ -702,7 +711,6 @@ def mf_tile(
     entity: str | None,
     title: str,
     icon: str,
-    fallback_value: str,
     subtitle: str,
     accent: str,
     navigation_path: str | None = None,
@@ -714,7 +722,7 @@ def mf_tile(
         "variables": {
             "icon": icon,
             "title": title,
-            "value": value_expr or f'[[[ return entity?.state && entity.state !== "unavailable" ? entity.state.replace(/_/g, " ") : "{fallback_value}"; ]]]',
+            "value": value_expr or '[[[ return !entity ? "Not connected" : entity.state === "unavailable" ? "Offline" : entity.state === "unknown" ? "No reading" : entity.state.replace(/_/g, " "); ]]]',
             "subtitle": subtitle,
             "accent_color": accent,
         },
@@ -726,10 +734,16 @@ def mf_tile(
     return card
 
 
-def mf_pill(label: str, icon: str, accent: str) -> dict[str, Any]:
+def mf_pill(label: str, icon: str, accent: str, scene: str) -> dict[str, Any]:
     return {
         "type": "custom:button-card",
         "template": "mf_pill",
+        "entity": scene,
+        "tap_action": {
+            "action": '[[[ return entity && !["unavailable", "unknown"].includes(entity.state) ? "call-service" : "more-info"; ]]]',
+            "service": "scene.turn_on",
+            "target": {"entity_id": scene},
+        },
         "variables": {
             "icon": icon,
             "label": label,
@@ -740,7 +754,8 @@ def mf_pill(label: str, icon: str, accent: str) -> dict[str, Any]:
 
 def ensure_classic_view(dashboard: dict[str, Any], old_home: dict[str, Any], old_cards: list[Any]) -> None:
     views = dashboard.setdefault("views", [])
-    views[:] = [view for view in views if view.get("path") != CLASSIC_VIEW_PATH]
+    if any(view.get("path") == CLASSIC_VIEW_PATH for view in views):
+        return
     classic = {
         "title": "Forge Classic",
         "path": CLASSIC_VIEW_PATH,
@@ -832,7 +847,8 @@ def main() -> int:
     install_templates(dashboard, sky_template)
     new_cards = make_home_cards(config_dir, navbar)
     set_home_cards(home, new_cards)
-    sync_repo_view(dashboard, "media", navbar)
+    for view_path in ("lights", "media", "house", "tesla", "security", "music"):
+        sync_repo_view(dashboard, view_path, navbar)
     ensure_classic_view(dashboard, old_home, old_cards)
 
     check = assert_integrity(dashboard)
@@ -871,8 +887,7 @@ def main() -> int:
     print(f"  /cozy-home exists: {cozy_home_exists(config_dir)}")
     print(f"  first Home card: {final['home_cards'][0].get('type')} template={final['home_cards'][0].get('template')}")
     print()
-    print("Restart or reload Home Assistant dashboards now. If you use Docker:")
-    print("  docker restart homeassistant")
+    print("Refresh the Mobile Forge dashboard on your devices; no Home Assistant restart is needed.")
     return 0
 
 

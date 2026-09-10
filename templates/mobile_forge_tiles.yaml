@@ -75,11 +75,27 @@ button_card_templates:
           - grid-area: value
           - justify-self: start
           - color: rgba(255,248,231,0.96)
-          - font-size: 48px
+          - font-size: clamp(24px, 7vw, 48px)
+          - white-space: normal
+          - text-align: left
           - line-height: 50px
           - font-weight: 350
 
   mf_tile:
+    extra_styles: |
+      #card { transition: transform 160ms cubic-bezier(.23,1,.32,1); }
+      #card:focus-visible { outline: 2px solid #f1c27a; outline-offset: 3px; }
+      @media (hover: hover) and (pointer: fine) {
+        #card:hover { transform: translateY(-2px); }
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        #card:active:not(:focus-visible) { transform: scale(.98); }
+        #card { animation: hearth-arrive 240ms cubic-bezier(.23,1,.32,1) both; }
+        @keyframes hearth-arrive { from { opacity: .5; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #card { animation: none !important; transition: none !important; transform: none !important; }
+      }
     show_icon: true
     show_name: true
     show_label: true
@@ -134,7 +150,10 @@ button_card_templates:
           - justify-self: start
           - align-self: end
           - color: rgba(255,248,231,0.96)
-          - font-size: 30px
+          - font-size: clamp(20px, 6vw, 30px)
+          - white-space: normal
+          - overflow-wrap: anywhere
+          - text-align: left
           - line-height: 32px
           - font-weight: 360
 
@@ -145,7 +164,15 @@ button_card_templates:
   mf_light_tile:
     template: mf_tile
     tap_action:
-      action: toggle
+      action: '[[[ return entity && !["unavailable", "unknown"].includes(entity.state) ? "toggle" : "more-info"; ]]]'
+    styles:
+      icon:
+        - color: '[[[ return entity?.state === "on" ? "#f1c27a" : "#b8b5a7"; ]]]'
+        - transform: '[[[ return entity?.state === "on" ? "rotate(-8deg) scale(1.12)" : "none"; ]]]'
+        - transition: transform 200ms cubic-bezier(.23,1,.32,1)
+    extra_styles: |
+      @media (prefers-reduced-motion: reduce) { #icon { transition: none !important; transform: none !important; } }
+
     hold_action:
       action: more-info
     double_tap_action:
@@ -163,6 +190,20 @@ button_card_templates:
       action: none
 
   mf_pill:
+    extra_styles: |
+      #card { transition: transform 160ms cubic-bezier(.23,1,.32,1); }
+      #card:focus-visible { outline: 2px solid #f1c27a; outline-offset: 3px; }
+      @media (hover: hover) and (pointer: fine) {
+        #card:hover { transform: translateY(-2px); }
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        #card:active:not(:focus-visible) { transform: scale(.98); }
+        #card { animation: hearth-arrive 240ms cubic-bezier(.23,1,.32,1) both; }
+        @keyframes hearth-arrive { from { opacity: .5; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #card { animation: none !important; transition: none !important; transform: none !important; }
+      }
     show_icon: true
     show_name: true
     icon: '[[[ return variables.icon || "mdi:circle"; ]]]'
@@ -295,12 +336,12 @@ button_card_templates:
           const e = entity || states[variables.entity] || {};
           const attrs = e.attributes || {};
           const state = e.state || "idle";
-          const source = attrs.source || attrs.app_name || "YouTube";
+          const source = attrs.source || attrs.app_name || "No source reported";
           const title = attrs.media_title || attrs.friendly_name || variables.title || "Bedroom TV";
           const room = variables.room || "Bedroom TV";
           const pct = Math.max(0, Math.min(100, Number(attrs.media_position || 0) / Math.max(1, Number(attrs.media_duration || 1)) * 100));
-          const width = Number.isFinite(pct) && pct > 0 ? pct : 42;
-          const label = state === "playing" ? "Playing in bedroom" : state === "paused" ? "Paused" : "Ready";
+          const width = Number.isFinite(pct) ? pct : 0;
+          const label = state === "playing" ? "Playing in bedroom" : state === "paused" ? "Paused" : !e.state ? "Not connected" : state === "unavailable" ? "Offline" : state === "off" ? "Off" : state === "unknown" ? "No reading" : state;
           return `
             <div style="min-height:196px;padding:14px;position:relative;display:grid;align-items:stretch;background:radial-gradient(circle at 72% 12%,rgba(121,199,255,.18),transparent 9rem),linear-gradient(180deg,rgba(23,28,38,.72),rgba(12,14,18,.68));">
               <div style="position:absolute;inset:20px 34px 64px;border-radius:32px;background:radial-gradient(circle,rgba(121,199,255,.22),transparent 68%);filter:blur(28px);"></div>
@@ -321,9 +362,9 @@ button_card_templates:
         [[[
           const e = entity || states[variables.entity] || {};
           const attrs = e.attributes || {};
-          const source = attrs.source || attrs.app_name || "YouTube";
-          const volume = attrs.volume_level !== undefined ? Math.round(Number(attrs.volume_level) * 100) : 18;
-          const state = e.state === "playing" ? "Now playing" : e.state === "paused" ? "Paused" : "Ready";
+          const source = attrs.source || attrs.app_name || "No source reported";
+          const volume = attrs.volume_level !== undefined ? Math.round(Number(attrs.volume_level) * 100) : "—";
+          const state = !e.state ? "Not connected" : e.state === "playing" ? "Now playing" : e.state === "unavailable" ? "Offline" : e.state.replace(/_/g, " ");
           const title = attrs.friendly_name || variables.title || "Bedroom TV";
           const detail = `${source} · ${volume} volume`;
           return `
@@ -333,11 +374,7 @@ button_card_templates:
                 <div style="margin-top:3px;font-size:23px;line-height:27px;font-weight:850;color:rgba(255,246,235,.96);">${title}</div>
                 <div style="color:rgba(255,235,215,.62);font-size:13px;line-height:18px;">${detail}</div>
               </div>
-              <div style="display:flex;gap:8px;">
-                <span style="width:38px;height:38px;border-radius:15px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);"><ha-icon icon="mdi:power" style="width:18px;height:18px;color:#f3a6b8;"></ha-icon></span>
-                <span style="width:38px;height:38px;border-radius:15px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);"><ha-icon icon="mdi:pause" style="width:18px;height:18px;color:#ffd3a4;"></ha-icon></span>
-                <span style="width:38px;height:38px;border-radius:15px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);"><ha-icon icon="mdi:volume-high" style="width:18px;height:18px;color:#79c7ff;"></ha-icon></span>
-              </div>
+              <span style="font-size:12px;color:#ffd3a4;">Tap for controls</span>
             </div>
           `;
         ]]]
@@ -361,6 +398,20 @@ button_card_templates:
           - grid-area: meta
 
   mf_device_row:
+    extra_styles: |
+      #card { transition: transform 160ms cubic-bezier(.23,1,.32,1); }
+      #card:focus-visible { outline: 2px solid #f1c27a; outline-offset: 3px; }
+      @media (hover: hover) and (pointer: fine) {
+        #card:hover { transform: translateY(-2px); }
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        #card:active:not(:focus-visible) { transform: scale(.98); }
+        #card { animation: hearth-arrive 240ms cubic-bezier(.23,1,.32,1) both; }
+        @keyframes hearth-arrive { from { opacity: .5; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #card { animation: none !important; transition: none !important; transform: none !important; }
+      }
     show_icon: true
     show_name: true
     show_label: true
@@ -372,7 +423,9 @@ button_card_templates:
       state: |
         [[[
           if (variables.value) return variables.value;
-          if (!entity || entity.state === "unavailable") return "Offline";
+          if (!entity) return "Not connected";
+          if (entity.state === "unavailable") return "Offline";
+          if (entity.state === "unknown") return "No reading";
           if (entity.state === "playing") return "Playing";
           if (entity.state === "paused") return "Paused";
           if (entity.state === "standby") return "Standby";

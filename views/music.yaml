@@ -32,7 +32,7 @@ sections:
       variables:
         icon: mdi:speaker-wireless
         title: Sonos Den
-        value: '[[[ return entity?.state === "playing" ? "Playing" : entity?.state === "unavailable" ? "Add in HA" : "Ready"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "playing" ? "Playing" : entity?.state === "unavailable" ? "Add in HA" : "Ready"; ]]]'
         subtitle: Era 100
         accent_color: rgba(156,201,162,0.95)
     - type: custom:button-card
@@ -41,7 +41,7 @@ sections:
       variables:
         icon: mdi:speaker-bluetooth
         title: Sonos Roam
-        value: '[[[ return entity?.state === "playing" ? "Playing" : entity?.state === "unavailable" ? "Off" : "Ready"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "playing" ? "Playing" : entity?.state === "unavailable" ? "Off" : "Ready"; ]]]'
         subtitle: Portable
         accent_color: rgba(157,226,182,0.95)
     - type: custom:button-card
@@ -50,7 +50,7 @@ sections:
       variables:
         icon: mdi:music-circle-outline
         title: Spotify
-        value: '[[[ return entity?.state === "playing" ? "Playing" : "Ready"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "playing" ? "Playing" : "Ready"; ]]]'
         subtitle: Mike's Spotify
         accent_color: rgba(156,201,162,0.95)
     - type: custom:button-card
@@ -59,7 +59,7 @@ sections:
       variables:
         icon: mdi:speaker-wireless
         title: Echo Dot
-        value: '[[[ return entity?.state === "playing" ? "Playing" : "Idle"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "playing" ? "Playing" : "Idle"; ]]]'
         subtitle: Local speaker
         accent_color: rgba(136,199,216,0.95)
     - type: custom:button-card
@@ -68,7 +68,7 @@ sections:
       variables:
         icon: mdi:youtube-tv
         title: Bedroom TV
-        value: '[[[ return entity?.state === "playing" ? "Playing" : entity?.state || "Ready"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "playing" ? "Playing" : entity?.state || "Ready"; ]]]'
         subtitle: YouTube
         accent_color: rgba(241,194,122,0.96)
     - type: custom:button-card
@@ -77,7 +77,7 @@ sections:
       variables:
         icon: mdi:television
         title: LG TV
-        value: '[[[ return entity?.state || "Unavailable"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state || "Unavailable"; ]]]'
         subtitle: Living room
         accent_color: rgba(136,199,216,0.95)
   - type: horizontal-stack

@@ -19,7 +19,7 @@ sections:
     entity: alarm_control_panel.blink_michael_trinidad
     variables:
       icon: mdi:shield-check-outline
-      value: '[[[ return entity?.state === "armed_away" ? "Armed" : entity?.state === "disarmed" ? "Clear" : entity?.state || "Ready"; ]]]'
+      value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "armed_away" ? "Armed" : entity?.state === "disarmed" ? "Clear" : entity?.state || "Ready"; ]]]'
       subtitle: Front door clear · car locked · sentry on
       accent_color: rgba(156,201,162,0.95)
   - type: horizontal-stack
@@ -67,7 +67,7 @@ sections:
       variables:
         icon: mdi:door-open
         title: Front door
-        value: '[[[ return entity?.state === "on" ? "Motion" : "Clear"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "on" ? "Motion" : "Clear"; ]]]'
         subtitle: Blink
         accent_color: rgba(156,201,162,0.95)
     - type: custom:button-card
@@ -95,6 +95,6 @@ sections:
       variables:
         icon: mdi:car-door-lock
         title: El Rocco
-        value: '[[[ return entity?.state === "locked" ? "Locked" : entity?.state || "Unknown"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "locked" ? "Locked" : entity?.state || "Unknown"; ]]]'
         subtitle: Sentry linked from car page
         accent_color: rgba(136,199,216,0.95)

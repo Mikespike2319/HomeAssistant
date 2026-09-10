@@ -111,3 +111,14 @@ the file. Recovered with `git checkout -- views/lights.yaml`.
 **Rule:** For edits to repo files use the Edit/Write tools, not `sed -i`.
 If shell editing is unavoidable, use **absolute paths** and back up first.
 The repo being under git is the only reason this was a non-event.
+
+
+## Home fallback readings and repeat installs (2026-09-10)
+
+The Home installer used hardcoded healthy fallback values and four actionless
+scene pills. Source now shows missing/unknown states, uses Hue living_room first,
+and attaches existing Lights scene targets. Device operation is not live-verified.
+The installer now keeps the original Forge Classic view on repeated runs and
+syncs the six edited source views. Configuration discovery tolerates unrelated
+HA !include/!secret scalars without reading their contents. Dashboard YAML itself
+still uses SafeLoader. Validate with tests/test_dashboard.py before deployment.

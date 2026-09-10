@@ -102,7 +102,7 @@ sections:
       variables:
         icon: mdi:lightbulb-group-outline
         title: All living room
-        value: '[[[ return entity?.state === "on" ? Math.round(entity.attributes?.brightness / 2.55) + "%" : "off"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "on" ? Math.round(entity.attributes?.brightness / 2.55) + "%" : "off"; ]]]'
         subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
         accent_color: rgba(121,199,255,0.95)
     - type: custom:button-card
@@ -111,7 +111,7 @@ sections:
       variables:
         icon: mdi:sofa-outline
         title: Couch
-        value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "on" ? "on" : "off"; ]]]'
         subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
     - type: custom:button-card
       template: mf_light_tile
@@ -119,7 +119,7 @@ sections:
       variables:
         icon: mdi:television
         title: TV
-        value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "on" ? "on" : "off"; ]]]'
         subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
     - type: custom:button-card
       template: mf_light_tile
@@ -127,7 +127,7 @@ sections:
       variables:
         icon: mdi:television-ambient-light
         title: TV backlight
-        value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "on" ? "on" : "off"; ]]]'
         subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
     - type: custom:button-card
       template: mf_light_tile
@@ -135,7 +135,7 @@ sections:
       variables:
         icon: mdi:ceiling-light-outline
         title: Ceiling
-        value: '[[[ return entity?.state === "on" ? "on" : entity?.state === "unavailable" ? "—" : "off"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "on" ? "on" : entity?.state === "unavailable" ? "—" : "off"; ]]]'
         subtitle: '[[[ return entity?.state === "unavailable" ? "offline" : entity?.state === "on" ? "glowing" : "resting"; ]]]'
     - type: custom:button-card
       template: mf_light_tile
@@ -143,7 +143,7 @@ sections:
       variables:
         icon: mdi:ceiling-light-outline
         title: Ceiling back
-        value: '[[[ return entity?.state === "on" ? "on" : entity?.state === "unavailable" ? "—" : "off"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "on" ? "on" : entity?.state === "unavailable" ? "—" : "off"; ]]]'
         subtitle: '[[[ return entity?.state === "unavailable" ? "offline" : entity?.state === "on" ? "glowing" : "resting"; ]]]'
   - type: custom:button-card
     template: mf_section_label
@@ -161,7 +161,7 @@ sections:
       variables:
         icon: mdi:bed-king-outline
         title: All bedroom
-        value: '[[[ return entity?.state === "on" ? Math.round(entity.attributes?.brightness / 2.55) + "%" : "off"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "on" ? Math.round(entity.attributes?.brightness / 2.55) + "%" : "off"; ]]]'
         subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
         accent_color: rgba(241,194,122,0.96)
     - type: custom:button-card
@@ -170,7 +170,7 @@ sections:
       variables:
         icon: mdi:moon-waning-crescent
         title: Mike's lamp
-        value: '[[[ return entity?.state === "on" ? Math.round(entity.attributes?.brightness / 2.55) + "%" : "off"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "on" ? Math.round(entity.attributes?.brightness / 2.55) + "%" : "off"; ]]]'
         subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
         accent_color: rgba(121,199,255,0.95)
     - type: custom:button-card
@@ -179,7 +179,7 @@ sections:
       variables:
         icon: mdi:moon-waxing-crescent
         title: Kiara's lamp
-        value: '[[[ return entity?.state === "on" ? Math.round(entity.attributes?.brightness / 2.55) + "%" : "off"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "on" ? Math.round(entity.attributes?.brightness / 2.55) + "%" : "off"; ]]]'
         subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
         accent_color: rgba(243,166,184,0.95)
     - type: custom:button-card
@@ -188,7 +188,7 @@ sections:
       variables:
         icon: mdi:hexagon-multiple-outline
         title: Light panels
-        value: '[[[ return entity?.state === "on" ? "on" : "off"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "on" ? "on" : "off"; ]]]'
         subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
     - type: custom:button-card
       template: mf_govee_tile
@@ -196,6 +196,6 @@ sections:
       variables:
         icon: mdi:floor-lamp-outline
         title: Big lamp
-        value: '[[[ return entity?.state === "on" ? Math.round(entity.attributes?.brightness / 2.55) + "%" : "off"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "on" ? Math.round(entity.attributes?.brightness / 2.55) + "%" : "off"; ]]]'
         subtitle: '[[[ return entity?.state === "on" ? "glowing" : "resting"; ]]]'
         accent_color: rgba(241,194,122,0.96)

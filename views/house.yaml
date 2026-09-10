@@ -19,8 +19,8 @@ sections:
     entity: vacuum.roomba
     variables:
       icon: mdi:robot-vacuum
-      value: '[[[ return entity?.state === "unavailable" || !entity ? "Ready" : entity.state.replace("_", " "); ]]]'
-      subtitle: Roomba not online yet · El Rocco cabin climate available
+      value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "unavailable" || !entity ? "Offline" : entity.state.replace("_", " "); ]]]'
+      subtitle: A little help around the house
       accent_color: rgba(136,199,216,0.95)
   - type: grid
     columns: 2
@@ -32,7 +32,7 @@ sections:
       variables:
         icon: mdi:robot-vacuum
         title: Roomba
-        value: '[[[ return entity?.state === "unavailable" || !entity ? "Offline" : entity.state.replace("_", " "); ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "unavailable" || !entity ? "Offline" : entity.state.replace("_", " "); ]]]'
         subtitle: Power on dock to add
         accent_color: rgba(136,199,216,0.95)
     - type: custom:button-card
@@ -41,24 +41,27 @@ sections:
       variables:
         icon: mdi:thermometer
         title: Cabin climate
-        value: '[[[ return (entity?.attributes?.temperature || 70) + "°"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity && !["unavailable", "unknown"].includes(entity.state) && Number.isFinite(entity.attributes?.temperature) ? entity.attributes.temperature + "°" : "No reading"; ]]]'
         subtitle: El Rocco
     - type: custom:button-card
       template: mf_tile
-      entity: light.living_room_2
+      entity: light.living_room
       variables:
         icon: mdi:bridge
-        title: Hue bridge
-        value: 14 lights
-        subtitle: Already integrated
+        title: Living room
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return !entity ? "Not connected" : entity.state === "unavailable" ? "Offline" : entity.state.replace(/_/g, " "); ]]]'
+        subtitle: Hue room lights
         accent_color: rgba(241,194,122,0.96)
     - type: custom:button-card
       template: mf_tile
+      tap_action:
+        action: navigate
+        navigation_path: /config/integrations
       variables:
         icon: mdi:robot-happy-outline
-        title: Sebastian
-        value: Online
-        subtitle: Assistant ready
+        title: Home Assistant
+        value: Open settings
+        subtitle: Manage your integrations
         accent_color: rgba(156,201,162,0.95)
   - type: horizontal-stack
     cards:
@@ -77,7 +80,7 @@ sections:
       template: mf_pill
       variables:
         icon: mdi:star-four-points-outline
-        label: Clean kitchen
+        label: Start cleaning
         accent_color: rgba(241,194,122,0.96)
       tap_action:
         action: call-service

@@ -26,8 +26,8 @@ sections:
       variables:
         icon: mdi:battery-charging-60
         title: Battery
-        value: '[[[ return (entity?.state || "48") + "%"; ]]]'
-        subtitle: charging
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return (entity?.state || "") + "%"; ]]]'
+        subtitle: Battery level
         accent_color: rgba(241,194,122,0.96)
     - type: custom:button-card
       template: mf_tile
@@ -35,7 +35,7 @@ sections:
       variables:
         icon: mdi:map-marker-distance
         title: Range
-        value: '[[[ return Math.round(Number(entity?.state || 145)) + " mi"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return Math.round(Number(entity?.state)) + " mi"; ]]]'
         subtitle: ready
         accent_color: rgba(136,199,216,0.95)
     - type: custom:button-card
@@ -44,7 +44,7 @@ sections:
       variables:
         icon: mdi:car-door-lock
         title: Lock
-        value: '[[[ return entity?.state === "locked" ? "Locked" : entity?.state || "Unknown"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "locked" ? "Locked" : entity?.state || "Unknown"; ]]]'
         subtitle: secure
         accent_color: rgba(156,201,162,0.95)
   - type: grid
@@ -57,7 +57,7 @@ sections:
       variables:
         icon: mdi:eye-outline
         title: Sentry
-        value: '[[[ return entity?.state === "on" ? "On" : "Off"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "on" ? "On" : "Off"; ]]]'
         subtitle: watching
     - type: custom:button-card
       template: mf_tile
@@ -65,7 +65,7 @@ sections:
       variables:
         icon: mdi:thermometer
         title: Climate
-        value: '[[[ return (entity?.attributes?.temperature || 70) + "°"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return Number.isFinite(entity?.attributes?.temperature) ? entity.attributes.temperature + "°" : "No reading"; ]]]'
         subtitle: cabin
     - type: custom:button-card
       template: mf_tile
@@ -73,7 +73,7 @@ sections:
       variables:
         icon: mdi:lightning-bolt-outline
         title: Charge
-        value: '[[[ return (entity?.state || "7") + " kW"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return (entity?.state || "7") + " kW"; ]]]'
         subtitle: '[[[ return states["sensor.el_rocco_time_to_full_charge"]?.state ? states["sensor.el_rocco_time_to_full_charge"].state + " left" : "6 hr left"; ]]]'
         accent_color: rgba(241,194,122,0.96)
     - type: custom:button-card
@@ -82,7 +82,7 @@ sections:
       variables:
         icon: mdi:package-variant-closed
         title: Frunk
-        value: '[[[ return entity?.state === "closed" ? "Closed" : entity?.state || "Ready"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "closed" ? "Closed" : entity?.state || "Ready"; ]]]'
         subtitle: ready
         accent_color: rgba(241,194,122,0.96)
     - type: custom:button-card
@@ -91,7 +91,7 @@ sections:
       variables:
         icon: mdi:car-back
         title: Trunk
-        value: '[[[ return entity?.state === "closed" ? "Closed" : entity?.state || "Ready"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "closed" ? "Closed" : entity?.state || "Ready"; ]]]'
         subtitle: ready
         accent_color: rgba(241,194,122,0.96)
     - type: custom:button-card
@@ -100,7 +100,7 @@ sections:
       variables:
         icon: mdi:ev-plug-tesla
         title: Charge port
-        value: '[[[ return entity?.state || "Closed"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state || "Closed"; ]]]'
         subtitle: port
   - type: horizontal-stack
     cards:
@@ -192,7 +192,7 @@ sections:
       variables:
         icon: mdi:thermometer
         title: Inside
-        value: '[[[ return (entity?.state || "58") + "°"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return (entity?.state || "58") + "°"; ]]]'
         subtitle: cabin temp
     - type: custom:button-card
       template: mf_tile
@@ -200,7 +200,7 @@ sections:
       variables:
         icon: mdi:thermometer-low
         title: Outside
-        value: '[[[ return (entity?.state || "55") + "°"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return (entity?.state || "55") + "°"; ]]]'
         subtitle: weather
     - type: custom:button-card
       template: mf_tile
@@ -208,7 +208,7 @@ sections:
       variables:
         icon: mdi:update
         title: Software
-        value: '[[[ return entity?.state === "off" ? "Current" : entity?.state || "Ready"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "off" ? "Current" : entity?.state || "Ready"; ]]]'
         subtitle: updates
     - type: custom:button-card
       template: mf_tile
@@ -216,5 +216,5 @@ sections:
       variables:
         icon: mdi:access-point-network
         title: Online
-        value: '[[[ return entity?.state === "on" ? "Connected" : entity?.state || "Unknown"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "on" ? "Connected" : entity?.state || "Unknown"; ]]]'
         subtitle: Tesla API

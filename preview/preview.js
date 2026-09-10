@@ -34,7 +34,7 @@ const iconPaths = {
 };
 
 const pageCopy = {
-  home: ["Hearth console", "Quiet night, house steady, El Rocco sipping power."],
+  home: ["Welcome home", "Mike & Kiara · Make yourself at home"],
   lights: ["Glow rooms", "Cottage warmth with clean scene control."],
   media: ["Signal room", "Screens, Sonos, and room playback."],
   tesla: ["El Rocco", "Charge, climate, locks, and trip status."],
@@ -54,7 +54,7 @@ const navCopy = {
 const views = {
   home: `
     <div class="status-ribbon">
-      <strong>Night mode · HA online · cabin linked</strong>
+      <strong>Design preview · sample data</strong>
       <div class="status-dots">
         <span class="dot">${icon("shield")}</span>
         <span class="dot">${icon("robot")}</span>
