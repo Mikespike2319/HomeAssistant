@@ -1,9 +1,9 @@
-# Mike & Kiara — Home Assistant config
+# HearthOS — Mike & Kiara's Home Assistant
 
-Cozy / Wife Approved style Home Assistant dashboard for the Mobile
-Forge dashboard. Animated `sky_system` backdrop + Tesla "El Rocco"
-integration + Hue lights + Blink security + weather hero + TV-first
-Media controls.
+A mobile-first Home Assistant command deck for the Mobile Forge dashboard.
+HearthOS combines a CSS-only animated aurora, state-aware glass controls,
+Tesla "El Rocco" telemetry, Hue lighting, Blink security, weather, and
+TV-first media controls. It has no remote background-image dependency.
 
 ## Layout
 
@@ -28,6 +28,7 @@ Safest one-shot installer on the VPS. This updates the active Home view
 and syncs the Lights, Media, Music, House, Tesla, and Security source views:
 
 ```bash
+python3 scripts/install_wife_approved_mobile_forge.py --config-dir /opt/ha-vps/homeassistant --dry-run
 python3 scripts/install_wife_approved_mobile_forge.py --config-dir /opt/ha-vps/homeassistant
 # Refresh the dashboard in your browser or Companion app
 ```
@@ -76,5 +77,12 @@ manual review. Keep exports and credentials outside this public repository.
 
 The existing HTML preview uses **sample data**, not live connections. Card motion
 uses brief entrances and press feedback. Reduced-motion preferences stop ambient
-sky animation and card motion. Existing sky image dependencies still need checking
-on the VPS; unavailable images are not included in this repository.
+sky animation and card motion. The active sky is asset-free CSS. The legacy Tesla sky template still uses external local image assets.
+
+
+The live VPS had a newer HearthOS revision than GitHub main. The current branch
+includes that history and preserves its entity mappings and asset-free sky.
+House now includes a connection status list for configured devices; Roomba setup
+links to integrations until a vacuum is configured. Blink uses `blink_home` and
+`camera.front_door`. The Home connection summary counts known states, not
+successful physical commands or integration authentication.

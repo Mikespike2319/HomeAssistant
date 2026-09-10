@@ -23,12 +23,12 @@ class DashboardTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             cards = installer.make_home_cards(Path(directory), None)
         self.assertEqual(cards[0]['template'], 'sky_system')
-        self.assertEqual(evaluate(cards[2]['variables']['value']), 'No reading')
-        for card in cards[3]['cards']:
+        self.assertEqual(evaluate(cards[3]['variables']['value']), 'No reading')
+        for card in cards[4]['cards'][:3]:
             self.assertIn(evaluate(card['variables']['value']), ['Not connected', 'Not available'])
-        self.assertEqual(cards[3]['cards'][1]['entity'], 'light.living_room')
-        self.assertEqual(evaluate(cards[3]['cards'][0]['variables']['value'], {'state':'0'}), '0%')
-        for card in cards[4]['cards']:
+        self.assertEqual(cards[4]['cards'][1]['entity'], 'light.living_room')
+        self.assertEqual(evaluate(cards[4]['cards'][0]['variables']['value'], {'state':'0'}), '0%')
+        for card in cards[5]['cards']:
             self.assertEqual(card['tap_action']['target']['entity_id'], card['entity'])
             self.assertEqual(evaluate(card['tap_action']['action']), 'more-info')
             self.assertEqual(evaluate(card['tap_action']['action'], {'state':'2026-09-10T12:00:00Z'}), 'call-service')
@@ -44,6 +44,15 @@ class DashboardTests(unittest.TestCase):
 
     def test_yaml_and_javascript_parse(self):
         scripts=[]
+        class UniqueLoader(yaml.SafeLoader): pass
+        def mapping(loader, node):
+            result = {}
+            for key_node, value_node in node.value:
+                key = loader.construct_object(key_node)
+                if key in result: raise ValueError('Duplicate YAML key: '+str(key))
+                result[key] = loader.construct_object(value_node)
+            return result
+        UniqueLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, mapping)
         def visit(v):
             if isinstance(v, dict):
                 for child in v.values(): visit(child)
@@ -52,13 +61,13 @@ class DashboardTests(unittest.TestCase):
             elif isinstance(v, str) and v.strip().startswith('[[[') and v.strip().endswith(']]]'):
                 scripts.append(v.strip()[3:-3])
         for file in list((ROOT/'templates').glob('*.yaml')) + list((ROOT/'views').glob('*.yaml')):
-            visit(yaml.safe_load(file.read_text()))
+            visit(yaml.load(file.read_text(), Loader=UniqueLoader))
         check = 'const fs=require("fs"); for(const source of JSON.parse(fs.readFileSync(0,"utf8"))) new Function("entity","states","variables",source);'
         subprocess.run(['node','-e',check], input=json.dumps(scripts), text=True, check=True)
 
     def test_installer_preserves_other_views_and_is_repeatable(self):
         dashboard = yaml.safe_load((ROOT/'deployed_snapshot/mobile_forge_v5.yaml').read_text())
-        unaffected = copy.deepcopy([v for v in dashboard['views'] if v['path'] not in ['home','lights','media','house','tesla','security','music','forge-classic']])
+        unaffected = copy.deepcopy([v for v in dashboard['views'] if v['path'] not in ['home','lights','media','house','tesla','security','music','weather','forge-classic']])
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root/'configuration.yaml').write_text('automation: !include automations.yaml\nhttp:\n  password: !secret ignored\nlovelace:\n  dashboards:\n    mobile-forge:\n      mode: yaml\n      filename: dashboard.yaml\n')
@@ -73,7 +82,7 @@ class DashboardTests(unittest.TestCase):
                     self.assertEqual(classic_before, classic)
                 classic_before = copy.deepcopy(classic)
             result = yaml.safe_load(target.read_text())
-            self.assertEqual(unaffected, [v for v in result['views'] if v['path'] not in ['home','lights','media','house','tesla','security','music','forge-classic']])
+            self.assertEqual(unaffected, [v for v in result['views'] if v['path'] not in ['home','lights','media','house','tesla','security','music','weather','forge-classic']])
             paths = [v['path'] for v in result['views']]
             self.assertEqual(len(paths), len(set(paths)))
             installer.assert_integrity(result)

@@ -12,36 +12,34 @@ sections:
   - type: custom:button-card
     template: mf_page_title
     variables:
-      title: House
-      subtitle: Sebastian, cabin climate, and home devices.
+      eyebrow: SYSTEMS · DEVICES
+      title: Around the house
+      subtitle: Connections, comfort, and a little help at home.
   - type: custom:button-card
-    template: mf_hero
-    entity: vacuum.roomba
-    variables:
-      icon: mdi:robot-vacuum
-      value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "unavailable" || !entity ? "Offline" : entity.state.replace("_", " "); ]]]'
-      subtitle: A little help around the house
-      accent_color: rgba(136,199,216,0.95)
+    template: mf_connection_health
   - type: grid
     columns: 2
     square: false
     cards:
     - type: custom:button-card
       template: mf_tile
-      entity: vacuum.roomba
       variables:
         icon: mdi:robot-vacuum
         title: Roomba
-        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "unavailable" || !entity ? "Offline" : entity.state.replace("_", " "); ]]]'
-        subtitle: Power on dock to add
+        value: Not set up
+        subtitle: Connect your vacuum in settings
         accent_color: rgba(136,199,216,0.95)
+      tap_action:
+        action: navigate
+        navigation_path: /config/integrations
     - type: custom:button-card
       template: mf_tile
       entity: climate.el_rocco_climate
       variables:
         icon: mdi:thermometer
         title: Cabin climate
-        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity && !["unavailable", "unknown"].includes(entity.state) && Number.isFinite(entity.attributes?.temperature) ? entity.attributes.temperature + "°" : "No reading"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity && !["unavailable", "unknown"].includes(entity.state)
+          && Number.isFinite(entity.attributes?.temperature) ? entity.attributes.temperature + "°" : "No reading"; ]]]'
         subtitle: El Rocco
     - type: custom:button-card
       template: mf_tile
@@ -49,7 +47,8 @@ sections:
       variables:
         icon: mdi:bridge
         title: Living room
-        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return !entity ? "Not connected" : entity.state === "unavailable" ? "Offline" : entity.state.replace(/_/g, " "); ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return !entity ? "Not connected" : entity.state ===
+          "unavailable" ? "Offline" : entity.state.replace(/_/g, " "); ]]]'
         subtitle: Hue room lights
         accent_color: rgba(241,194,122,0.96)
     - type: custom:button-card
@@ -63,38 +62,23 @@ sections:
         value: Open settings
         subtitle: Manage your integrations
         accent_color: rgba(156,201,162,0.95)
-  - type: horizontal-stack
-    cards:
-    - type: custom:button-card
-      template: mf_pill
-      variables:
-        icon: mdi:home-import-outline
-        label: Dock
-        accent_color: rgba(156,201,162,0.95)
-      tap_action:
-        action: call-service
-        service: vacuum.return_to_base
-        target:
-          entity_id: vacuum.roomba
-    - type: custom:button-card
-      template: mf_pill
-      variables:
-        icon: mdi:star-four-points-outline
-        label: Start cleaning
-        accent_color: rgba(241,194,122,0.96)
-      tap_action:
-        action: call-service
-        service: vacuum.start
-        target:
-          entity_id: vacuum.roomba
-    - type: custom:button-card
-      template: mf_pill
-      variables:
-        icon: mdi:pause
-        label: Pause
-        accent_color: rgba(217,154,169,0.95)
-      tap_action:
-        action: call-service
-        service: vacuum.pause
-        target:
-          entity_id: vacuum.roomba
+  - type: entities
+    title: Connection status
+    show_header_toggle: false
+    entities:
+    - light.living_room
+    - light.bedroom
+    - light.big_lamp
+    - light.light_panels_51_66_88
+    - media_player.bed_room_tv
+    - media_player.media_room
+    - media_player.kitchen
+    - media_player.den
+    - media_player.roam_2
+    - media_player.32q3k_2
+    - media_player.spotify_michael_sanchez
+    - alarm_control_panel.blink_home
+    - camera.front_door
+    - sensor.nas_blink_front_door_temperature
+    - sensor.el_rocco_battery_level
+    - weather.forecast_home

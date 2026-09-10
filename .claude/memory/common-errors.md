@@ -18,6 +18,28 @@ Append to this file when a fix teaches us something durable.
 
 **Full list of expected paths:** see `templates/sky_system.yaml` `templates/sky_system_tesla.yaml` (run `grep -oE '/local/[A-Za-z0-9._/?-]+'` to enumerate).
 
+**Resolved for the primary dashboard (HearthOS redesign):**
+`templates/sky_system.yaml` is now CSS-only and no longer references the
+missing sky, cloud, lamp, tree, fence, or background files. The Tesla card's
+single repo-owned image is still deployed to `/local/mobile-forge/` by the
+installer. `sky_system_tesla.yaml` is legacy/experimental and may still contain
+old `/local/` references; production views do not use it.
+
+---
+
+## Installer updated only Home + Media
+
+**Symptom:** changes to Lights, Tesla, Security, House, or Weather appeared in
+the repo preview but never reached the active dashboard after running the
+one-shot installer.
+
+**Root cause:** `install_wife_approved_mobile_forge.py` called
+`sync_repo_view()` only for `media`.
+
+**Fix:** the installer now syncs every production view: `lights`, `media`,
+`tesla`, `security`, `house`, and `weather`. Keep the sync list aligned with
+the six navigation routes plus the weather drill-down.
+
 ---
 
 ## Mobile Forge home view replaced by stock view after a deploy
@@ -122,3 +144,75 @@ The installer now keeps the original Forge Classic view on repeated runs and
 syncs the six edited source views. Configuration discovery tolerates unrelated
 HA !include/!secret scalars without reading their contents. Dashboard YAML itself
 still uses SafeLoader. Validate with tests/test_dashboard.py before deployment.
+---
+
+## Multicast/discovery integrations don't work over the WireGuard tunnel (2026-07-07)
+
+**Symptom:** Sonos, Cast, and similar zeroconf/SSDP/mDNS-discovered
+integrations show devices as missing or `unavailable` even though the
+devices are confirmed up and answering on their ports (Sonos `:1400`, Cast
+`:8009`) from the VPS.
+
+**Root cause:** HA runs on this VPS and reaches the home LAN
+(`192.168.50.0/24`) over a WireGuard tunnel (`wg0`). Multicast traffic
+(SSDP/mDNS/zeroconf) does not traverse `wg0` — WireGuard only routes
+unicast IP. Every discovery-based integration therefore sees nothing on its
+own; it needs to be pointed at static IPs instead of relying on discovery.
+
+**Fix pattern:**
+- **Sonos:** `configuration.yaml` → `sonos: media_player: hosts: [...]` with
+  the actual speaker IPs. One reachable speaker is enough to learn the whole
+  Sonos household's zone-group topology (other speakers get added even if
+  not listed), but at least one static IP per otherwise-unreachable room is
+  needed to seed it.
+- **Cast:** not exposed as YAML config — has to be edited directly in
+  `.storage/core.config_entries`, the `cast` domain entry's
+  `data.known_hosts` list, with the container **stopped** first (HA rewrites
+  `.storage` on shutdown, so live edits get clobbered — same rule as the
+  entity-registry rename procedure above). Restart to pick it up.
+- **webOS/other TVs:** the config entry just needs the right `host` (IP) to
+  begin with — no separate discovery step to work around.
+
+Sonos will still log `Subscription to <ip> failed, attempting to poll
+directly` — that's expected and not fatal: UPnP eventing needs a callback
+URL reachable *from* the speaker back *to* HA, which also can't cross the
+tunnel, so the integration falls back to polling. Ignore that warning.
+
+---
+
+## Govee cloud integration 429 kills all Govee entities at once (2026-07-07)
+
+**Symptom:** All Govee entities (including hardware that's genuinely online)
+go `unavailable` at the same instant, and the log fills with
+`govee_api_laggat`/`custom_components.govee` warnings — this grew
+`home-assistant.log.1` to 1.2GB.
+
+**Root cause:** `.storage/core.config_entries` → `govee` entry →
+`data.delay` (seconds between poll cycles) was `10`. With 4 devices that
+blows through Govee cloud's 10,000-requests/24h quota, and a
+`API-Error 429: rate limited!` response kills the **entire config entry**
+at setup — not just one device. All entities going `unavailable` with the
+*identical* `last_updated` timestamp is the tell that distinguishes this
+from real dead hardware (which fails independently, at different times).
+
+**Fix:** raise `data.delay` to `60`. Keeps 4 devices safely under the daily
+quota. The integration self-recovers once the 24h rate-limit window resets
+— don't mistake "still 429ing right after the fix" for the fix not working,
+check back after the quota window rolls over.
+
+**Also add to `configuration.yaml` `logger:`** to stop the log spam
+regardless of quota state: `custom_components.govee: critical`,
+`govee_api_laggat: critical`. (`blinkpy: critical` and
+`homeassistant.components.blink: error` are the equivalent for the Blink
+noise — `error` intentionally still surfaces genuine coordinator errors,
+only `blinkpy`'s own noisier logger is fully silenced.)
+
+
+## Live reconciliation (2026-09-10)
+
+VPS source was ahead of GitHub main at 0e27b1f (HearthOS). Merge that history
+before deploying, rather than overwriting the newer source. Live Blink IDs are
+alarm_control_panel.blink_home and camera.front_door. There is no configured
+vacuum.roomba or update.home_assistant_core_update (Container installation).
+House now surfaces configured connection states rather than fake online values.
+The active sky is asset-free; preserve it when merging old sky patches.

@@ -32,7 +32,14 @@ def references(doc):
             if key in ('service', 'perform_action') and '[[[' not in value:
                 services.add(value)
             elif key not in ('navigation_path', 'url', 'icon'):
-                entities.update(ENTITY.findall(value))
+                if '[[[' in value or "states[" in value:
+                    # Only quoted IDs; ignore JavaScript variables such as sun.state.
+                    for match in re.finditer(r"[\"'](" + ENTITY.pattern + r")[\"']", value):
+                        eid = match.group(1)
+                        if not eid.endswith('.unknown'):
+                            entities.add(eid)
+                else:
+                    entities.update(ENTITY.findall(value))
     visit(doc)
     return entities, services
 

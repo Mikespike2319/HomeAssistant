@@ -308,9 +308,9 @@ def normalize_navbar(card: Any | None) -> Any | None:
         "style": (
             ":host { position: fixed !important; left: 12px !important; right: 12px !important; "
             "bottom: max(12px, env(safe-area-inset-bottom, 0px)) !important; z-index: 999 !important; }\n"
-            "ha-card { border-radius: 22px !important; border: 1px solid rgba(255,255,255,0.12) !important; "
-            "background: rgba(15,15,18,0.90) !important; backdrop-filter: blur(20px); "
-            "-webkit-backdrop-filter: blur(20px); box-shadow: 0 18px 48px rgba(0,0,0,0.32) !important; "
+            "ha-card { border-radius: 24px !important; border: 1px solid rgba(137,210,255,0.17) !important; "
+            "background: linear-gradient(135deg, rgba(10,18,31,0.94), rgba(5,10,19,0.91)) !important; backdrop-filter: blur(24px) saturate(1.2); "
+            "-webkit-backdrop-filter: blur(24px) saturate(1.2); box-shadow: 0 20px 54px rgba(1,4,12,0.48), inset 0 1px 0 rgba(255,255,255,.06) !important; "
             "padding-bottom: env(safe-area-inset-bottom, 0px); overflow: hidden; }\n"
         )
     }
@@ -620,13 +620,13 @@ def make_home_cards(config_dir: Path, navbar: Any | None) -> list[Any]:
         ["el_rocco", "battery"],
         "sensor",
     ) or "sensor.el_rocco_battery_level"
-    lights = pick_entity(entities, ["light.living_room", "light.all_lights"], ["hue"], "light") or "light.living_room"
+    lights = pick_entity(entities, ["light.living_room", "light.all_lights"], ["living_room"], "light") or "light.living_room"
     security = pick_entity(
         entities,
-        ["alarm_control_panel.nas_blink_home_security", "alarm_control_panel.blink", "alarm_control_panel.home_alarm", "alarm_control_panel.alarm"],
+        ["alarm_control_panel.blink_home", "alarm_control_panel.nas_blink_home_security", "alarm_control_panel.blink", "alarm_control_panel.home_alarm", "alarm_control_panel.alarm"],
         ["blink"],
         "alarm_control_panel",
-    ) or "alarm_control_panel.nas_blink_home_security"
+    ) or "alarm_control_panel.blink_home"
     assistant = pick_entity(
         entities,
         ["update.home_assistant_core_update"],
@@ -647,8 +647,13 @@ def make_home_cards(config_dir: Path, navbar: Any | None) -> list[Any]:
         },
         {
             "type": "custom:button-card",
+            "template": "mf_status_ribbon",
+        },
+        {
+            "type": "custom:button-card",
             "template": "mf_hero",
             "entity": "weather.forecast_home",
+            "tap_action": {"action": "navigate", "navigation_path": "/mobile-forge/weather"},
             "variables": {
                 "icon": "mdi:weather-partly-cloudy",
                 "value": '[[[ return entity && !["unavailable", "unknown"].includes(entity.state) && Number.isFinite(entity.attributes?.temperature) ? Math.round(entity.attributes.temperature) + "°" : "No reading"; ]]]',
@@ -659,7 +664,7 @@ def make_home_cards(config_dir: Path, navbar: Any | None) -> list[Any]:
                     'const wind = entity?.attributes?.wind_speed; '
                     'return `${condition}${humidity != null ? " · " + humidity + "% humidity" : ""}${wind != null ? " · " + Math.round(wind) + " " + (entity?.attributes?.wind_speed_unit || "") + " wind" : ""}`; ]]]'
                 ),
-                "accent_color": "rgba(241,194,122,0.96)",
+                "accent_color": "rgba(107,226,255,0.96)",
             },
         },
         {
@@ -678,15 +683,7 @@ def make_home_cards(config_dir: Path, navbar: Any | None) -> list[Any]:
                 ),
                 mf_tile(lights, "Glow", "mdi:lightbulb-group", "lanterns + scenes", "rgba(241,194,122,0.96)", "/mobile-forge/lights"),
                 mf_tile(security, "Watch", "mdi:shield-lock", "alarm status", "rgba(156,201,162,0.95)", "/mobile-forge/security"),
-                mf_tile(
-                    assistant,
-                    "Home Assistant",
-                    "mdi:home-assistant",
-                    "core update status",
-                    "rgba(184,166,232,0.95)",
-                    "/mobile-forge/house",
-                    '[[[ return !entity ? "Not connected" : entity.state === "off" ? "Up to date" : entity.state === "on" ? "Update available" : entity.state.replace(/_/g, " "); ]]]',
-                ),
+                {"type": "custom:button-card", "template": "mf_connection_health"},
             ],
         },
         {
@@ -740,7 +737,7 @@ def mf_pill(label: str, icon: str, accent: str, scene: str) -> dict[str, Any]:
         "template": "mf_pill",
         "entity": scene,
         "tap_action": {
-            "action": '[[[ return entity && !["unavailable", "unknown"].includes(entity.state) ? "call-service" : "more-info"; ]]]',
+            "action": '[[[ return entity && entity.state !== "unavailable" ? "call-service" : "more-info"; ]]]',
             "service": "scene.turn_on",
             "target": {"entity_id": scene},
         },
@@ -840,14 +837,14 @@ def main() -> int:
     print(f"  Home view path: /{TARGET_DASHBOARD_PATH}/{TARGET_VIEW_PATH}")
     print(f"  old Home card count: {old_count}")
 
-    print("[2/7] Fetching Reddit-linked Pastebin sky_system")
+    print("[2/7] Loading the repo-owned HearthOS sky_system")
     sky_template = fetch_sky_template()
 
-    print("[3/7] Building Wife Approved Mobile Forge Home view")
+    print("[3/7] Building HearthOS Mobile Forge views")
     install_templates(dashboard, sky_template)
     new_cards = make_home_cards(config_dir, navbar)
     set_home_cards(home, new_cards)
-    for view_path in ("lights", "media", "house", "tesla", "security", "music"):
+    for view_path in ("lights", "media", "house", "tesla", "security", "music", "weather"):
         sync_repo_view(dashboard, view_path, navbar)
     ensure_classic_view(dashboard, old_home, old_cards)
 
