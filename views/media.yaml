@@ -72,11 +72,11 @@ sections:
       accent_color: rgba(241,194,122,0.96)
   - type: custom:button-card
     template: mf_device_row
-    entity: media_player.lg_webos_tv_ua7700pub
+    entity: media_player.lg_webos_tv_ua7700pub_2
     variables:
       icon: mdi:television
-      title: Living Room TV
-      subtitle: LG webOS
+      title: LG TV · Cast
+      subtitle: Cast receiver
       accent_color: rgba(136,199,216,0.95)
   - type: custom:button-card
     template: mf_device_row

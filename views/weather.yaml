@@ -19,25 +19,13 @@ sections:
     template: mf_hero
     entity: weather.forecast_home
     variables:
-      icon: '[[[ const map = {sunny:"mdi:white-balance-sunny", "clear-night":"mdi:weather-night", partlycloudy:"mdi:weather-partly-cloudy", cloudy:"mdi:weather-cloudy", rainy:"mdi:weather-rainy", pouring:"mdi:weather-pouring", lightning:"mdi:weather-lightning", snowy:"mdi:weather-snowy", fog:"mdi:weather-fog", windy:"mdi:weather-windy"}; return map[entity?.state] || "mdi:weather-partly-cloudy"; ]]]'
+      icon: '[[[ const map = {sunny:"mdi:white-balance-sunny", "clear-night":"mdi:weather-night", partlycloudy:"mdi:weather-partly-cloudy", cloudy:"mdi:weather-cloudy", rainy:"mdi:weather-rainy",
+        pouring:"mdi:weather-pouring", lightning:"mdi:weather-lightning", snowy:"mdi:weather-snowy", fog:"mdi:weather-fog", windy:"mdi:weather-windy"}; return map[entity?.state] || "mdi:weather-partly-cloudy";
+        ]]]'
       value: '[[[ return Math.round(entity?.attributes?.temperature ?? 0) + "°"; ]]]'
-      subtitle: '[[[ const raw = (entity?.state || "Weather").replace(/-/g," ").replace(/\b\w/g,c=>c.toUpperCase()); const humidity = entity?.attributes?.humidity; const wind = entity?.attributes?.wind_speed; return `${raw}${humidity != null ? " · " + humidity + "% humidity" : ""}${wind != null ? " · " + Math.round(wind) + " mph wind" : ""}`; ]]]'
+      subtitle: '[[[ const raw = (entity?.state || "Weather").replace(/-/g," ").replace(/\b\w/g,c=>c.toUpperCase()); const humidity = entity?.attributes?.humidity; const wind = entity?.attributes?.wind_speed;
+        return `${raw}${humidity != null ? " · " + humidity + "% humidity" : ""}${wind != null ? " · " + Math.round(wind) + " mph wind" : ""}`; ]]]'
       accent_color: rgba(107,226,255,0.96)
-  - type: conditional
-    conditions:
-    - entity: binary_sensor.weather_alert
-      state: 'on'
-    card:
-      type: custom:button-card
-      template: mf_hero
-      entity: sensor.weather_alert_title
-      variables:
-        icon: mdi:weather-lightning
-        value: Weather alert
-        subtitle: '[[[ return entity?.state || "Open for details"; ]]]'
-        accent_color: rgba(255,128,148,0.96)
-      tap_action:
-        action: more-info
   - type: custom:button-card
     template: mf_section_label
     variables:
@@ -45,16 +33,9 @@ sections:
       label: Next few hours
       accent_color: rgba(107,226,255,0.96)
   - type: custom:mod-card
-    style: |
-      ha-card {
-        overflow: hidden !important;
-        padding: 8px !important;
-        border-radius: 22px !important;
-        border: 1px solid rgba(137,210,255,0.16) !important;
-        background: linear-gradient(150deg, rgba(15,23,36,0.82), rgba(7,12,22,0.76)) !important;
-        box-shadow: 0 20px 52px rgba(1,5,14,0.38), inset 0 1px 0 rgba(255,255,255,0.05) !important;
-        backdrop-filter: blur(22px) saturate(1.18);
-      }
+    style: "ha-card {\n  overflow: hidden !important;\n  padding: 8px !important;\n  border-radius: 22px !important;\n  border: 1px solid rgba(137,210,255,0.16) !important;\n  background:\
+      \ linear-gradient(150deg, rgba(15,23,36,0.82), rgba(7,12,22,0.76)) !important;\n  box-shadow: 0 20px 52px rgba(1,5,14,0.38), inset 0 1px 0 rgba(255,255,255,0.05) !important;\n\
+      \  backdrop-filter: blur(22px) saturate(1.18);\n}\n"
     card:
       type: weather-forecast
       entity: weather.forecast_home
@@ -115,16 +96,9 @@ sections:
       label: Seven-day outlook
       accent_color: rgba(255,207,120,0.96)
   - type: custom:mod-card
-    style: |
-      ha-card {
-        overflow: hidden !important;
-        padding: 8px !important;
-        border-radius: 22px !important;
-        border: 1px solid rgba(137,210,255,0.16) !important;
-        background: linear-gradient(150deg, rgba(15,23,36,0.82), rgba(7,12,22,0.76)) !important;
-        box-shadow: 0 20px 52px rgba(1,5,14,0.38), inset 0 1px 0 rgba(255,255,255,0.05) !important;
-        backdrop-filter: blur(22px) saturate(1.18);
-      }
+    style: "ha-card {\n  overflow: hidden !important;\n  padding: 8px !important;\n  border-radius: 22px !important;\n  border: 1px solid rgba(137,210,255,0.16) !important;\n  background:\
+      \ linear-gradient(150deg, rgba(15,23,36,0.82), rgba(7,12,22,0.76)) !important;\n  box-shadow: 0 20px 52px rgba(1,5,14,0.38), inset 0 1px 0 rgba(255,255,255,0.05) !important;\n\
+      \  backdrop-filter: blur(22px) saturate(1.18);\n}\n"
     card:
       type: weather-forecast
       entity: weather.forecast_home
