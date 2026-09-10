@@ -1,21 +1,21 @@
 :root {
   color-scheme: dark;
-  --bg: #101713;
-  --bg-deep: #0b1110;
-  --panel: rgba(24, 28, 25, 0.74);
-  --panel-2: rgba(38, 35, 30, 0.78);
-  --panel-live: rgba(49, 39, 30, 0.82);
-  --line: rgba(238, 222, 190, 0.16);
-  --line-strong: rgba(238, 222, 190, 0.26);
-  --text: rgba(255, 248, 231, 0.96);
-  --muted: rgba(235, 220, 190, 0.66);
-  --dim: rgba(235, 220, 190, 0.46);
-  --amber: #f1c27a;
-  --moss: #9cc9a2;
-  --blue: #88c7d8;
-  --rose: #d99aa9;
-  --violet: #b8a6e8;
-  --shadow: rgba(2, 7, 7, 0.42);
+  --bg: #080d18;
+  --bg-deep: #05080f;
+  --panel: rgba(7, 12, 22, 0.74);
+  --panel-2: rgba(15, 23, 36, 0.80);
+  --panel-live: rgba(18, 30, 47, 0.84);
+  --line: rgba(137, 210, 255, 0.16);
+  --line-strong: rgba(140, 216, 255, 0.24);
+  --text: rgba(244, 249, 255, 0.98);
+  --muted: rgba(183, 204, 224, 0.66);
+  --dim: rgba(183, 204, 224, 0.45);
+  --amber: #ffcf78;
+  --moss: #8bf4c4;
+  --blue: #6be2ff;
+  --rose: #ff849b;
+  --violet: #9b86ff;
+  --shadow: rgba(1, 4, 12, 0.46);
 }
 
 * {
@@ -37,9 +37,9 @@ body {
   width: 286px;
   padding: 18px 16px;
   background:
-    linear-gradient(180deg, rgba(15, 18, 16, 0.96), rgba(12, 14, 13, 0.94)),
-    #101210;
-  border-right: 1px solid rgba(238, 222, 190, 0.09);
+    linear-gradient(180deg, rgba(10, 16, 28, 0.97), rgba(5, 9, 17, 0.95)),
+    #070b13;
+  border-right: 1px solid rgba(137, 210, 255, 0.10);
   display: grid;
   align-content: start;
   gap: 8px;
@@ -61,7 +61,7 @@ body {
 
 .ha-active {
   color: var(--blue);
-  background: rgba(136, 199, 216, 0.13);
+  background: rgba(107, 226, 255, 0.11);
 }
 
 .shell {
@@ -78,10 +78,25 @@ body {
   margin-left: 286px;
   overflow: hidden;
   background:
-    radial-gradient(circle at 50% 8%, rgba(241, 194, 122, 0.24), transparent 15rem),
-    radial-gradient(circle at 16% 36%, rgba(156, 201, 162, 0.12), transparent 22rem),
-    radial-gradient(circle at 86% 62%, rgba(136, 199, 216, 0.14), transparent 24rem),
-    linear-gradient(180deg, #1c2726 0%, #121b18 48%, #0b1110 100%);
+    radial-gradient(circle at 78% 0%, rgba(95, 93, 255, 0.18), transparent 33rem),
+    radial-gradient(circle at 3% 28%, rgba(33, 217, 206, 0.14), transparent 30rem),
+    linear-gradient(180deg, #0b1020 0%, #080d18 48%, #05080f 100%);
+  isolation: isolate;
+}
+
+.sky::before {
+  content: "";
+  position: absolute;
+  width: 92vmax;
+  height: 44vmax;
+  left: -18vmax;
+  top: -25vmax;
+  border-radius: 50%;
+  background: conic-gradient(from 105deg, transparent 0 15%, rgba(85,235,220,.78) 28%, rgba(91,118,255,.62) 46%, transparent 62%);
+  filter: blur(72px) saturate(1.32);
+  mix-blend-mode: screen;
+  opacity: .42;
+  animation: auroraShift 18s ease-in-out infinite alternate;
 }
 
 .sky::after {
@@ -89,8 +104,14 @@ body {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 50% 100%, rgba(73, 57, 38, 0.42), transparent 36%),
-    linear-gradient(180deg, transparent 0 58%, rgba(14, 18, 14, 0.38));
+    linear-gradient(rgba(110,229,255,.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(110,229,255,.10) 1px, transparent 1px),
+    radial-gradient(ellipse at 50% 100%, rgba(45, 89, 117, 0.18), transparent 42%);
+  background-size: 36px 28px, 36px 28px, auto;
+  mask-image: linear-gradient(to bottom, transparent 55%, black 100%);
+  transform: perspective(460px) rotateX(54deg) scale(1.35);
+  transform-origin: 50% 100%;
+  opacity: .44;
 }
 
 .stars {
@@ -150,19 +171,15 @@ body {
   position: absolute;
   top: 46px;
   right: 18vw;
-  width: 76px;
-  height: 76px;
+  width: 104px;
+  height: 104px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #fff1bd 0 42%, #e4b75c 58%, transparent 63%);
-  filter: drop-shadow(0 0 28px rgba(241, 194, 122, 0.42));
+  background: radial-gradient(circle at 34% 32%, #f7fbff 0 14%, #bbd9ef 34%, #7181b8 58%, rgba(113,129,184,.10) 69%, transparent 71%);
+  filter: drop-shadow(0 0 32px rgba(151, 198, 255, 0.28));
 }
 
 .moon::after {
-  content: "";
-  position: absolute;
-  inset: -2px -10px 4px 25px;
-  border-radius: 50%;
-  background: #1c2726;
+  display: none;
 }
 
 .cloud {
@@ -176,7 +193,7 @@ body {
     linear-gradient(180deg, rgba(255,248,231,0.13), rgba(255,255,255,0.02));
   filter: blur(7px);
   animation: drift 38s linear infinite;
-  opacity: 0.54;
+  opacity: 0.18;
   transform: translateZ(0);
   will-change: transform;
 }
@@ -199,16 +216,25 @@ body {
 }
 
 .page-head {
-  padding: 22px 4px 16px;
+  padding: 24px 6px 14px;
+}
+
+.page-eyebrow {
+  margin-bottom: 7px;
+  color: var(--blue);
+  font-size: 10px;
+  line-height: 14px;
+  font-weight: 850;
+  letter-spacing: .16em;
 }
 
 h1 {
   margin: 0;
   color: var(--text);
-  font-size: 34px;
-  line-height: 38px;
-  font-weight: 850;
-  letter-spacing: 0;
+  font-size: 36px;
+  line-height: 40px;
+  font-weight: 820;
+  letter-spacing: -.035em;
   text-wrap: balance;
 }
 
@@ -227,30 +253,31 @@ h1 {
 
 .card {
   border: 1px solid var(--line);
-  border-radius: 20px;
+  border-radius: 21px;
   background:
-    linear-gradient(145deg, rgba(255,248,231,0.055), transparent 38%),
+    linear-gradient(145deg, rgba(255,255,255,0.045), transparent 38%),
     linear-gradient(150deg, var(--panel-2), var(--panel));
-  box-shadow: 0 22px 56px var(--shadow), inset 0 1px 0 rgba(255,248,231,0.06);
-  backdrop-filter: blur(20px) saturate(1.15);
+  box-shadow: 0 22px 56px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.06);
+  backdrop-filter: blur(22px) saturate(1.18);
   overflow: hidden;
 }
 
 .status-ribbon {
-  min-height: 44px;
-  padding: 8px;
+  min-height: 48px;
+  padding: 8px 10px 8px 14px;
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 8px;
   align-items: center;
-  border-radius: 18px;
-  border: 1px solid rgba(238, 222, 190, 0.12);
-  background: rgba(10, 15, 13, 0.58);
+  border-radius: 17px;
+  border: 1px solid rgba(125, 211, 255, 0.16);
+  background: linear-gradient(110deg, rgba(13,24,38,.80), rgba(12,17,30,.64));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.055), 0 14px 34px rgba(1,4,12,.30);
 }
 
 .status-ribbon strong {
-  padding-left: 8px;
-  font-size: 13px;
+  padding-left: 4px;
+  font-size: 12px;
   line-height: 16px;
 }
 
@@ -265,8 +292,8 @@ h1 {
   display: grid;
   place-items: center;
   border-radius: 11px;
-  background: rgba(255,255,255,0.055);
-  color: var(--moss);
+  background: linear-gradient(135deg, rgba(107,226,255,.18), rgba(155,134,255,.16));
+  color: var(--blue);
 }
 
 .hero {
@@ -276,11 +303,12 @@ h1 {
   grid-template-columns: auto 1fr;
   align-items: center;
   gap: 17px;
+  border-radius: 24px;
   border-color: var(--line-strong);
   background:
-    radial-gradient(circle at 12% 18%, rgba(241, 194, 122, 0.16), transparent 9rem),
-    radial-gradient(circle at 88% 70%, rgba(156, 201, 162, 0.12), transparent 12rem),
-    linear-gradient(150deg, rgba(48, 41, 32, 0.80), rgba(20, 28, 24, 0.76));
+    radial-gradient(circle at 13% 18%, rgba(107,226,255,.17), transparent 9rem),
+    radial-gradient(circle at 88% 74%, rgba(157,119,255,.16), transparent 12rem),
+    linear-gradient(150deg, rgba(18,29,47,.82), rgba(8,13,24,.74));
 }
 
 .hero .glyph {
@@ -289,11 +317,11 @@ h1 {
   display: grid;
   place-items: center;
   border-radius: 24px;
-  color: var(--amber);
+  color: var(--blue);
   background:
-    radial-gradient(circle at 34% 24%, rgba(255,248,231,0.18), transparent 50%),
-    rgba(241, 194, 122, 0.10);
-  box-shadow: inset 0 0 0 1px rgba(241, 194, 122, 0.18), 0 18px 38px rgba(0,0,0,0.24);
+    radial-gradient(circle at 34% 24%, rgba(255,255,255,.20), transparent 50%),
+    rgba(107,226,255,.09);
+  box-shadow: inset 0 0 0 1px rgba(126,220,255,.20), 0 18px 38px rgba(0,0,0,.28), 0 0 28px rgba(107,226,255,.08);
 }
 
 .hero .glyph .icon {
@@ -327,17 +355,18 @@ h1 {
 }
 
 .tile {
-  min-height: 106px;
-  padding: 14px;
+  min-height: 110px;
+  padding: 15px;
   display: grid;
   align-content: space-between;
   gap: 10px;
 }
 
 .tile.live {
-  border-color: rgba(241, 194, 122, 0.26);
+  border-color: rgba(107, 226, 255, 0.26);
   background:
-    radial-gradient(circle at 100% 0%, rgba(241,194,122,0.12), transparent 7rem),
+    radial-gradient(circle at 14% 8%, rgba(107,226,255,.14), transparent 8rem),
+    radial-gradient(circle at 90% 88%, rgba(157,119,255,.10), transparent 9rem),
     linear-gradient(150deg, var(--panel-live), var(--panel));
 }
 
@@ -385,18 +414,19 @@ h1 {
 }
 
 .pill {
-  min-height: 42px;
-  padding: 0 13px;
-  border-radius: 15px;
-  border: 1px solid rgba(238, 222, 190, 0.13);
-  background: rgba(18, 22, 19, 0.72);
-  color: rgba(255,248,231,0.88);
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(137, 210, 255, 0.14);
+  background: linear-gradient(145deg, rgba(20,29,44,.80), rgba(7,13,23,.72));
+  color: rgba(235,244,255,.90);
   display: inline-flex;
   align-items: center;
   gap: 8px;
   font-weight: 780;
   font-size: 13px;
-  box-shadow: inset 0 1px 0 rgba(255,248,231,0.045);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 12px 28px rgba(1,5,14,.25);
+  backdrop-filter: blur(18px) saturate(1.16);
 }
 
 .pill .icon {
@@ -409,9 +439,10 @@ h1 {
   min-height: 44px;
   padding: 0 14px;
   border-radius: 15px;
-  border: 1px solid rgba(238, 222, 190, 0.12);
-  background: rgba(9, 13, 12, 0.62);
-  color: rgba(255,248,231,0.88);
+  border: 1px solid rgba(137, 210, 255, 0.12);
+  background: linear-gradient(90deg, rgba(11,20,33,.82), rgba(8,13,23,.56));
+  color: rgba(235,244,255,.90);
+  box-shadow: inset 3px 0 0 rgba(107,226,255,.50);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -711,11 +742,11 @@ h1 {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 6px;
-  border-radius: 22px;
-  border: 1px solid rgba(238,222,190,0.13);
-  background: rgba(10, 14, 13, 0.88);
-  box-shadow: 0 18px 52px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,248,231,0.06);
-  backdrop-filter: blur(18px);
+  border-radius: 24px;
+  border: 1px solid rgba(137,210,255,.17);
+  background: linear-gradient(135deg, rgba(10,18,31,.94), rgba(5,10,19,.91));
+  box-shadow: 0 20px 54px rgba(1,4,12,.48), inset 0 1px 0 rgba(255,255,255,.06);
+  backdrop-filter: blur(24px) saturate(1.2);
   z-index: 10;
 }
 
@@ -723,7 +754,7 @@ h1 {
   border: 0;
   border-radius: 16px;
   background: transparent;
-  color: rgba(255,248,231,0.58);
+  color: rgba(190,211,230,.58);
   font-weight: 820;
   cursor: pointer;
   display: grid;
@@ -736,8 +767,8 @@ h1 {
 }
 
 .nav:hover {
-  color: rgba(255,248,231,0.86);
-  background: rgba(255,248,231,0.055);
+  color: rgba(235,247,255,.88);
+  background: rgba(107,226,255,.06);
 }
 
 .nav:active {
@@ -745,8 +776,9 @@ h1 {
 }
 
 .nav.active {
-  color: #dff4e2;
-  background: rgba(156, 201, 162, 0.19);
+  color: #e7fbff;
+  background: linear-gradient(145deg, rgba(107,226,255,.20), rgba(155,134,255,.16));
+  box-shadow: inset 0 0 0 1px rgba(146,225,255,.14), 0 0 26px rgba(107,226,255,.08);
 }
 
 .nav .icon {
@@ -757,6 +789,11 @@ h1 {
 @keyframes drift {
   from { transform: translateX(-20vw); }
   to { transform: translateX(100vw); }
+}
+
+@keyframes auroraShift {
+  from { transform: translate3d(-5%, -2%, 0) rotate(-5deg) scale(.94); }
+  to { transform: translate3d(16%, 12%, 0) rotate(9deg) scale(1.08); }
 }
 
 @keyframes starShimmer {
@@ -826,4 +863,27 @@ h1 {
     align-items: flex-start;
     flex-direction: column;
   }
+}
+
+/* Match the dashboard's restrained motion; this preview uses sample data. */
+.card, .nav, .pill {
+  transition: transform 160ms cubic-bezier(.23,1,.32,1);
+}
+.nav:focus-visible, .pill:focus-visible {
+  outline: 2px solid #f1c27a;
+  outline-offset: 3px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .nav:hover, .pill:hover { transform: translateY(-2px); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .card { animation: hearth-arrive 240ms cubic-bezier(.23,1,.32,1) both; }
+  .nav:active:not(:focus-visible), .pill:active:not(:focus-visible) { transform: scale(.98); }
+  @keyframes hearth-arrive {
+    from { opacity: .5; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
 }

@@ -3,30 +3,101 @@ button_card_templates:
     show_icon: false
     show_name: true
     show_label: true
+    custom_fields:
+      eyebrow: '[[[ return variables.eyebrow || "HEARTHOS · LIVE"; ]]]'
     name: '[[[ return variables.title || ""; ]]]'
     label: '[[[ return variables.subtitle || ""; ]]]'
     styles:
       card:
-        - padding: 22px 4px 10px
+        - padding: 24px 6px 12px
         - background: transparent
         - box-shadow: none
         - border: none
         - position: relative
         - z-index: 2
+      grid:
+        - 'grid-template-areas: "eyebrow" "n" "l"'
+        - grid-template-columns: 1fr
+        - grid-template-rows: min-content min-content min-content
       name:
         - justify-self: start
-        - color: rgba(255,248,231,0.96)
-        - font-size: 34px
-        - line-height: 38px
-        - font-weight: 850
-        - letter-spacing: 0
+        - color: rgba(244,249,255,0.98)
+        - font-size: 36px
+        - line-height: 40px
+        - font-weight: 820
+        - letter-spacing: -0.035em
       label:
         - justify-self: start
-        - color: rgba(235,220,190,0.66)
+        - color: rgba(196,213,231,0.68)
         - font-size: 14px
         - line-height: 19px
         - font-weight: 650
         - padding-top: 6px
+      custom_fields:
+        eyebrow:
+          - justify-self: start
+          - color: rgba(107,226,255,0.88)
+          - font-size: 10px
+          - line-height: 14px
+          - font-weight: 850
+          - letter-spacing: 0.16em
+          - padding-bottom: 7px
+
+  mf_status_ribbon:
+    show_icon: false
+    show_name: false
+    show_label: false
+    tap_action:
+      action: none
+    custom_fields:
+      status: |
+        [[[
+          const alarm = states['alarm_control_panel.blink_home'];
+          const car = states['lock.el_rocco_lock'];
+          const weather = states['weather.forecast_home'];
+          const alarmText = alarm?.state === 'armed_away' ? 'Armed away' : alarm?.state === 'armed_home' ? 'Armed home' : alarm?.state === 'disarmed' ? 'Disarmed' : 'Alarm unavailable';
+          const carText = car?.state === 'locked' ? 'Car locked' : 'Check car';
+          const updateText = weather && !['unknown','unavailable'].includes(weather.state) ? 'Weather connected' : 'Weather unavailable';
+          return `
+            <div class="mf-ribbon-copy">
+              <span class="mf-live-dot"></span>
+              <strong>${alarmText}</strong>
+              <span>·</span><span>${carText}</span>
+              <span>·</span><span>${updateText}</span>
+            </div>
+            <div class="mf-ribbon-mark">MF</div>
+          `;
+        ]]]
+    extra_styles: |
+      .mf-ribbon-copy { display:flex; align-items:center; gap:6px; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+      .mf-ribbon-copy span, .mf-ribbon-copy strong { overflow:hidden; text-overflow:ellipsis; }
+      .mf-live-dot { flex:0 0 auto; width:7px; height:7px; border-radius:50%; background:#f1c27a; box-shadow:0 0 0 4px rgba(241,194,122,.10); }
+      .mf-ribbon-mark { width:30px; height:30px; border-radius:11px; display:grid; place-items:center; flex:0 0 auto; color:#07111c; background:linear-gradient(135deg,#6be2ff,#9b86ff); font-size:10px; font-weight:950; box-shadow:0 8px 22px rgba(81,181,255,.24); }
+      @keyframes mfLive { 50% { opacity:.58; transform:scale(.86); } }
+      @media (prefers-reduced-motion: reduce) { .mf-live-dot { animation:none; } }
+    styles:
+      card:
+        - min-height: 48px
+        - padding: 8px 10px 8px 14px
+        - border-radius: 17px
+        - border: 1px solid rgba(125,211,255,0.16)
+        - background: linear-gradient(110deg, rgba(13,24,38,0.80), rgba(12,17,30,0.64))
+        - box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 14px 34px rgba(1,4,12,0.30)
+        - backdrop-filter: blur(22px) saturate(1.18)
+        - position: relative
+        - z-index: 2
+      grid:
+        - grid-template-areas: '"status"'
+      custom_fields:
+        status:
+          - display: flex
+          - align-items: center
+          - justify-content: space-between
+          - gap: 10px
+          - color: rgba(210,225,240,0.72)
+          - font-size: 11px
+          - line-height: 14px
+          - font-weight: 650
 
   mf_hero:
     show_icon: true
@@ -40,11 +111,11 @@ button_card_templates:
       card:
         - min-height: 158px
         - padding: 18px
-        - border-radius: 20px
-        - border: 1px solid rgba(238,222,190,0.26)
-        - background: radial-gradient(circle at 12% 18%, rgba(241,194,122,0.16), transparent 9rem), radial-gradient(circle at 88% 70%, rgba(156,201,162,0.12), transparent 12rem), linear-gradient(150deg, rgba(48,41,32,0.80), rgba(20,28,24,0.76))
-        - box-shadow: 0 22px 56px rgba(2,7,7,0.42), inset 0 1px 0 rgba(255,248,231,0.06)
-        - backdrop-filter: blur(20px) saturate(1.16)
+        - border-radius: 24px
+        - border: 1px solid rgba(140,216,255,0.22)
+        - background: radial-gradient(circle at 13% 18%, rgba(107,226,255,0.17), transparent 9rem), radial-gradient(circle at 88% 74%, rgba(157,119,255,0.16), transparent 12rem), linear-gradient(150deg, rgba(18,29,47,0.82), rgba(8,13,24,0.74))
+        - box-shadow: 0 24px 64px rgba(1,4,12,0.46), inset 0 1px 0 rgba(255,255,255,0.08)
+        - backdrop-filter: blur(24px) saturate(1.20)
         - position: relative
         - z-index: 2
       grid:
@@ -61,12 +132,12 @@ button_card_templates:
         - width: 74px
         - height: 74px
         - border-radius: 24px
-        - background: radial-gradient(circle at 34% 24%, rgba(255,248,231,0.18), transparent 50%), rgba(241,194,122,0.10)
-        - box-shadow: inset 0 0 0 1px rgba(241,194,122,0.18), 0 18px 38px rgba(0,0,0,0.24)
+        - background: radial-gradient(circle at 34% 24%, rgba(255,255,255,0.20), transparent 50%), rgba(107,226,255,0.09)
+        - box-shadow: inset 0 0 0 1px rgba(126,220,255,0.20), 0 18px 38px rgba(0,0,0,0.28), 0 0 28px rgba(107,226,255,0.08)
       label:
         - grid-area: l
         - justify-self: start
-        - color: rgba(235,220,190,0.66)
+        - color: rgba(196,213,231,0.68)
         - font-size: 13px
         - line-height: 18px
         - font-weight: 650
@@ -75,11 +146,36 @@ button_card_templates:
           - grid-area: value
           - justify-self: start
           - color: rgba(255,248,231,0.96)
-          - font-size: 48px
+          - font-size: clamp(24px, 7vw, 48px)
+          - white-space: normal
+          - text-align: left
           - line-height: 50px
           - font-weight: 350
 
   mf_tile:
+    extra_styles: |
+      #card { transition: transform 160ms cubic-bezier(.23,1,.32,1); }
+      #card:focus-visible { outline: 2px solid #f1c27a; outline-offset: 3px; }
+      @media (hover: hover) and (pointer: fine) {
+        #card:hover { transform: translateY(-2px); }
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        #card:active:not(:focus-visible) { transform: scale(.98); }
+        #card { animation: hearth-arrive 240ms cubic-bezier(.23,1,.32,1) both; }
+        @keyframes hearth-arrive { from { opacity: .5; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #card { animation: none !important; transition: none !important; transform: none !important; }
+      }
+      #card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        background: linear-gradient(125deg, rgba(255,255,255,.075), transparent 34% 70%, rgba(107,226,255,.035));
+        opacity: .82;
+      }
     show_icon: true
     show_name: true
     show_label: true
@@ -91,13 +187,13 @@ button_card_templates:
       value: '[[[ return variables.value || (entity ? entity.state : ""); ]]]'
     styles:
       card:
-        - min-height: 106px
-        - padding: 14px
-        - border-radius: 20px
-        - border: 1px solid rgba(238,222,190,0.16)
-        - background: linear-gradient(145deg, rgba(255,248,231,0.055), transparent 38%), linear-gradient(150deg, rgba(38,35,30,0.78), rgba(24,28,25,0.74))
-        - box-shadow: 0 22px 56px rgba(2,7,7,0.42), inset 0 1px 0 rgba(255,248,231,0.06)
-        - backdrop-filter: blur(20px) saturate(1.16)
+        - min-height: 110px
+        - padding: 15px
+        - border-radius: 21px
+        - border: 1px solid rgba(137,210,255,0.16)
+        - background: '[[[ const active = entity && ["on","playing","locked","armed_home","armed_away","charging","cleaning"].includes(entity.state); return active ? "radial-gradient(circle at 14% 8%, rgba(107,226,255,.14), transparent 8rem), radial-gradient(circle at 90% 88%, rgba(157,119,255,.10), transparent 9rem), linear-gradient(150deg, rgba(18,30,47,.84), rgba(8,14,25,.78))" : "linear-gradient(145deg, rgba(255,255,255,.045), transparent 38%), linear-gradient(150deg, rgba(15,23,36,.78), rgba(7,12,22,.74))"; ]]]'
+        - box-shadow: '[[[ const active = entity && ["on","playing","locked","armed_home","armed_away","charging","cleaning"].includes(entity.state); return active ? "0 22px 54px rgba(1,5,14,.44), inset 0 1px 0 rgba(255,255,255,.08), 0 0 32px rgba(88,203,255,.06)" : "0 18px 46px rgba(1,5,14,.36), inset 0 1px 0 rgba(255,255,255,.05)"; ]]]'
+        - backdrop-filter: blur(22px) saturate(1.18)
         - position: relative
         - z-index: 2
       grid:
@@ -109,14 +205,14 @@ button_card_templates:
         - align-items: start
       icon:
         - width: 18px
-        - color: '[[[ return variables.accent_color || "rgba(136,199,216,0.95)"; ]]]'
+        - color: '[[[ return variables.accent_color || "rgba(107,226,255,0.96)"; ]]]'
       img_cell:
         - justify-self: start
         - align-self: center
       name:
         - justify-self: start
         - align-self: center
-        - color: rgba(255,248,231,0.94)
+        - color: rgba(240,247,255,0.94)
         - font-size: 14px
         - line-height: 18px
         - font-weight: 800
@@ -124,7 +220,7 @@ button_card_templates:
         - text-align: left
       label:
         - justify-self: start
-        - color: rgba(235,220,190,0.66)
+        - color: rgba(183,204,224,0.64)
         - font-size: 13px
         - line-height: 17px
         - font-weight: 650
@@ -134,7 +230,10 @@ button_card_templates:
           - justify-self: start
           - align-self: end
           - color: rgba(255,248,231,0.96)
-          - font-size: 30px
+          - font-size: clamp(20px, 6vw, 30px)
+          - white-space: normal
+          - overflow-wrap: anywhere
+          - text-align: left
           - line-height: 32px
           - font-weight: 360
 
@@ -145,7 +244,15 @@ button_card_templates:
   mf_light_tile:
     template: mf_tile
     tap_action:
-      action: toggle
+      action: '[[[ return entity && !["unavailable", "unknown"].includes(entity.state) ? "toggle" : "more-info"; ]]]'
+    styles:
+      icon:
+        - color: '[[[ return entity?.state === "on" ? "#f1c27a" : "#b8b5a7"; ]]]'
+        - transform: '[[[ return entity?.state === "on" ? "rotate(-8deg) scale(1.12)" : "none"; ]]]'
+        - transition: transform 200ms cubic-bezier(.23,1,.32,1)
+    extra_styles: |
+      @media (prefers-reduced-motion: reduce) { #icon { transition: none !important; transform: none !important; } }
+
     hold_action:
       action: more-info
     double_tap_action:
@@ -163,18 +270,33 @@ button_card_templates:
       action: none
 
   mf_pill:
+    extra_styles: |
+      #card { transition: transform 160ms cubic-bezier(.23,1,.32,1); }
+      #card:focus-visible { outline: 2px solid #f1c27a; outline-offset: 3px; }
+      @media (hover: hover) and (pointer: fine) {
+        #card:hover { transform: translateY(-2px); }
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        #card:active:not(:focus-visible) { transform: scale(.98); }
+        #card { animation: hearth-arrive 240ms cubic-bezier(.23,1,.32,1) both; }
+        @keyframes hearth-arrive { from { opacity: .5; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #card { animation: none !important; transition: none !important; transform: none !important; }
+      }
     show_icon: true
     show_name: true
     icon: '[[[ return variables.icon || "mdi:circle"; ]]]'
     name: '[[[ return variables.label || ""; ]]]'
     styles:
       card:
-        - min-height: 40px
+        - min-height: 44px
         - padding: 0 14px
-        - border-radius: 15px
-        - border: 1px solid rgba(238,222,190,0.16)
-        - background: rgba(18,22,19,0.72)
-        - box-shadow: inset 0 1px 0 rgba(255,248,231,0.045)
+        - border-radius: 16px
+        - border: 1px solid rgba(137,210,255,0.14)
+        - background: linear-gradient(145deg, rgba(20,29,44,0.80), rgba(7,13,23,0.72))
+        - box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 12px 28px rgba(1,5,14,0.25)
+        - backdrop-filter: blur(18px) saturate(1.16)
         - position: relative
         - z-index: 2
       grid:
@@ -187,7 +309,7 @@ button_card_templates:
         - color: '[[[ return variables.accent_color || "rgba(241,194,122,0.96)"; ]]]'
       name:
         - justify-self: start
-        - color: rgba(255,248,231,0.88)
+        - color: rgba(235,244,255,0.90)
         - font-size: 13px
         - line-height: 15px
         - font-weight: 800
@@ -202,9 +324,9 @@ button_card_templates:
         - min-height: 44px
         - padding: 0 14px
         - border-radius: 14px
-        - border: 1px solid rgba(238,222,190,0.12)
-        - background: rgba(9,13,12,0.62)
-        - box-shadow: none
+        - border: 1px solid rgba(137,210,255,0.12)
+        - background: linear-gradient(90deg, rgba(11,20,33,0.82), rgba(8,13,23,0.56))
+        - box-shadow: inset 3px 0 0 rgba(107,226,255,0.50)
         - position: relative
         - z-index: 2
       grid:
@@ -217,7 +339,7 @@ button_card_templates:
         - color: '[[[ return variables.accent_color || "rgba(136,199,216,0.95)"; ]]]'
       name:
         - justify-self: start
-        - color: rgba(255,248,231,0.88)
+        - color: rgba(235,244,255,0.90)
         - font-size: 16px
         - line-height: 18px
         - font-weight: 850
@@ -249,9 +371,9 @@ button_card_templates:
               align-items:center;
               gap:8px;
               border-radius:15px;
-              border:1px solid rgba(255,255,255,0.16);
-              background:rgba(13,15,19,0.78);
-              color:rgba(255,248,231,0.94);
+              border:1px solid rgba(131,218,255,0.19);
+              background:rgba(7,13,24,0.80);
+              color:rgba(240,247,255,0.95);
               font-weight:900;
               font-size:13px;
               line-height:1;
@@ -259,7 +381,7 @@ button_card_templates:
               box-shadow:0 12px 28px rgba(0,0,0,0.28);
               pointer-events:none;
             ">
-              <ha-icon icon="mdi:car-electric" style="width:17px;height:17px;color:rgba(136,199,216,0.95);"></ha-icon>
+              <ha-icon icon="mdi:car-electric" style="width:17px;height:17px;color:rgba(107,226,255,0.96);"></ha-icon>
               <span>Model Y Juniper</span>
             </div>
           `;
@@ -268,11 +390,11 @@ button_card_templates:
       card:
         - height: 244px
         - padding: 0
-        - border-radius: 18px
-        - border: 1px solid rgba(238,222,190,0.16)
-        - background: linear-gradient(150deg, rgba(38,35,30,0.78), rgba(24,28,25,0.74))
-        - box-shadow: 0 18px 48px rgba(0,0,0,0.24)
-        - backdrop-filter: blur(20px) saturate(1.16)
+        - border-radius: 24px
+        - border: 1px solid rgba(137,210,255,0.18)
+        - background: radial-gradient(circle at 70% 18%, rgba(107,226,255,.14), transparent 12rem), radial-gradient(circle at 22% 82%, rgba(157,119,255,.12), transparent 11rem), linear-gradient(150deg, rgba(16,27,44,.82), rgba(7,12,22,.76))
+        - box-shadow: 0 24px 62px rgba(1,4,12,0.44), inset 0 1px 0 rgba(255,255,255,.06)
+        - backdrop-filter: blur(24px) saturate(1.18)
         - overflow: hidden
         - position: relative
         - z-index: 2
@@ -295,14 +417,14 @@ button_card_templates:
           const e = entity || states[variables.entity] || {};
           const attrs = e.attributes || {};
           const state = e.state || "idle";
-          const source = attrs.source || attrs.app_name || "YouTube";
+          const source = attrs.source || attrs.app_name || "No source reported";
           const title = attrs.media_title || attrs.friendly_name || variables.title || "Bedroom TV";
           const room = variables.room || "Bedroom TV";
           const pct = Math.max(0, Math.min(100, Number(attrs.media_position || 0) / Math.max(1, Number(attrs.media_duration || 1)) * 100));
-          const width = Number.isFinite(pct) && pct > 0 ? pct : 42;
-          const label = state === "playing" ? "Playing in bedroom" : state === "paused" ? "Paused" : "Ready";
+          const width = Number.isFinite(pct) ? pct : 0;
+          const label = state === "playing" ? "Playing in bedroom" : state === "paused" ? "Paused" : !e.state ? "Not connected" : state === "unavailable" ? "Offline" : state === "off" ? "Off" : state === "unknown" ? "No reading" : state;
           return `
-            <div style="min-height:196px;padding:14px;position:relative;display:grid;align-items:stretch;background:radial-gradient(circle at 72% 12%,rgba(121,199,255,.18),transparent 9rem),linear-gradient(180deg,rgba(23,28,38,.72),rgba(12,14,18,.68));">
+            <div style="min-height:196px;padding:14px;position:relative;display:grid;align-items:stretch;background:radial-gradient(circle at 72% 12%,rgba(107,226,255,.18),transparent 9rem),linear-gradient(180deg,rgba(14,24,40,.76),rgba(7,11,21,.70));">
               <div style="position:absolute;inset:20px 34px 64px;border-radius:32px;background:radial-gradient(circle,rgba(121,199,255,.22),transparent 68%);filter:blur(28px);"></div>
               <div style="position:relative;min-height:168px;padding:16px;border-radius:19px;border:1px solid rgba(255,255,255,.13);background:linear-gradient(135deg,rgba(121,199,255,.16),transparent 42%),radial-gradient(circle at 82% 18%,rgba(255,211,164,.12),transparent 28%),#10151d;box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 22px 42px rgba(0,0,0,.32);display:grid;align-content:end;gap:8px;">
                 <div style="position:absolute;top:14px;left:14px;right:14px;display:flex;justify-content:space-between;color:rgba(255,246,235,.56);font-size:10px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;">
@@ -311,7 +433,7 @@ button_card_templates:
                 <div style="font-size:28px;line-height:30px;font-weight:850;color:rgba(255,246,235,.96);">${title}</div>
                 <div style="color:rgba(255,235,215,.62);font-size:13px;line-height:17px;font-weight:650;">${label}</div>
                 <div style="height:5px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.12);">
-                  <div style="height:100%;width:${width}%;border-radius:999px;background:linear-gradient(90deg,#ffd3a4,#79c7ff);"></div>
+                <div style="height:100%;width:${width}%;border-radius:999px;background:linear-gradient(90deg,#6be2ff,#9b86ff,#ffcf78);box-shadow:0 0 14px rgba(107,226,255,.34);"></div>
                 </div>
               </div>
             </div>
@@ -321,34 +443,30 @@ button_card_templates:
         [[[
           const e = entity || states[variables.entity] || {};
           const attrs = e.attributes || {};
-          const source = attrs.source || attrs.app_name || "YouTube";
-          const volume = attrs.volume_level !== undefined ? Math.round(Number(attrs.volume_level) * 100) : 18;
-          const state = e.state === "playing" ? "Now playing" : e.state === "paused" ? "Paused" : "Ready";
+          const source = attrs.source || attrs.app_name || "No source reported";
+          const volume = attrs.volume_level !== undefined ? Math.round(Number(attrs.volume_level) * 100) : "—";
+          const state = !e.state ? "Not connected" : e.state === "playing" ? "Now playing" : e.state === "unavailable" ? "Offline" : e.state.replace(/_/g, " ");
           const title = attrs.friendly_name || variables.title || "Bedroom TV";
           const detail = `${source} · ${volume} volume`;
           return `
             <div style="padding:12px 16px 14px;display:flex;align-items:center;justify-content:space-between;gap:14px;">
               <div style="min-width:0;">
-                <div style="color:#79c7ff;font-size:11px;line-height:14px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;">${state}</div>
+                <div style="color:#6be2ff;font-size:11px;line-height:14px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;">${state}</div>
                 <div style="margin-top:3px;font-size:23px;line-height:27px;font-weight:850;color:rgba(255,246,235,.96);">${title}</div>
                 <div style="color:rgba(255,235,215,.62);font-size:13px;line-height:18px;">${detail}</div>
               </div>
-              <div style="display:flex;gap:8px;">
-                <span style="width:38px;height:38px;border-radius:15px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);"><ha-icon icon="mdi:power" style="width:18px;height:18px;color:#f3a6b8;"></ha-icon></span>
-                <span style="width:38px;height:38px;border-radius:15px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);"><ha-icon icon="mdi:pause" style="width:18px;height:18px;color:#ffd3a4;"></ha-icon></span>
-                <span style="width:38px;height:38px;border-radius:15px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);"><ha-icon icon="mdi:volume-high" style="width:18px;height:18px;color:#79c7ff;"></ha-icon></span>
-              </div>
+              <span style="font-size:12px;color:#ffd3a4;">Tap for controls</span>
             </div>
           `;
         ]]]
     styles:
       card:
         - padding: 0
-        - border-radius: 18px
-        - border: 1px solid rgba(238,222,190,0.16)
-        - background: linear-gradient(150deg, rgba(38,35,30,0.78), rgba(24,28,25,0.74))
-        - box-shadow: 0 18px 48px rgba(0,0,0,0.24)
-        - backdrop-filter: blur(20px) saturate(1.16)
+        - border-radius: 24px
+        - border: 1px solid rgba(137,210,255,0.18)
+        - background: linear-gradient(150deg, rgba(16,27,44,0.82), rgba(7,12,22,0.76))
+        - box-shadow: 0 24px 62px rgba(1,4,12,0.44), inset 0 1px 0 rgba(255,255,255,.06)
+        - backdrop-filter: blur(24px) saturate(1.18)
         - overflow: hidden
         - position: relative
         - z-index: 2
@@ -361,6 +479,20 @@ button_card_templates:
           - grid-area: meta
 
   mf_device_row:
+    extra_styles: |
+      #card { transition: transform 160ms cubic-bezier(.23,1,.32,1); }
+      #card:focus-visible { outline: 2px solid #f1c27a; outline-offset: 3px; }
+      @media (hover: hover) and (pointer: fine) {
+        #card:hover { transform: translateY(-2px); }
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        #card:active:not(:focus-visible) { transform: scale(.98); }
+        #card { animation: hearth-arrive 240ms cubic-bezier(.23,1,.32,1) both; }
+        @keyframes hearth-arrive { from { opacity: .5; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #card { animation: none !important; transition: none !important; transform: none !important; }
+      }
     show_icon: true
     show_name: true
     show_label: true
@@ -372,7 +504,9 @@ button_card_templates:
       state: |
         [[[
           if (variables.value) return variables.value;
-          if (!entity || entity.state === "unavailable") return "Offline";
+          if (!entity) return "Not connected";
+          if (entity.state === "unavailable") return "Offline";
+          if (entity.state === "unknown") return "No reading";
           if (entity.state === "playing") return "Playing";
           if (entity.state === "paused") return "Paused";
           if (entity.state === "standby") return "Standby";
@@ -384,10 +518,10 @@ button_card_templates:
         - min-height: 72px
         - padding: 12px
         - border-radius: 18px
-        - border: 1px solid rgba(238,222,190,0.16)
-        - background: '[[[ return entity?.state === "playing" ? "linear-gradient(150deg, rgba(70,51,39,0.72), rgba(22,20,28,0.70))" : "linear-gradient(150deg, rgba(38,35,30,0.78), rgba(24,28,25,0.74))"; ]]]'
-        - box-shadow: 0 18px 48px rgba(0,0,0,0.24)
-        - backdrop-filter: blur(20px) saturate(1.16)
+        - border: 1px solid rgba(137,210,255,0.16)
+        - background: '[[[ return entity?.state === "playing" ? "radial-gradient(circle at 10% 20%, rgba(107,226,255,.15), transparent 8rem), linear-gradient(150deg, rgba(18,31,49,.84), rgba(8,13,24,.76))" : "linear-gradient(150deg, rgba(15,23,36,.78), rgba(7,12,22,.74))"; ]]]'
+        - box-shadow: 0 18px 46px rgba(1,5,14,0.36), inset 0 1px 0 rgba(255,255,255,.05)
+        - backdrop-filter: blur(22px) saturate(1.18)
         - position: relative
         - z-index: 2
       grid:
@@ -408,7 +542,7 @@ button_card_templates:
       name:
         - grid-area: n
         - justify-self: start
-        - color: rgba(255,248,231,0.94)
+        - color: rgba(240,247,255,0.94)
         - font-size: 14px
         - line-height: 18px
         - font-weight: 850
@@ -417,14 +551,14 @@ button_card_templates:
       label:
         - grid-area: l
         - justify-self: start
-        - color: rgba(235,220,190,0.66)
+        - color: rgba(183,204,224,0.64)
         - font-size: 12px
         - line-height: 16px
         - font-weight: 650
       custom_fields:
         state:
           - grid-area: state
-          - color: rgba(255,248,231,0.84)
+          - color: rgba(210,229,244,0.84)
           - font-size: 12px
           - line-height: 16px
           - font-weight: 850

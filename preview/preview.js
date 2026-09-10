@@ -1,4 +1,5 @@
 const root = document.getElementById("view-root");
+const eyebrow = document.getElementById("page-eyebrow");
 const title = document.getElementById("page-title");
 const subtitle = document.getElementById("page-subtitle");
 
@@ -34,7 +35,7 @@ const iconPaths = {
 };
 
 const pageCopy = {
-  home: ["Hearth console", "Quiet night, house steady, El Rocco sipping power."],
+  home: ["Welcome home", "Mike & Kiara · Make yourself at home"],
   lights: ["Glow rooms", "Cottage warmth with clean scene control."],
   media: ["Signal room", "Screens, Sonos, and room playback."],
   tesla: ["El Rocco", "Charge, climate, locks, and trip status."],
@@ -54,7 +55,7 @@ const navCopy = {
 const views = {
   home: `
     <div class="status-ribbon">
-      <strong>Night mode · HA online · cabin linked</strong>
+      <strong>Design preview · sample data</strong>
       <div class="status-dots">
         <span class="dot">${icon("shield")}</span>
         <span class="dot">${icon("robot")}</span>
@@ -266,8 +267,9 @@ function miniStat(value, label) {
 function setView(name) {
   if (!views[name]) name = "home";
   const copy = pageCopy[name];
-  title.textContent = copy[0];
-  subtitle.textContent = copy[1];
+  eyebrow.textContent = copy[0];
+  title.textContent = copy[1];
+  subtitle.textContent = copy[2];
   root.innerHTML = views[name];
   if (window.location.hash.slice(1) !== name) {
     history.replaceState(null, "", `#${name}`);

@@ -12,86 +12,89 @@ sections:
   - type: custom:button-card
     template: mf_page_title
     variables:
-      title: House
-      subtitle: Sebastian, cabin climate, and home devices.
+      eyebrow: SYSTEMS · DEVICES
+      title: Around the house
+      subtitle: Connections, comfort, and a little help at home.
   - type: custom:button-card
-    template: mf_hero
-    entity: vacuum.roomba
-    variables:
-      icon: mdi:robot-vacuum
-      value: '[[[ return entity?.state === "unavailable" || !entity ? "Ready" : entity.state.replace("_", " "); ]]]'
-      subtitle: Roomba not online yet · El Rocco cabin climate available
-      accent_color: rgba(136,199,216,0.95)
+    template: mf_connection_health
   - type: grid
     columns: 2
     square: false
     cards:
     - type: custom:button-card
       template: mf_tile
-      entity: vacuum.roomba
       variables:
         icon: mdi:robot-vacuum
         title: Roomba
-        value: '[[[ return entity?.state === "unavailable" || !entity ? "Offline" : entity.state.replace("_", " "); ]]]'
-        subtitle: Power on dock to add
+        value: Not set up
+        subtitle: Connect your vacuum in settings
         accent_color: rgba(136,199,216,0.95)
+      tap_action:
+        action: navigate
+        navigation_path: /config/integrations
     - type: custom:button-card
       template: mf_tile
       entity: climate.el_rocco_climate
       variables:
         icon: mdi:thermometer
         title: Cabin climate
-        value: '[[[ return (entity?.attributes?.temperature || 70) + "°"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity && !["unavailable", "unknown"].includes(entity.state)
+          && Number.isFinite(entity.attributes?.temperature) ? entity.attributes.temperature + "°" : "No reading"; ]]]'
         subtitle: El Rocco
     - type: custom:button-card
       template: mf_tile
-      entity: light.living_room_2
+      entity: light.living_room
       variables:
         icon: mdi:bridge
-        title: Hue bridge
-        value: 14 lights
-        subtitle: Already integrated
+        title: Living room
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return !entity ? "Not connected" : entity.state ===
+          "unavailable" ? "Offline" : entity.state.replace(/_/g, " "); ]]]'
+        subtitle: Hue room lights
         accent_color: rgba(241,194,122,0.96)
     - type: custom:button-card
       template: mf_tile
+      tap_action:
+        action: navigate
+        navigation_path: /config/integrations
       variables:
         icon: mdi:robot-happy-outline
-        title: Sebastian
-        value: Online
-        subtitle: Assistant ready
+        title: Home Assistant
+        value: Open settings
+        subtitle: Manage your integrations
         accent_color: rgba(156,201,162,0.95)
-  - type: horizontal-stack
-    cards:
-    - type: custom:button-card
-      template: mf_pill
-      variables:
-        icon: mdi:home-import-outline
-        label: Dock
-        accent_color: rgba(156,201,162,0.95)
-      tap_action:
-        action: call-service
-        service: vacuum.return_to_base
-        target:
-          entity_id: vacuum.roomba
-    - type: custom:button-card
-      template: mf_pill
-      variables:
-        icon: mdi:star-four-points-outline
-        label: Clean kitchen
-        accent_color: rgba(241,194,122,0.96)
-      tap_action:
-        action: call-service
-        service: vacuum.start
-        target:
-          entity_id: vacuum.roomba
-    - type: custom:button-card
-      template: mf_pill
-      variables:
-        icon: mdi:pause
-        label: Pause
-        accent_color: rgba(217,154,169,0.95)
-      tap_action:
-        action: call-service
-        service: vacuum.pause
-        target:
-          entity_id: vacuum.roomba
+  - type: entities
+    title: Connection status
+    show_header_toggle: false
+    entities:
+    - entity: light.living_room
+      type: simple-entity
+    - entity: light.bedroom
+      type: simple-entity
+    - entity: light.big_lamp
+      type: simple-entity
+    - entity: light.light_panels_51_66_88
+      type: simple-entity
+    - entity: media_player.bed_room_tv
+      type: simple-entity
+    - entity: media_player.media_room
+      type: simple-entity
+    - entity: media_player.kitchen
+      type: simple-entity
+    - entity: media_player.den
+      type: simple-entity
+    - entity: media_player.roam_2
+      type: simple-entity
+    - entity: media_player.32q3k_2
+      type: simple-entity
+    - entity: media_player.spotify_michael_sanchez
+      type: simple-entity
+    - entity: alarm_control_panel.blink_home
+      type: simple-entity
+    - entity: camera.front_door
+      type: simple-entity
+    - entity: sensor.nas_blink_front_door_temperature
+      type: simple-entity
+    - entity: sensor.el_rocco_battery_level
+      type: simple-entity
+    - entity: weather.forecast_home
+      type: simple-entity

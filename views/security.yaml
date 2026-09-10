@@ -12,15 +12,16 @@ sections:
   - type: custom:button-card
     template: mf_page_title
     variables:
-      title: Security
-      subtitle: Watchtower calm, quick modes, and door state.
+      eyebrow: SECURITY · PERIMETER
+      title: Watchtower
+      subtitle: Cameras, alarm modes, and entry state.
   - type: custom:button-card
     template: mf_hero
-    entity: alarm_control_panel.blink_michael_trinidad
+    entity: alarm_control_panel.blink_home
     variables:
       icon: mdi:shield-check-outline
-      value: '[[[ return entity?.state === "armed_away" ? "Armed" : entity?.state === "disarmed" ? "Clear" : entity?.state || "Ready"; ]]]'
-      subtitle: Front door clear · car locked · sentry on
+      value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "armed_away" ? "Armed" : entity?.state === "disarmed" ? "Disarmed" : entity?.state || "Ready"; ]]]'
+      subtitle: Blink alarm status
       accent_color: rgba(156,201,162,0.95)
   - type: horizontal-stack
     cards:
@@ -34,7 +35,7 @@ sections:
         action: call-service
         service: alarm_control_panel.alarm_disarm
         target:
-          entity_id: alarm_control_panel.blink_michael_trinidad
+          entity_id: alarm_control_panel.blink_home
     - type: custom:button-card
       template: mf_pill
       variables:
@@ -45,7 +46,7 @@ sections:
         action: call-service
         service: alarm_control_panel.alarm_arm_home
         target:
-          entity_id: alarm_control_panel.blink_michael_trinidad
+          entity_id: alarm_control_panel.blink_home
     - type: custom:button-card
       template: mf_pill
       variables:
@@ -56,7 +57,7 @@ sections:
         action: call-service
         service: alarm_control_panel.alarm_arm_away
         target:
-          entity_id: alarm_control_panel.blink_michael_trinidad
+          entity_id: alarm_control_panel.blink_home
   - type: grid
     columns: 2
     square: false
@@ -67,17 +68,17 @@ sections:
       variables:
         icon: mdi:door-open
         title: Front door
-        value: '[[[ return entity?.state === "on" ? "Motion" : "Clear"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "on" ? "Motion" : "Clear"; ]]]'
         subtitle: Blink
         accent_color: rgba(156,201,162,0.95)
     - type: custom:button-card
       template: mf_tile
-      entity: camera.blink_front_door
+      entity: camera.front_door
       variables:
         icon: mdi:cctv
-        title: Side camera
-        value: Ready
-        subtitle: Driveway
+        title: Front door camera
+        value: '[[[ return !entity ? "Not connected" : entity.state === "unavailable" ? "Offline" : entity.state; ]]]'
+        subtitle: Blink
         accent_color: rgba(136,199,216,0.95)
   - type: custom:button-card
     template: mf_section_label
@@ -95,6 +96,6 @@ sections:
       variables:
         icon: mdi:car-door-lock
         title: El Rocco
-        value: '[[[ return entity?.state === "locked" ? "Locked" : entity?.state || "Unknown"; ]]]'
+        value: '[[[ if (!entity || ["unavailable", "unknown"].includes(entity.state)) return "Not available"; return entity?.state === "locked" ? "Locked" : entity?.state || "Unknown"; ]]]'
         subtitle: Sentry linked from car page
         accent_color: rgba(136,199,216,0.95)

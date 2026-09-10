@@ -62,11 +62,67 @@ platform, not the friendly name.
 
 ## Still-stale references (NOT yet fixed — follow-up)
 
-The dead Govee IDs are still wired into many scenes/automations:
-- `automations.yaml` and `scripts.yaml` reference `light.living_room_2`,
-  `light.mike_side_lamp`, `light.kiara_side_lamp` (entertainment/arrival/
-  departure routines, scenes). Those service calls now hit dead entities.
-- The deployed `mobile_forge v5.yaml` **home view** has a JS "all lights"
-  summary array still listing the dead Govee IDs (lines ~72/74).
-Only the Lights *panel view* + the `mf_light_tile` template were fixed on
-2026-05-15. Reconcile automations/scripts/home-summary to the Hue IDs next.
+- The deployed `mobile_forge v5.yaml` **home view** still has a JS "all lights"
+  summary array listing the dead Govee IDs (lines ~72/74) — not yet touched.
+
+`automations.yaml`/`scripts.yaml`/`scenes.yaml` were reconciled to the Hue IDs
+on 2026-07-07 (see media/Sonos fix entry below) — that part of this note is
+now resolved.
+
+## Govee cloud integration — rate limit (fixed 2026-07-07)
+
+**Symptom:** ALL 4 Govee entities (including the live `light.big_lamp`) went
+`unavailable` simultaneously at an HA restart, and `home-assistant.log.1` grew
+to 1.2GB of Govee/Blink spam.
+
+**Root cause:** The `govee` config entry's `delay` was `10` (seconds). With 4
+devices polled that often, HA blew through Govee cloud's 10,000
+requests/24h quota — `API-Error 429: rate limited!` — which kills the
+**entire** config entry at setup (all 4 entities unavailable together,
+identical `last_updated` timestamp — that's the tell that distinguishes this
+from actual dead hardware, where entities go unavailable independently).
+
+**Fix:** `.storage/core.config_entries` → `govee` entry → `data.delay` set to
+`60`. Keeps daily request volume safely under quota. Do not drop it back
+below ~30s with 4 devices. The 3 genuinely-dead lamps (`light.living_room_2`,
+`light.mike_side_lamp`, `light.kiara_side_lamp`, offline device-side since
+2026-05-30) are unaffected by this — they'll stay `unavailable` regardless of
+delay; only `light.big_lamp` recovers once the rate limit window resets.
+
+## Sonos / Cast / webOS media fix (2026-07-07)
+
+**Sonos static hosts corrected** (`configuration.yaml` `sonos:` block) — the
+previous single stale host `192.168.50.51` (mislabeled "Den") is gone;
+correct live hosts:
+- `192.168.50.44` = Sonos Era 100 "Media Room" → registers as
+  `media_player.media_room`
+- `192.168.50.52` = Sonos Era 100 "Den" → registers as `media_player.den`
+
+Connecting to just these two also surfaced the rest of the Sonos household
+(shared zone-group topology) as `media_player.kitchen` and
+`media_player.roam_2`, even though they weren't in the static hosts list —
+one reachable speaker is enough to learn about the whole household.
+
+**Cast known_hosts** (`.storage/core.config_entries`, `cast` entry,
+`data.known_hosts`) set to `["192.168.50.55", "192.168.50.6"]` (Living Room
+Chromecast + LG webOS TV's built-in Cast receiver). New/recovered entities:
+- `media_player.living_room_tv` (cast) — Living Room Chromecast, now `off`/available
+- `media_player.lg_webos_tv_ua7700pub_2` (cast) — LG TV's Cast receiver, now `off`/available
+- `media_player.bed_room_tv` (webostv, native) — recovered from `unavailable` to `off`
+
+**Known residual issue:** `media_player.lg_webos_tv_ua7700pub` (the *original*
+cast entity, no `_2` suffix) is still stuck `unavailable` — looks like a
+stale duplicate device registration from before `known_hosts` was set (same
+`config_entry_id`, different `unique_id`/`device_id` from the `_2` entity).
+Needs manual cleanup in Settings → Devices (delete the stale device) — left
+alone rather than edited directly in the registry since it's not certain
+which one Michael's dashboards/automations may already reference.
+
+**Area-label note:** `media_player.bed_room_tv`'s HA Area is "Bedroom", but
+there is no Sonos in the Bedroom — every automation that pairs this TV with
+audio/lighting (old `tv_entertainment_mode` and the new Movie
+Mode/handoff automations added 2026-07-07) actually pairs it with the
+**Living Room** lights and the **Media Room** Sonos, matching established
+automation convention rather than the Area registry. If the TV's physical
+room is actually the Media Room (not Bedroom), the Area assignment itself
+should probably be corrected in HA.
