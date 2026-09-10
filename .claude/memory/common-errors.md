@@ -216,3 +216,13 @@ alarm_control_panel.blink_home and camera.front_door. There is no configured
 vacuum.roomba or update.home_assistant_core_update (Container installation).
 House now surfaces configured connection states rather than fake online values.
 The active sky is asset-free; preserve it when merging old sky patches.
+
+## Frontend resource failures repaired (2026-09-10)
+
+The registered Bubble Card URL returned 404 because its community directory
+contained only bubble-card.zip. Restored bubble-card.js, its LICENSE, and
+bubble-pop-up-fix.js from that existing HACS archive. No upgrade was needed.
+The Google Fonts resource had only a cache-bust query and returned an error;
+restored the Caveat/Dancing Script family parameters through HA's resource API,
+with a backup of lovelace_resources. All eight live production pages subsequently
+loaded without browser console errors in the mobile Chrome check.
