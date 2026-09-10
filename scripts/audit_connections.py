@@ -44,6 +44,26 @@ def references(doc):
     return entities, services
 
 
+def active_dashboard(doc, view_paths=None):
+    """Include only templates used by the selected views, including inheritance."""
+    templates = doc.get('button_card_templates', {})
+    views = [v for v in doc.get('views', []) if not view_paths or v.get('path') in view_paths]
+    used = {}
+    def visit(node):
+        if isinstance(node, dict):
+            names = node.get('template', [])
+            if isinstance(names, str): names = [names]
+            for name in names if isinstance(names, list) else []:
+                if name in templates and name not in used:
+                    used[name] = templates[name]
+                    visit(templates[name])
+            for value in node.values(): visit(value)
+        elif isinstance(node, list):
+            for value in node: visit(value)
+    visit(views)
+    return {'views': views, 'button_card_templates': used}
+
+
 def audit(entities, services, states, available_services=None):
     live = {s['entity_id']: s['state'] for s in states}
     result = {'missing': [], 'unavailable': [], 'unknown': [], 'present': [], 'missing_services': []}
@@ -62,11 +82,15 @@ def main():
     parser.add_argument('--states', type=Path)
     parser.add_argument('--services', type=Path)
     parser.add_argument('--dashboard', type=Path, help='Audit generated/deployed dashboard instead of source views/templates')
+    parser.add_argument('--views', help='Comma-separated paths to audit, excluding archived or unused pages')
     args = parser.parse_args()
     files = [args.dashboard] if args.dashboard else sorted((ROOT/'views').glob('*.yaml')) + sorted((ROOT/'templates').glob('*.yaml'))
     entities, services = set(), set()
     for file in files:
-        e, s = references(yaml.safe_load(file.read_text()))
+        doc = yaml.safe_load(file.read_text())
+        if args.dashboard:
+            doc = active_dashboard(doc, args.views.split(',') if args.views else None)
+        e, s = references(doc)
         entities.update(e); services.update(s)
     if args.states:
         states = json.loads(args.states.read_text())
